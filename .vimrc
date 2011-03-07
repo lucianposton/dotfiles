@@ -22,8 +22,12 @@ set textwidth=78
 set scrolloff=3          " Lines of context on vertical scroll
 set sidescrolloff=3      " Columns of context on horizontal scroll
 
-imap jj <Esc>
-imap jk <Esc>
+"set smarttab
+"cindent
+
+nnoremap <Space>b :ls<CR>:b 
+inoremap jj <Esc>
+inoremap jk <Esc>
 
 if has('mouse')
 	set mouse=a
