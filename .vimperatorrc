@@ -1,0 +1,11 @@
+"2.3.1 (created: 2010/04/07 18:56:53)
+
+inoremap jj <Esc>
+inoremap jk <Esc>
+noremap <C-c> <C-v><C-c>
+noremap <C-v> <C-v><C-v>
+set runtimepath=/Users/lucian/.vimperator
+set wildoptions=auto
+source! /Users/lucian/.vimperatorrc.local
+
+" vim: set ft=vimperator:
