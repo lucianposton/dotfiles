@@ -56,8 +56,8 @@ fi
 
 if [[ -e $TARGETPATH ]]
 then
-	#rm -rI $TARGETPATH
-	echo "rm -rI $TARGETPATH"
+	echo "removing $TARGETPATH"
+	rm -rI $TARGETPATH
 fi
 
 mv -T $PATHTOFILE $TARGETPATH
