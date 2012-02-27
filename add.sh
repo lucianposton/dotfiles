@@ -44,7 +44,6 @@ fi
 
 
 TARGETPATH=$DOTFILESDIR/$FILE
-echo "target $TARGETPATH"
 
 # check git to make sure $DOTFILESDIR is in dotfiles repo, and check that
 # adding file will not result in losing unsaved changes in repo
