@@ -38,3 +38,6 @@ highlight WhiteSpaceEOL ctermbg=darkgreen guibg=lightgreen
 match WhiteSpaceEol /\s\+$/
 "match WhiteSpaceEOL /^\s*\ \s*\|\s\+$/
 "match WhiteSpaceEOL /^\ \+\\|\s\+$\\|\ \+\ze\t\\|\t\zs\ \+/
+
+
+set t_Co=256
