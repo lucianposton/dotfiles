@@ -1,0 +1,7 @@
+termcapinfo xterm ti@:te@
+
+attrcolor b ".I"
+
+term screen-256color
+
+terminfo rxvt-unicode 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
