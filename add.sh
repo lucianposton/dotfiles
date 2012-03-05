@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 if [[ $# -ne 1 || -z $1 ]]
 then
 	echo "Usage: $0 [FILE]"
@@ -57,10 +59,15 @@ if [[ -e $TARGETPATH ]]
 then
 	echo "removing $TARGETPATH"
 	rm -rI $TARGETPATH
+
+	if [[ -e $TARGETPATH ]]
+	then
+		exit 1
+	fi
 fi
 
 mv -T $PATHTOFILE $TARGETPATH
 ln -s $TARGETPATH $PATHTOFILE
 
-cd $DOTFILESDIR && git commit -a
+cd $DOTFILESDIR && git status
 
