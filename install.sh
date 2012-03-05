@@ -33,15 +33,19 @@ mkdir -p ~/dotfiles_old
 DotfilesDir=$HOME/dotfiles
 OldDotfilesDir=$HOME/dotfiles_old
 
+if [[ -e $OldDotfilesDir ]]
+then
+	read -n 1 -p "$OldDotfilesDir exists and files will be overwritten. Continue? (y/n)"
+	[[ $REPLY =~ ^[Nn]$ ]] && echo "oshi" && exit 1
+fi
+
+echo "ahh ywa"
+
 cd $DotfilesDir
 for i in .* *
 do
 	should_ignore $i && continue
-
-	echo -$i
-	echo "mv ~/$i $OldDotfilesDir/"
-	echo "ln -s $DotfilesDir/$i ~/$i"
-#   mv ~/.$i $OldDotfilesDir/
-#   ln -s $DotfilesDir/$i ~/.$i
+	mv ~/$i $OldDotfilesDir/
+	ln -s $DotfilesDir/$i ~/$i
 done
 
