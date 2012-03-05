@@ -31,9 +31,17 @@ compinit
 autoload -U promptinit
 promptinit
 prompt gentoo
-#autoload -U colors
+autoload -U colors
 #colors
 
 mailpath=$HOME/.maildir/new
+
+export TERM="xterm-color"
+export CLICOLOR="true"
+export LS_COLORS='di=35:fi=0:ln=31:pi=4:so=4:bd=4:cd=33:or=31:*.deb=90'
+
+export PROMPT=$'
+%{\e[0;31m%}[ %{\e[0;36m%}%M %{\e[0;31m%}: %{\e[0;32m%}%d%{\e[0;31m%} ]
+%{\e[0;33m%}%n%{\e[0m%} > '
 
 export P4CONFIG=.p4config
