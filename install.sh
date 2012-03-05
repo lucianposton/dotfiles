@@ -38,7 +38,7 @@ cd $DotfilesDir
 for i in .* *
 do
 	should_ignore $i && continue
-	mv $HOME/$i $OldDotfilesDir/
+	[[ ! -e $HOME/$i ]] || mv $HOME/$i $OldDotfilesDir/
 	ln -s $DotfilesDir/$i $HOME/$i
 done
 
