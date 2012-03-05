@@ -4,7 +4,7 @@
 [github]
 	user = lucianposton
 [color]
-	ui = true
+	ui = auto
 [alias]
 	lol = log --all --graph --abbrev-commit --date=relative --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
 	st = status
