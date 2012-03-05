@@ -23,16 +23,16 @@ function should_ignore {
 	return 1
 }
 
-mkdir -p $HOME/dotfiles_old
-
 DotfilesDir=$HOME/dotfiles
 OldDotfilesDir=$HOME/dotfiles_old
 
 if [[ -e $OldDotfilesDir ]]
 then
 	read -n 1 -p "$OldDotfilesDir exists and files will be overwritten. Continue? (y/n)"
-	[[ $REPLY =~ ^[Nn]$ ]] && && exit 1
+	[[ $REPLY =~ ^[Nn]$ ]] && exit 1
 fi
+
+mkdir -p $OldDotfilesDir
 
 cd $DotfilesDir
 for i in .* *
