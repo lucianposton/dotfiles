@@ -1,0 +1,27 @@
+## Colors
+color hdrdefault brightcyan default
+color header brightwhite default "^from:"
+color header brightwhite default "^subject:"
+
+color quoted brightgreen default
+color signature brightwhite default
+
+color indicator black green
+
+color error red default
+mono error bold
+
+color status brightcyan default
+mono status bold
+
+color tree yellow default
+
+color tilde brightmagenta default
+color body brightyellow default "^Good signature"
+mono body bold "^Good signature"
+color body brightwhite red "^Bad signature from.*"
+mono body bold "^Bad signature from.*"
+color normal white default
+color message green default
+color attachment brightgreen default
+
