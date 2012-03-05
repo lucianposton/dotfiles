@@ -22,6 +22,7 @@ zstyle ':completion:*' matcher-list '' 'm:{[:lower:]}={[:upper:]} m:{[:lower:][:
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' menu select=long-list select=0
 zstyle ':completion:*' select-prompt %SSelection at %p%s
+zstyle ':completion::complete:*' use-cache 1
 zstyle :compinstall filename '${HOME}/.zshrc'
 
 autoload -Uz compinit
