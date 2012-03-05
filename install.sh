@@ -2,11 +2,6 @@
 
 set -e
 
-function parse_git_branch {
-   git branch --no-color 2> /dev/null \
-      | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) -- /'
-}
-
 function should_ignore {
    ignored_files=(
 	"."
@@ -36,10 +31,8 @@ OldDotfilesDir=$HOME/dotfiles_old
 if [[ -e $OldDotfilesDir ]]
 then
 	read -n 1 -p "$OldDotfilesDir exists and files will be overwritten. Continue? (y/n)"
-	[[ $REPLY =~ ^[Nn]$ ]] && echo "oshi" && exit 1
+	[[ $REPLY =~ ^[Nn]$ ]] && && exit 1
 fi
-
-echo "ahh ywa"
 
 cd $DotfilesDir
 for i in .* *
