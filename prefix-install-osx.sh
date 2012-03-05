@@ -2,6 +2,9 @@
 
 set -ev
 
+export EPREFIX="$HOME/gentoo"
+export PATH="$EPREFIX/usr/bin:$EPREFIX/bin:$EPREFIX/tmp/usr/bin:$EPREFIX/tmp/bin:$PATH"
+
 ./bootstrap-prefix.sh $EPREFIX tree
 ./bootstrap-prefix.sh $EPREFIX/tmp make
 ./bootstrap-prefix.sh $EPREFIX/tmp wget
