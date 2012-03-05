@@ -25,3 +25,4 @@ color normal white default
 color message green default
 color attachment brightgreen default
 
+set editor="vim"

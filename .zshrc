@@ -22,7 +22,7 @@ zstyle ':completion:*' matcher-list '' 'm:{[:lower:]}={[:upper:]} m:{[:lower:][:
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' menu select=long-list select=0
 zstyle ':completion:*' select-prompt %SSelection at %p%s
-zstyle :compinstall filename '/home/worch/.zshrc'
+zstyle :compinstall filename '${HOME}/.zshrc'
 
 autoload -Uz compinit
 compinit
@@ -36,3 +36,4 @@ prompt gentoo
 
 mailpath=$HOME/.maildir/new
 
+export P4CONFIG=.p4config
