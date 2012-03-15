@@ -5,7 +5,7 @@ set -ev
 export EPREFIX="$HOME/gentoo"
 export PATH="$EPREFIX/usr/bin:$EPREFIX/bin:$EPREFIX/tmp/usr/bin:$EPREFIX/tmp/bin:$PATH"
 
-./bootstrap-prefix.sh $EPREFIX tree
+./bootstrap-prefix.sh $EPREFIX latest_tree
 ./bootstrap-prefix.sh $EPREFIX/tmp make
 ./bootstrap-prefix.sh $EPREFIX/tmp wget
 ./bootstrap-prefix.sh $EPREFIX/tmp sed
@@ -55,7 +55,14 @@ echo 'USE="unicode nls"' >> $EPREFIX/etc/make.conf
 echo 'CFLAGS="-O2 -pipe -march=nocona"' >> $EPREFIX/etc/make.conf
 echo 'CXXFLAGS="${CFLAGS}"' >> $EPREFIX/etc/make.conf
 
+# bug 407573
+gcc-config 1
+
 emerge portage
 emerge -e system
 hash -r
 
+$EPREFIX/usr/sbin/makewhatis -u
+cd $EPREFIX/usr/portage/scripts
+./bootstrap-prefix.sh $EPREFIX startscript
+$EPREFIX/usr/sbin/dispatch-conf

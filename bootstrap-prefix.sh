@@ -195,6 +195,10 @@ HOSTCC='gcc -m64'
 			profile="${PORTDIR}/profiles/prefix/linux/ppc"
 			ldflags_make_defaults="LDFLAGS=\"-L${ROOT}/usr/lib -Wl,-rpath=${ROOT}/usr/lib -L${ROOT}/lib -Wl,-rpath=${ROOT}/lib\""
 			;;
+		powerpc64-unknown-linux-gnu)
+			profile="${PORTDIR}/profiles/prefix/linux/ppc64"
+			ldflags_make_defaults="LDFLAGS=\"-L${ROOT}/usr/lib -Wl,-rpath=${ROOT}/usr/lib -L${ROOT}/lib -Wl,-rpath=${ROOT}/lib\""
+			;;
 		armv7l-pc-linux-gnu)
 			profile="${PORTDIR}/profiles/prefix/linux/arm"
 			ldflags_make_defaults="LDFLAGS=\"-L${ROOT}/usr/lib -Wl,-rpath=${ROOT}/usr/lib -L${ROOT}/lib -Wl,-rpath=${ROOT}/lib\""
@@ -732,7 +736,8 @@ bootstrap_python() {
 }
 
 bootstrap_zlib() {
-	PV=1.2.5
+	# use 1.2.5 by default, current bootstrap guides
+	PV="${1:-1.2.5}"
 	A=zlib-${PV}.tar.bz2
 
 	einfo "Bootstrapping ${A%-*}"
@@ -767,6 +772,11 @@ bootstrap_zlib() {
 	rm -Rf "${ROOT}"/usr/lib/libpython*.a
 
 	einfo "${A%-*} bootstrapped"
+}
+
+bootstrap_zlib126() {
+	# bug 407215
+	bootstrap_zlib 1.2.6
 }
 
 bootstrap_sed() {

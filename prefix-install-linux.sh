@@ -52,16 +52,17 @@ rm -Rf $EPREFIX/tmp/*
 hash -r
 emerge --sync || $EPREFIX/usr/sbin/emerge-webrsync
 emerge "<dev-libs/mpc-0.9"
-env USE=-git emerge -u system || env USE=-git emerge --resume --skipfirst
+env USE=-git emerge -u system
 echo 'USE="unicode nls"' >> $EPREFIX/etc/make.conf
 echo 'CFLAGS="-O2 -pipe"' >> $EPREFIX/etc/make.conf
 echo 'CXXFLAGS="${CFLAGS}"' >> $EPREFIX/etc/make.conf
 gcc-config 1
 hash -r
 emerge portage
-emerge -e system || emerge --skipfirst --resume
+emerge -e system
 hash -r
-makewhatis -u
+
+$EPREFIX/usr/sbin/makewhatis -u
 cd $EPREFIX/usr/portage/scripts
 ./bootstrap-prefix.sh $EPREFIX startscript
-dispatch-conf
+$EPREFIX/usr/sbin/dispatch-conf
