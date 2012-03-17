@@ -6,9 +6,9 @@
 [color]
     ui = auto
 [alias]
-    lol = log --all --graph --pretty=format:'%C(red)%h%Creset%C(bold black):%Creset %C(cyan)%cr%Creset %C(blue)<%an>%Creset%C(bold magenta)%d%Creset %C(white)%s%Creset'
-    lod = log --all --graph --pretty=format:'%C(red)%h%Creset%C(bold black):%Creset %C(green)%cd%Creset %C(blue)<%an>%Creset%C(bold magenta)%d%Creset %C(white)%s%Creset'
-    lor = log --all --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+    lol = log --all --graph --pretty=tformat:'%C(red)%h%Creset%C(bold black):%Creset %C(cyan)%cr%Creset %C(blue)<%an>%Creset%C(bold magenta)%d%Creset %C(white)%s%Creset'
+    lod = log --all --graph --pretty=tformat:'%C(red)%h%Creset%C(bold black):%Creset %C(green)%cd%Creset %C(blue)<%an>%Creset%C(bold magenta)%d%Creset %C(white)%s%Creset'
+    lor = log --all --graph --pretty=tformat:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
     st = status
 [core]
     excludesfile = ~/.gitignore_global
