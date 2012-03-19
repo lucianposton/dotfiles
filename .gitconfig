@@ -1,6 +1,11 @@
 [user]
     name = Lucian Poston
     email = lucian.poston@gmail.com
+[sendemail]
+    smtpencryption = tls
+    smtpserver = smtp.gmail.com
+    smtpuser = lucian.poston@gmail.com
+    smtpserverport = 587
 [github]
     user = lucianposton
 [color]
@@ -13,3 +18,4 @@
 [core]
     excludesfile = ~/.gitignore_global
     editor = vim
+    pager = less -RFX
