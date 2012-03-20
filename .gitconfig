@@ -16,6 +16,7 @@
     lod = log --all --graph --pretty=tformat:'%C(red)%h%Creset%C(bold black):%Creset %C(green)%cd%Creset %C(blue)<%an>%Creset%C(bold magenta)%d%Creset %C(white)%s%Creset'
     lor = log --all --graph --pretty=tformat:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
     st = status
+    br = branch
 [core]
     excludesfile = ~/.gitignore_global
     editor = vim
