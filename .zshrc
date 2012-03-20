@@ -3,17 +3,15 @@ HISTSIZE=1000
 SAVEHIST=1000
 
 export PATH=$HOME/bin:$PATH
-export FOOO=$HOME
-export BAAR=bar
+
+#export EPREFIX=/home/poston/gentoo
+#export PATH=${EPREFIX}/bin:$PATH
 
 export P4CONFIG=.p4config
 export BRAZIL_WORKSPACE_DEFAULT_LAYOUT=short
 export PATH=/apollo/env/SDETools/bin:$PATH
 #export PATH=/apollo/env/eclipse-3.7/bin:$PATH
 #export PATH=$PATH:/apollo/env/envImprovement/bin
-
-#export EPREFIX=/home/poston/gentoo
-#export PATH=${EPREFIX}/bin:$PATH
 
 alias grep='grep --color=auto'
 alias ls='ls --color=auto'
