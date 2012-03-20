@@ -6,6 +6,7 @@
     smtpserver = smtp.gmail.com
     smtpuser = lucian.poston@gmail.com
     smtpserverport = 587
+    cccmd = git-cc
 [github]
     user = lucianposton
 [color]
@@ -19,3 +20,6 @@
     excludesfile = ~/.gitignore_global
     editor = vim
     pager = less -RFX
+[format]
+    signoff = true
+    numbered = true
