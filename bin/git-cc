@@ -30,6 +30,11 @@ ARGV.each do |filename|
 end
 
 @authors.each_key do |a|
-  puts a
+    $stderr.puts a + "?"
+    response = $stdin.gets
+    case response.strip
+    when 'y', 'Y'
+        puts a
+    end
 end
 
