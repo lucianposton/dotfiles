@@ -4,6 +4,6 @@ inoremap jj <Esc>
 inoremap jk <Esc>
 noremap <C-c> <C-v><C-c>
 noremap <C-v> <C-v><C-v>
-set wildoptions=auto
+"set wildoptions=auto
 
 " vim: set ft=vimperator:
