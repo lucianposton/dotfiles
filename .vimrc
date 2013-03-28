@@ -50,13 +50,14 @@ endif
 set t_Co=256
 
 highlight Comment ctermfg=grey guifg=grey
-"highlight WhiteSpaceEOL ctermbg=darkgreen guibg=lightgreen
+"highlight WhiteSpaceEOL ctermbg=darkgreen guibg=lightblue
 "match WhiteSpaceEol /\s\+$/
 "match WhiteSpaceEOL /^\s*\ \s*\|\s\+$/
 "match WhiteSpaceEOL /^\ \+\\|\s\+$\\|\ \+\ze\t\\|\t\zs\ \+/
 
 highlight BadWhiteSpace ctermbg=lightblue guibg=lightblue
-2match BadWhiteSpace /\t\|\s\+$\|\%81v.\+/
+2match BadWhiteSpace /\t\|\s\+$/
+"2match BadWhiteSpace /\t\|\s\+$\|\%81v.\+/
 "au! BufWinEnter * match BadWhiteSpace /\t\|\s\+$/
 "au! InsertEnter * match BadWhiteSpace /\t\|\s\+\%#\@<!$/
 "au! InsertLeave * match BadWhiteSpace /\t\|\s\+$/
