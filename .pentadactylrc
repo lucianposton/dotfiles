@@ -1,0 +1,8 @@
+"hg6896
+
+loadplugins '\.(js|penta)$'
+group user
+set editor='urxvt -e vim +<line> <file>'
+set hlfind
+
+" vim: set ft=pentadactyl:

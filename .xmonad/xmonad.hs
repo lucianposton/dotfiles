@@ -29,7 +29,6 @@ myBorderWidth   = 1
 -- "windows key" is usually mod4Mask.
 --
 myModMask       = mod3Mask
-
 myAltMask       = mod1Mask
 
 -- The mask for the numlock key. Numlock status is "masked" from the
@@ -45,7 +44,7 @@ myAltMask       = mod1Mask
 -- Set numlockMask = 0 if you don't have a numlock key, or want to treat
 -- numlock status separately.
 --
-myNumlockMask   = mod2Mask
+--myNumlockMask   = mod2Mask
 
 -- The default number of workspaces (virtual screens) and their names.
 -- By default we use numeric strings, but any string may be used as a
@@ -70,6 +69,9 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
     -- launch a terminal
     [ ((modMask .|. myAltMask, xK_Return), spawn $ XMonad.terminal conf)
+
+    -- launch arbitrary script
+    --, ((modMask,               xK_f     ), spawn "~/doit.sh")
 
     -- launch dmenu
     , ((modMask,               xK_p     ), spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
@@ -153,6 +155,16 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
         | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, myAltMask)]]
 
+button6 = 6 :: Button
+button7 = 7 :: Button
+button8 = 8 :: Button
+button9 = 9 :: Button
+button10 = 10 :: Button
+button11 = 11 :: Button
+button12 = 12 :: Button
+button13 = 13 :: Button
+button14 = 14 :: Button
+button15 = 15 :: Button
 
 ------------------------------------------------------------------------
 -- Mouse bindings: default actions bound to mouse events
@@ -167,6 +179,9 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 
     -- mod-button3, Set the window to floating mode and resize by dragging
     , ((modMask, button3), (\w -> focus w >> mouseResizeWindow w))
+
+    -- launch arbitrary script
+    --, ((0,       button10), (\w -> spawn "~/doit.sh"))
 
     -- you may also bind events to the mouse scroll wheel (button4 and button5)
     ]
@@ -263,7 +278,7 @@ defaults = defaultConfig {
         focusFollowsMouse  = myFocusFollowsMouse,
         borderWidth        = myBorderWidth,
         modMask            = myModMask,
-        numlockMask        = myNumlockMask,
+--        numlockMask        = myNumlockMask,
         workspaces         = myWorkspaces,
         normalBorderColor  = myNormalBorderColor,
         focusedBorderColor = myFocusedBorderColor,
