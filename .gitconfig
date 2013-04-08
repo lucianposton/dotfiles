@@ -17,6 +17,8 @@
     lor = log --all --graph --pretty=tformat:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
     st = status
     br = branch
+    co = checkout
+    wdiff = diff --color-words='[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+'
 [core]
     excludesfile = ~/.gitignore_global
     editor = vim
