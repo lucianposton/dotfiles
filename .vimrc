@@ -49,6 +49,8 @@ endif
 
 set t_Co=256
 
+au BufRead,BufNewFile *.mi set filetype=mason
+
 highlight Comment ctermfg=grey guifg=grey
 "highlight WhiteSpaceEOL ctermbg=darkgreen guibg=lightblue
 "match WhiteSpaceEol /\s\+$/

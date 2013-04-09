@@ -13,6 +13,7 @@ import System.Exit
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 import qualified XMonad.Layout.NoBorders as NB
+import XMonad.Actions.GridSelect
 
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
@@ -78,6 +79,12 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
     -- launch gmrun
     , ((modMask .|. myAltMask, xK_p     ), spawn "gmrun")
+
+    -- launch GridSelect
+    , ((modMask,               xK_g     ), goToSelected defaultGSConfig)
+
+    -- launch GridSelect w/ favorites
+    , ((modMask .|. myAltMask, xK_g     ), spawnSelected defaultGSConfig ["firefox", "/home/poston/eclipse/eclipse"])
 
     -- close focused window 
     , ((modMask .|. myAltMask, xK_c     ), kill)

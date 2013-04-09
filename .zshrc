@@ -4,6 +4,8 @@ SAVEHIST=1000
 
 export PATH=$HOME/bin:$PATH
 
+export EDITOR=vim
+
 #export EPREFIX=/home/poston/gentoo
 #export PATH=${EPREFIX}/bin:$PATH
 
@@ -21,7 +23,24 @@ setopt extendedglob
 setopt correctall
 setopt hist_ignore_all_dups
 setopt hist_ignore_space
-bindkey -e
+
+
+bindkey -v
+bindkey -M viins 'jj' vi-cmd-mode
+bindkey -M viins 'jk' vi-cmd-mode
+bindkey '^[[A' up-line-or-search
+bindkey '^[[B' down-line-or-search
+bindkey '^R' history-incremental-search-backward
+#bindkey '^R' history-incremental-pattern-search-backward
+#bindkey -M vicmd '?' history-incremental-search-backward
+
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd v edit-command-line
+
+# Replace some annoying vi widgets
+zle -A .backward-kill-word vi-backward-kill-word
+zle -A .backward-delete-char vi-backward-delete-char
 
 # The following lines were added by compinstall
 
