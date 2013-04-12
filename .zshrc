@@ -15,6 +15,9 @@ export PATH=/apollo/env/SDETools/bin:$PATH
 #export PATH=/apollo/env/eclipse-3.7/bin:$PATH
 #export PATH=$PATH:/apollo/env/envImprovement/bin
 
+export REPORTTIME=10
+#export TIMEFMT=" Elapsed: %*E User: %U Kernel: %*S"
+
 alias grep='grep --color=auto'
 alias ls='ls --color=auto'
 
@@ -76,3 +79,6 @@ export PROMPT=$'
 %{\e[0;33m%}%n%{\e[0m%} > '
 
 export P4CONFIG=.p4config
+
+git-recursive () { find -follow -name .git -type d -execdir git "$@" \; }
+
