@@ -80,5 +80,6 @@ export PROMPT=$'
 
 export P4CONFIG=.p4config
 
-git-recursive () { find -follow -name .git -type d -execdir git "$@" \; }
+git-recursive () { find -maxdepth 2 -follow -name .git -type d -execdir git "$@" \; }
+git-recursive-deep () { find -follow -name .git -type d -execdir git "$@" \; }
 
