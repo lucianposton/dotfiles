@@ -29,6 +29,9 @@ set smarttab
 set scrolloff=3          " Lines of context on vertical scroll
 set sidescrolloff=3      " Columns of context on horizontal scroll
 
+set ignorecase
+set smartcase
+
 "cindent
 
 nnoremap <Space>b :ls<CR>:b 
