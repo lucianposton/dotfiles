@@ -1,0 +1,280 @@
+#!/bin/bash
+
+set -e
+
+die() { echo "$@" ; exit 1; }
+
+initramfs_list=$(cat <<'EOL'
+# directory structure
+dir /proc       755 0 0
+dir /sys        755 0 0
+dir /dev        755 0 0
+dir /usr        755 0 0
+dir /bin        755 0 0
+dir /sbin       755 0 0
+dir /var        755 0 0
+dir /lib        755 0 0
+dir /lib64      755 0 0
+dir /newroot    755 0 0
+dir /etc        755 0 0
+dir /root       700 0 0
+
+# example symlink
+#slink   /bin/cat                busybox                             755 0 0
+
+# copy motd
+file    /etc/msg                /etc/msg                            644 0 0
+
+# mdadm
+file    /bin/mdadm              /sbin/mdadm                         755 0 0
+file    /etc/mdadm.conf         /etc/mdadm.conf                     644 0 0
+
+# lvm
+file    /bin/lvm                /sbin/lvm.static                    755 0 0
+
+# framebuffer
+file    /sbin/v86d              /sbin/v86d                          755 0 0
+nod     /dev/console                                                0600 0 0 c 5 1
+nod     /dev/tty1                                                   0600 0 0 c 4 1
+nod     /dev/zero                                                   0600 0 0 c 1 5
+nod     /dev/mem                                                    0600 0 0 c 1 1
+
+# required binaries
+file    /bin/busybox            /bin/busybox                        755 0 0
+file    /sbin/fsck              /sbin/fsck                          755 0 0
+file    /sbin/fsck.ext4         /sbin/fsck.ext4                     755 0 0
+
+# libraries required by /sbin/fsck.ext4 and /sbin/fsck
+slink   /lib                    /lib64                              755 0 0
+file    /lib64/ld-linux-x86-64.so.2    /lib/ld-linux-x86-64.so.2    755 0 0
+
+file    /lib64/libc.so.6        /lib/libc.so.6                      755 0 0
+file    /lib64/ld-linux.so.2    /lib/ld-linux.so.2                  755 0 0
+file    /lib64/libblkid.so.1    /lib/libblkid.so.1                  755 0 0
+file    /lib64/libext2fs.so.2   /lib/libext2fs.so.2                 755 0 0
+file    /lib64/libcom_err.so.2  /lib/libcom_err.so.2                755 0 0
+file    /lib64/libuuid.so.1     /lib/libuuid.so.1                   755 0 0
+file    /lib64/libe2p.so.2      /lib/libe2p.so.2                    755 0 0
+file    /lib64/libpthread.so.0  /lib/libpthread.so.0                755 0 0
+
+# the init script
+file    /init                   /tmp/initramfs_init                 755 0 0
+
+EOL
+)
+
+initramfs_init=$(cat << 'EOL'
+#!/bin/busybox sh
+
+rescue_shell() {
+	echo "$@"
+	echo "Something went wrong. Dropping you to a shell."
+	busybox --install -s
+	exec /bin/sh
+}
+
+check_filesystem() {
+    # most of code coming from /etc/init.d/fsck
+
+    local fsck_opts= check_extra= RC_UNAME=$(uname -s)
+
+    # FIXME : get_bootparam forcefsck
+    if [ -e /forcefsck ]; then
+        fsck_opts="$fsck_opts -f"
+        check_extra="(check forced)"
+    fi
+
+    echo "Checking local filesystem $check_extra : $1"
+
+    if [ "$RC_UNAME" = Linux ]; then
+        fsck_opts="$fsck_opts -C0 -T"
+    fi
+
+    trap : INT QUIT
+
+    # using our own fsck, not the builtin one from busybox
+    /sbin/fsck -p $fsck_opts $1
+
+    case $? in
+        0)      return 0;;
+        1)      echo "Filesystem repaired"; return 0;;
+        2|3)    if [ "$RC_UNAME" = Linux ]; then
+                        echo "Filesystem repaired, but reboot needed"
+                        reboot -f
+                else
+                        rescue_shell "Filesystem still have errors; manual fsck required"
+                fi;;
+        4)      if [ "$RC_UNAME" = Linux ]; then
+                        rescue_shell "Fileystem errors left uncorrected, aborting"
+                else
+                        echo "Filesystem repaired, but reboot needed"
+                        reboot
+                fi;;
+        8)      echo "Operational error"; return 0;;
+        12)     echo "fsck interrupted";;
+        *)      echo "Filesystem couldn't be fixed";;
+    esac
+    rescue_shell
+}
+
+# temporarily mount proc, sys, and dev
+mount -t proc none /proc
+mount -t sysfs none /sys
+mount -t devtmpfs none /dev
+
+# disable kernel messages from displaying on screen
+echo 0 > /proc/sys/kernel/printk
+clear
+
+CMDLINE=`cat /proc/cmdline`
+
+cat /etc/msg
+
+#/bin/mdadm -A /dev/md0 /dev/sda1 /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1
+#/bin/mdadm -A /dev/md1 /dev/sda3 /dev/sdb3 /dev/sdc3 /dev/sdd3 /dev/sde3
+#/bin/mdadm -A /dev/md2 /dev/sda4 /dev/sdb4 /dev/sdc4 /dev/sdd4 /dev/sde4
+
+mdadm -As /dev/md0
+mdadm -As /dev/md1
+mdadm -As /dev/md2
+
+mount -t ext4 -r /dev/md2 /newroot || rescue_shell "Error mounting root"
+
+lvm vgchange -a ly || rescue_shell "Error enabling volume groups"
+lvm vgscan --mknodes || rescue_shell "Error scanning for volume groups"
+
+ln -s /newroot/etc/fstab /etc/fstab
+
+mountpoints="/usr"
+
+for m in $mountpoints ; do
+  check_filesystem $m
+
+  echo "Mounting $m read-only"
+  mkdir -p $m
+  mount -r $m || rescue_shell "Error mounting $m"
+
+  mkdir -p "/newroot"$m
+  mount --move $m "/newroot"$m || rescue_shell "Error moving $m to newroot"
+done
+
+echo "Done. Switching to real root."
+
+umount /sys
+umount /proc
+umount /dev
+
+# switch to real root and execute init
+exec /bin/busybox switch_root /newroot /sbin/init ${CMDLINE}
+
+EOL
+)
+
+if [ "$1" == "kernel" ]
+then
+    echo "$initramfs_list" > /tmp/initramfs_list
+    echo "$initramfs_init" > /tmp/initramfs_init
+    running_version=$(uname -r)
+    running_dir="linux-$running_version"
+
+    cd /usr/src
+    prior_dir=$(readlink linux)
+    prior_version=${prior_dir#"linux-"}
+
+    eselect kernel list
+    echo
+    read -p "eselect kernel set " num
+    eselect kernel set $num
+    next_dir=$(readlink linux)
+    next_version=${next_dir#"linux-"}
+    next_initramfs="initramfs-$next_version"
+
+    cd /usr/src/linux
+    echo
+    echo "Which old config should be copied to $next_dir?"
+    options=("$prior_dir (prior symlink)" "$running_version (running kernel)" "None")
+    select opt in "${options[@]}" "Quit";
+    do
+        case "$REPLY" in
+            1 ) echo "Using directory from prior symlink";
+                cp -i --backup=numbered ../$prior_dir/.config ./
+                make oldconfig
+                break;;
+            2 ) echo "Using running kernel";
+                zcat /proc/config.gz > /tmp/.config
+                cp -i --backup=numbered /tmp/.config ./
+                make oldconfig
+                break;;
+            3 ) echo "Not copying an old config";
+                break;;
+            $(( ${#options[@]}+1 )) ) die "Peace!";
+                break;;
+        esac
+    done
+
+    echo 'Run "make menuconfig"?'
+    select yn in "Yes" "No";
+    do
+        case $yn in
+            Yes ) make menuconfig; break;;
+            No ) break;;
+        esac
+    done
+
+    make
+    make modules_install
+
+    # manually create initramfs from directory
+    #cd initram || die
+    #find . | cpio --quiet -o -H newc | gzip -9 > ../initramfs
+
+    # Use gen_initramfs_list.sh to build initramfs
+    make -C /usr/src/linux/usr/ gen_init_cpio
+    chmod +x usr/gen_init_cpio scripts/gen_initramfs_list.sh
+    ./scripts/gen_initramfs_list.sh -o /tmp/initramfs /tmp/initramfs_list
+    /usr/sbin/splash_geninitramfs --verbose --res 1280x1024 --append /tmp/initramfs Emergance
+
+    mount /boot
+    sleep 1
+    ls -l
+    mv -i --backup=numbered /tmp/initramfs /boot/$next_initramfs
+    make install
+    cd /boot
+    ln -sfT $(readlink current) backup
+    ln -sfT $(readlink initramfs) initramfs.bak
+    ln -sfT vmlinux-$next_version current
+    ln -sfT $next_initramfs initramfs
+    ls -l
+
+    echo "/boot filesystem disk space usage:"
+    df -h | grep boot | egrep --color '[0-9]{2}%'
+    cd -
+    sleep 1
+    umount /boot
+
+    echo
+    portage_version=`echo "$next_version" | sed 's/-[A-Za-z][A-Za-z]\+//'`
+    kernel_flavor=`echo "$next_version" | perl -nle 'm/-([A-Za-z][A-Za-z]+)/; print $1'`
+    emerge --noreplace =sys-kernel/$kernel_flavor-sources-$portage_version
+    echo
+    echo "Emerging kernel modules..."
+    sleep 2
+    emerge -v @module-rebuild
+    exit
+fi
+
+if [ "$1" == "portage" ]
+then
+    layman -S
+    eix-sync
+    emerge -vuND world || ( revdep-rebuild -i && die "update world failed" )
+    haskell-updater
+    emerge -v @x11-module-rebuild
+    emerge -v @preserved-rebuild
+    emerge -vc
+    revdep-rebuild -i
+    dispatch-conf
+    exit
+fi
+
+echo "update portage or kernel?"
