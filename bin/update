@@ -54,6 +54,7 @@ file    /lib64/libblkid.so.1    /lib/libblkid.so.1                  755 0 0
 file    /lib64/libext2fs.so.2   /lib/libext2fs.so.2                 755 0 0
 file    /lib64/libcom_err.so.2  /lib/libcom_err.so.2                755 0 0
 file    /lib64/libuuid.so.1     /lib/libuuid.so.1                   755 0 0
+file    /lib64/libmount.so.1    /lib/libmount.so.1                  755 0 0
 file    /lib64/libe2p.so.2      /lib/libe2p.so.2                    755 0 0
 file    /lib64/libpthread.so.0  /lib/libpthread.so.0                755 0 0
 
@@ -242,7 +243,7 @@ then
     cd /boot
     ln -sfT $(readlink current) backup
     ln -sfT $(readlink initramfs) initramfs.bak
-    ln -sfT vmlinux-$next_version current
+    ln -sfT vmlinuz-$next_version current
     ln -sfT $next_initramfs initramfs
     ls -l
 
