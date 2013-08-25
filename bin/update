@@ -269,7 +269,7 @@ then
     layman -S
     eix-sync
     emerge -vuND world || ( revdep-rebuild -i && die "update world failed" )
-    haskell-updater
+    hash haskell-updater && haskell-updater
     emerge -v @x11-module-rebuild
     emerge -v @preserved-rebuild
     emerge -vc
