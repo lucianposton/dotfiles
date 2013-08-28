@@ -264,18 +264,26 @@ then
     exit
 fi
 
-if [ "$1" == "portage" ]
+if [ "$1" == "world" ]
 then
     layman -S
     eix-sync
     emerge -vuND world || ( revdep-rebuild -i && die "update world failed" )
-    hash haskell-updater && haskell-updater
-    emerge -v @x11-module-rebuild
+    if ! hash genlop || genlop -l --date today | grep -q haskell
+    then
+        hash haskell-updater && haskell-updater
+    fi
+
+    if ! hash genlop || genlop -l --date today | grep -q x11-base/xorg-server
+    then
+        emerge -v @x11-module-rebuild
+    fi
+
     emerge -v @preserved-rebuild
-    emerge -vc
+    emerge -c
     revdep-rebuild -i
     dispatch-conf
     exit
 fi
 
-echo "update portage or kernel?"
+echo "update world or kernel?"
