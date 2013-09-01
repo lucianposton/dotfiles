@@ -51,15 +51,21 @@ split_options="--suffix-length=1 --bytes=685m"
 tarOptions=" --preserve-permissions --create --absolute-names --totals --ignore-failed-read"
  
 # where to put the stage4
-stage4Location=/mnt/backups/stage4
+stage4Location=/mnt/backup/stage4
  
 # name prefix
 stage4prefix=`hostname`-stage4-`date +\%Y.\%m.\%d`
+
+# MBR and partition tables of the following devices will be backed up
+mbrDevices="
+/dev/sd[a-z]
+"
  
 # patterns which should not be backed up (like iso files).
 # example: default_exclude_pattern="*.iso *.divx"
 # These pattern count only for files NOT listed in the $custom_include_list.
-default_exclude_pattern=""
+default_exclude_pattern="
+.ccache"
  
 # these files/directories are always excluded. don't add trailing slashes.
 # don't touch it unless you know what you are doing!
@@ -67,17 +73,19 @@ default_exclude_pattern=""
 # in $default_include_folders
 default_exclude_list="
 /dev
+/etc/ssh/ssh_host_*
 /lost+found
+/media
 /mnt
 /proc
+/run
 /sys
 /tmp
-/usr/portage
 /usr/src
+/var/cache/edb
+/var/db
 /var/log
 /var/tmp
-/var/db
-/var/cache/edb
 $stage4Location
 `echo $CCACHE_DIR`"
  
@@ -85,18 +93,23 @@ $stage4Location
 # don't touch it unless you know what you are doing! no recursive backup of folders.
 # use $default_include_folders instead.
 default_include_files="
-/dev/null
+/dev
 /dev/console
+/dev/null
 /home
 /mnt
-`find /mnt -name .keep`
 /proc
+/run
 /sys
 /tmp
 /usr/portage
 /usr/src
+/usr/src/linux-`uname -r`/.config
+/var/log
 /var/log/emerge.log
-/usr/src/linux-`uname -r`/.config"
+/var/tmp
+`find / -type d -path '/home/*' -prune -o -name .keep -print`
+"
  
 # folders, which need to be backed up recursively on every backup.
 # don't touch it unless you know what you are doing! the reason for this
@@ -114,18 +127,20 @@ custom_include_list="
 # add files/folders here which are subfolders of a folder listed in $custom_include_list which should NOT
 # be backed up. eg.
 #custom_exclude_list="/home/foo/mp3 /home/foo/downloads /home/foo/.*"
-custom_exclude_list=""
+custom_exclude_list="
+$HOME/backup"
  
 # Only files/folders within the $custom_include_list are checked against these patterns
 # custom_exclude_pattern="*.mp3 *.iso"
-custom_exclude_pattern=""
+custom_exclude_pattern="
+.ccache"
  
 # the find_command
 find_command="$find /*"
  
 # don't backup anything which matches pattern listed in $default_exclude_pattern
 for pattern in $default_exclude_pattern; do
-        find_command="$find_command -not -name $pattern"
+        find_command="$find_command -name $pattern -prune -o "
 done
  
 # assemble the find_command
@@ -138,14 +153,14 @@ function find_files()
         find_command="$find_command -print"
  
         for i in $default_include_files; do
-                find_command="echo $i; $find_command"
+                find_command="$find_command; echo $i"
         done
  
         for i in $default_include_folders; do
                 if [ -d $i ]; then
                         find_command="$find $i; $find_command"
                 else
-                        find_command="echo $i; $find_command"
+                        find_command="$find_command; echo $i"
                 fi
         done
 }
@@ -199,6 +214,16 @@ verify "$custom_exclude_list" "\$custom_exclude_list"
 # print out the version
  echo -e "\nBackup script $version"
  echo -e "=================="
+
+mbrBackupDir=$stage4Location/$stage4prefix
+mkdir $mbrBackupDir
+for i in $mbrDevices; do
+    deviceBasename=$(basename $i)
+    dd if=$i of="$mbrBackupDir/$deviceBasename".mbr count=1 bs=512
+    sfdisk -d $i > "$mbrBackupDir/$deviceBasename".partitions
+done
+
+echo -e "\nMBRs and partition tables saved."
  
 # how do you want to backup?
 echo -e "\nWhat do you want to do? (Use CONTROL-C to abort)\n
@@ -235,7 +260,7 @@ case $option in
                 else
                         custom_find="$find $folder"
                         for i in $custom_exclude_pattern; do
-                                custom_find="$custom_find -name $i -o"
+                                custom_find="$custom_find -name $i -prune -o"
                         done
                         for i in $custom_exclude_list; do
                                 custom_find="$custom_find -path $i -prune -o"
@@ -269,9 +294,9 @@ find_command="($find_command)"
  
 # create the final command
 if [ "$tar_output" == "--file" ]; then
-        tar_command="$find_command | $tar $zip $tarOptions $verbose --file $stage4Name.$stage4postfix --no-recursion -T -"
+        tar_command="$find_command | awk '!x[\$0]++' | $tar $zip $tarOptions $verbose --file $stage4Name.$stage4postfix --no-recursion -T -"
 else
-        tar_command="$find_command | $tar $zip $tarOptions $verbose --no-recursion -T - | split $split_options - "$stage4Name.$stage4postfix"_"
+        tar_command="$find_command | awk '!x[\$0]++' | $tar $zip $tarOptions $verbose --no-recursion -T - | split $split_options - "$stage4Name.$stage4postfix"_"
 fi
  
 if [ "$verbose" ]; then
