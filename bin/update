@@ -268,7 +268,7 @@ if [ "$1" == "world" ]
 then
     layman -S
     eix-sync
-    emerge -vuND world || ( revdep-rebuild -i && die "update world failed" )
+    emerge -vuND --with-bdeps=y @world || ( revdep-rebuild -i && die "update world failed" )
     if ! hash genlop || genlop -l --date today | grep -q haskell
     then
         hash haskell-updater && haskell-updater
