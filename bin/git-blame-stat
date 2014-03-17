@@ -2,6 +2,7 @@
 
 #Source: http://stackoverflow.com/questions/4589731/git-blame-statistics
 
+LC_ALL='C'
 git ls-tree -r HEAD \
     | sed -re 's/^\w+\s\w+\s\w+\s*//' \
     | while read filename; do file "$filename"; done \

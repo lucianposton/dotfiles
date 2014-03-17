@@ -25,3 +25,11 @@
     pager = less -RFX
 [format]
     signoff = true
+[rerere]
+	enabled = true
+[merge]
+	conflictstyle = diff3
+[push]
+	default = simple
+[amazon]
+	append-cr-url = true
