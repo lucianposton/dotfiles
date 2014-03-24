@@ -10,6 +10,7 @@ function should_ignore {
 	".gitignore"
 	"add.sh"
 	"install.sh"
+	"submodules"
 	)
 
 	for f in ${ignored_files[@]}
