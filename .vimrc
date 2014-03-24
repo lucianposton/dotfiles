@@ -38,12 +38,8 @@ nnoremap <Space>b :ls<CR>:b
 inoremap jj <Esc>
 inoremap jk <Esc>
 
-if has('mouse')
-	set mouse=a
-endif
-
 if &t_Co > 2 || has("gui_running")
-	syntax on
+    syntax on
 endif
 
 if exists('+colorcolumn')
