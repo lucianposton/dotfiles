@@ -2,14 +2,22 @@
 
 #Source: http://stackoverflow.com/questions/4589731/git-blame-statistics
 
-LC_ALL='C'
+gnused() {
+    if hash gsed 2>/dev/null; then
+        gsed "$@"
+    else
+        sed "$@"
+    fi
+}
+
+export LC_ALL='C'
 git ls-tree -r HEAD \
-    | sed -re 's/^\w+\s\w+\s\w+\s*//' \
+    | gnused -re 's/^\w+\s\w+\s\w+\s*//' \
     | while read filename; do file "$filename"; done \
     | grep -E ': .*text' \
-    | sed -r -e 's/: .*//' \
+    | gnused -r -e 's/: .*//' \
     | while read filename; do git blame "$filename"; done \
-    | sed -r -e 's/^[-_^0-9a-zA-Z /.]+\s\((.*)[0-9]{4}-[0-9]{2}-[0-9]{2} .*/\1/' -e 's/[0-9]{4}-[0-9]{2}-[0-9]{2} .*//' -e 's/ +$//' \
+    | gnused -r -e 's/^[-_^0-9a-zA-Z /.]+\s\((.*)[0-9]{4}-[0-9]{2}-[0-9]{2} .*/\1/' -e 's/[0-9]{4}-[0-9]{2}-[0-9]{2} .*//' -e 's/ +$//' \
     | sort \
     | uniq -c \
     | sort -rn
