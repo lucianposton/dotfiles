@@ -41,16 +41,32 @@ show_git_head() {
     git show -p --pretty="tformat:${FORMAT_HEAD}" $*
 }
 
-# TODO: --color is busted
 # TODO: less paging seems busted in iterm2
 pretty_git_log() {
-    git log --graph --pretty="tformat:${FORMAT}" $* |
+    git log --color --graph --pretty="tformat:${FORMAT}" $* |
         # Replace (2 years ago) with (2 years)
         sed -Ee 's/(^[^<]*) ago\)/\1)/' |
         # Replace (2 years, 5 months) with (2 years)
         sed -Ee 's/(^[^<]*), [[:digit:]]+ .*months?\)/\1)/' |
         # Line columns up based on } delimiter
-        column -s '}' -t |
+        #column -s '}' -t |
+        awk -F '}' '
+        {
+            nf[NR]=NF
+            for (i = 1; i <= NF; i++) {
+                f[NR,i] = $i
+                gsub(/\033\[[0-9;]*[mK]/, "", $i)
+                len[NR,i] = l = length($i)
+                if (l > max[i]) max[i] = l
+                }
+            }
+            END {
+            for (n = 1; n <= NR; n++) {
+                for (i = 1; i < nf[n]; i++)
+                    printf "%s%*s", f[n,i], max[i]+1-len[n,i], ""
+                    print f[n,nf[n]]
+                }
+            }' |
         # Color merge commits specially
         sed -Ee "s/(Merge (remote-tracking )?branch .* into .*$)/$(printf $ANSI_RED)\1$(printf $ANSI_RESET)/" |
         # Page only if we need to
