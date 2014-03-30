@@ -12,6 +12,9 @@ URxvt*geometry: 120x35
 URxvt*saveLines:10000
 URxvt*scrollBar:true
 URxvt*scrollBar_right:true
+URxvt*scrollTtyOutput:false
+URxvt*scrollWithBuffer:true
+URxvt*scrollTtyKeypress:true
 URxvt*font: xft:Monospace:size=12
 
 URxvt*background: rgba:0000/0000/0000/eeee
