@@ -1,22 +1,31 @@
 #!/bin/bash
 
-# The time massaging regexes start with ^[^<]* because that ensures that they
-# only operate before the first "<". That "<" will be the beginning of the
-# author name, ensuring that we don't destroy anything in the commit message
-# that looks like time.
-#
-# The log format uses } characters between each field, and `column` is later
-# used to split on them. A } in the commit subject or any other field will
-# break this.
+# The log format uses } characters between each field to later tabulate on
+# them. A } in the commit subject or any other field will break this.
 
-HASH="%C(yellow)%h%Creset"
-RELATIVE_TIME="%Cgreen(%ar)%Creset"
-AUTHOR="%C(bold blue)<%an>%Creset"
-REFS="%C(bold red)%d%Creset"
+HASH="%C(red)%h%Creset"
+COLON="%C(bold black):%Creset"
+AUTHOR_DATE="%C(cyan)%ad%Creset"
+COMMITTER_DATE="%C(green)%cd%Creset"
+RELATIVE_AUTHOR_DATE="%C(cyan)%ar%Creset"
+RELATIVE_COMMITTER_DATE="%C(green)%cr%Creset"
+RELATIVE_AUTHOR_DATE_DELIMITED="%C(cyan)(%ar)%Creset"
+RELATIVE_COMMITTER_DATE_DELIMITED="%C(green)(%cr)%Creset"
+AUTHOR="%C(bold blue)%an%Creset"
+COMMITTER="%C(bold blue)%cn%Creset"
+AUTHOR_DELIMITED="%C(bold blue)<%an>%Creset"
+COMMITTER_DELIMITED="%C(bold blue)<%cn>%Creset"
+REFS="%C(auto)%d%Creset"
 SUBJECT="%s"
 
-FORMAT="$HASH}$RELATIVE_TIME}$AUTHOR}$REFS $SUBJECT"
-FORMAT_HEAD="${FORMAT//\}/ }"
+AUTHOR_WIDTH="%<(20,trunc)"
+DATE_WIDTH="%<(32)"
+SUBJECT_WIDTH="%<|(150,trunc)"
+
+FORMAT_DATE="$HASH$COLON $DATE_WIDTH$AUTHOR_DATE $AUTHOR_WIDTH$AUTHOR $DATE_WIDTH$COMMITTER_DATE $AUTHOR_WIDTH$COMMITTER%n        $REFS $SUBJECT%n"
+FORMAT_TABULATED="$HASH}$RELATIVE_AUTHOR_DATE_DELIMITED}$AUTHOR_WIDTH$AUTHOR}$REFS $SUBJECT"
+FORMAT="$HASH$COLON $RELATIVE_AUTHOR_DATE $AUTHOR_DELIMITED$REFS $SUBJECT"
+#FORMAT="${FORMAT_TABULATED//\}/ }"
 
 ANSI_BLACK='\033[30m'
 ANSI_BLACK_BOLD='\033[0;30;1m'
@@ -38,37 +47,50 @@ ANSI_RESET='\033[0m'
 
 
 show_git_head() {
-    git show -p --pretty="tformat:${FORMAT_HEAD}" $*
+    git show -p --pretty="tformat:${FORMAT}" $*
+}
+
+pretty_git_log() {
+    git log --color --graph --all --pretty="tformat:${FORMAT}" $*
+}
+
+pretty_tabulated_git_log() {
+    git log --color --graph --pretty="tformat:${FORMAT_TABULATED}" $* |
+    # Replace "(2 years, 3 months ago)" with "2 years"
+    sed -Ee 's/\(([^),]*)(, [[:digit:]]{1,2} months?)? ago\)/\1/' |
+    common_formatting
+}
+
+date_git_log() {
+    git log --color --graph --pretty="tformat:${FORMAT_DATE}" $* |
+    common_formatting
 }
 
 # TODO: less paging seems busted in iterm2
-pretty_git_log() {
-    git log --color --graph --pretty="tformat:${FORMAT}" $* |
-        # Replace (2 years ago) with (2 years)
-        sed -Ee 's/(^[^<]*) ago\)/\1)/' |
-        # Replace (2 years, 5 months) with (2 years)
-        sed -Ee 's/(^[^<]*), [[:digit:]]+ .*months?\)/\1)/' |
-        # Line columns up based on } delimiter
-        #column -s '}' -t |
-        awk -F '}' '
-        {
-            nf[NR]=NF
-            for (i = 1; i <= NF; i++) {
-                f[NR,i] = $i
-                gsub(/\033\[[0-9;]*[mK]/, "", $i)
-                len[NR,i] = l = length($i)
-                if (l > max[i]) max[i] = l
-                }
-            }
-            END {
-            for (n = 1; n <= NR; n++) {
-                for (i = 1; i < nf[n]; i++)
-                    printf "%s%*s", f[n,i], max[i]+1-len[n,i], ""
-                    print f[n,nf[n]]
-                }
-            }' |
-        # Color merge commits specially
-        sed -Ee "s/(Merge (remote-tracking )?branch .* into .*$)/$(printf $ANSI_RED)\1$(printf $ANSI_RESET)/" |
-        # Page only if we need to
-        less -RFXS
+common_formatting() {
+    # Color merge commits
+    sed -Ee "s/(Merge (remote-tracking )?branch .* into .*$)/$(printf $ANSI_RED)\1$(printf $ANSI_RESET)/" |
+
+    # Line columns up based on } delimiter
+    #column -s '}' -t |
+    awk -F '}' '
+    {
+        nf[NR]=NF
+        for (i = 1; i <= NF; i++) {
+            f[NR,i] = $i
+            gsub(/\033\[[0-9;]*[mK]/, "", $i)
+            len[NR,i] = l = length($i)
+            if (l > max[i]) max[i] = l
+        }
+    }
+    END {
+    for (n = 1; n <= NR; n++) {
+        for (i = 1; i < nf[n]; i++)
+            printf "%s%*s", f[n,i], max[i]+1-len[n,i], ""
+            print f[n,nf[n]]
+        }
+    }' |
+
+    # Page only if we need to
+    less -RFXS
 }
