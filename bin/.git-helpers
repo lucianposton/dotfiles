@@ -57,7 +57,7 @@ pretty_git_log() {
 pretty_tabulated_git_log() {
     git log --color --graph --pretty="tformat:${FORMAT_TABULATED}" $* |
     # Replace "(2 years, 3 months ago)" with "2 years"
-    sed -Ee 's/\(([^),]*)(, [[:digit:]]{1,2} months?)? ago\)/\1/' |
+    gnused -Ee 's/\(([^),]*)(, [[:digit:]]{1,2} months?)? ago\)/\1/' |
     common_formatting
 }
 
@@ -69,7 +69,7 @@ date_git_log() {
 # TODO: less paging seems busted in iterm2
 common_formatting() {
     # Color merge commits
-    sed -Ee "s/(Merge (remote-tracking )?branch .* into .*$)/$(printf $ANSI_RED)\1$(printf $ANSI_RESET)/" |
+    gnused -Ee "s/(Merge (remote-tracking )?branch .* into .*$)/$(printf $ANSI_RED)\1$(printf $ANSI_RESET)/" |
 
     # Line columns up based on } delimiter
     #column -s '}' -t |
@@ -93,4 +93,12 @@ common_formatting() {
 
     # Page only if we need to
     less -RFXS
+}
+
+gnused() {
+    if hash gsed 2>/dev/null; then
+        gsed "$@"
+    else
+        sed "$@"
+    fi
 }
