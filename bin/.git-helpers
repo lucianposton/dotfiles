@@ -61,9 +61,15 @@ pretty_tabulated_git_log() {
     common_formatting
 }
 
+pretty_tabulated_git_log_paged() {
+    pretty_tabulated_git_log $* |
+    less -RXFS
+}
+
 date_git_log() {
     git log --color --graph --pretty="tformat:${FORMAT_DATE}" $* |
-    common_formatting
+    common_formatting |
+    less -RXFS
 }
 
 # TODO: less paging seems busted in iterm2
@@ -89,10 +95,7 @@ common_formatting() {
             printf "%s%*s", f[n,i], max[i]+1-len[n,i], ""
             print f[n,nf[n]]
         }
-    }' |
-
-    # Page only if we need to
-    less -RFXS
+    }'
 }
 
 gnused() {
