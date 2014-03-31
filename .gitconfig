@@ -33,9 +33,9 @@
     # ra = recent commits, all reachable refs
     # l = all commits, only current branch
     # la = all commits, all reachable refs
-    l = "!. ~/bin/.git-helpers && pretty_tabulated_git_log_paged"
+    l = "!. ~/bin/.git-helpers && pretty_tabulated_git_log"
     la = !git l --all
-    r = "!. ~/bin/.git-helpers && pretty_tabulated_git_log -30"
+    r = !git l -30
     ra = !git r --all
     ld = "!. ~/bin/.git-helpers && date_git_log"
     lda = !git ld --all
