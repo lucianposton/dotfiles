@@ -99,6 +99,6 @@ export PROMPT=$'
 
 export P4CONFIG=.p4config
 
-git-recursive () { find . -maxdepth 2 -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $@)" \; }
-git-recursive-deep () { find . -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $@)" \; }
+git-recursive () { find . -maxdepth 2 -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $*)" \; }
+git-recursive-deep () { find . -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $*)" \; }
 
