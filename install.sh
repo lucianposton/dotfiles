@@ -29,7 +29,7 @@ OldDotfilesDir=$HOME/dotfiles_old
 
 if [[ -e $OldDotfilesDir ]]
 then
-    read -n 1 -p "$OldDotfilesDir exists and files will be overwritten. Continue? (y/n)"
+    read -n 1 -ep "$OldDotfilesDir exists and files will be overwritten. Continue? (y/n) "
     [[ $REPLY =~ ^[Nn]$ ]] && exit 1
 fi
 
@@ -43,6 +43,6 @@ do
     ln -s $DotfilesDir/$i $HOME/$i
 done
 
-read -n 1 -p "Update submodules? (y/n)"
+read -n 1 -ep "Update submodules? (y/n) "
 [[ $REPLY =~ ^[Nn]$ ]] && exit 0
 cd $DotfilesDir && git submodule update --recursive --init
