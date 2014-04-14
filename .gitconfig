@@ -26,6 +26,7 @@
     pullff = pull --ff-only
     fa = fetch --all
     sh = show --format=fuller --decorate
+    pupr = pup --remote
 
     # h = head
     # hp = head with patch
