@@ -173,6 +173,16 @@ EOL
 
 if [ "$1" == "kernel" ]
 then
+    mount /boot || echo "/boot already mounted"
+    sleep 1
+    echo "/boot filesystem disk space usage:"
+    df -h | grep boot | egrep --color '[0-9]?[0-9]%'
+    free_boot_space_MB=$(df -BM --output=target,avail | grep boot | egrep -o '[0-9]+')
+    if [ $free_boot_space_MB -lt 15 ]; then
+        read -n 1 -ep "Only $free_boot_space_MB MB avaiable on /boot. Continue? (y/n) "
+        [[ $REPLY =~ ^[Nn]$ ]] && umount /boot && exit 0
+    fi
+
     echo "$initramfs_list" > /tmp/initramfs_list
     echo "$initramfs_init" > /tmp/initramfs_init
     running_version=$(uname -r)
@@ -235,12 +245,10 @@ then
     ./scripts/gen_initramfs_list.sh -o /tmp/initramfs /tmp/initramfs_list
     /usr/sbin/splash_geninitramfs --verbose --res 1280x1024 --append /tmp/initramfs Emergance
 
-    mount /boot
-    sleep 1
-    ls -l
     mv -i --backup=numbered /tmp/initramfs /boot/$next_initramfs
     make install
     cd /boot
+    ls -l
     ln -sfT $(readlink current) backup
     ln -sfT $(readlink initramfs) initramfs.bak
     ln -sfT vmlinuz-$next_version current
