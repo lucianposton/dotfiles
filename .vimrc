@@ -29,6 +29,9 @@ set smarttab
 set scrolloff=3          " Lines of context on vertical scroll
 set sidescrolloff=3      " Columns of context on horizontal scroll
 
+set laststatus=2 " Always display the statusline in all windows
+set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+
 set ignorecase
 set smartcase
 
