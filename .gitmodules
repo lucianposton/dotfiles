@@ -2,3 +2,7 @@
 	path = submodules/selecta
 	url = https://github.com/garybernhardt/selecta.git
 	branch = master
+[submodule "submodules/powerline"]
+	path = submodules/powerline
+	url = https://github.com/Lokaltog/powerline.git
+	branch = develop
