@@ -97,6 +97,8 @@ export PROMPT=$'
 %{\e[0;31m%}[ %{\e[0;36m%}%M %{\e[0;31m%}: %{\e[0;32m%}%d%{\e[0;31m%} ]
 %{\e[0;33m%}%n%{\e[0m%} > '
 
+source ~/dotfiles/submodules/powerline/powerline/bindings/zsh/powerline.zsh
+
 export P4CONFIG=.p4config
 
 git-recursive () { find . -maxdepth 2 -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $*)" \; }
