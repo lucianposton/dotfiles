@@ -46,3 +46,19 @@ done
 read -n 1 -ep "Update submodules? (y/n) "
 [[ $REPLY =~ ^[Nn]$ ]] && exit 0
 cd $DotfilesDir && git submodule update --recursive --init
+
+# TODO install homebrew
+# http://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/
+#brew install --default-names coreutils findutils gnu-tar gnu-sed gawk gnutls gnu-indent gnu-getopt
+# ...
+#ant cairo coreutils curl findutils fontforge gfortran git gnu-sed gnuplot john
+#lua neovim p7zip tcptraceroute tmux tree watch wget wine winetricks
+#brew tap homebrew/dupes
+#brew install grep --default-names
+#brew install findutils --default-names
+#brew install gnu-indent --default-names
+#brew install gnu-sed --default-names
+#brew install gnutls --default-names
+#brew install grep --default-names
+#brew install gnu-tar --default-names
+#brew install gawk
