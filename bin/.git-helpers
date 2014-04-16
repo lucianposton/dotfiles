@@ -69,7 +69,7 @@ date_git_log() {
 # TODO: less paging seems busted in iterm2
 common_formatting() {
     # Color merge commits
-    gnused -Ee "s/(Merge (remote-tracking )?branch .* into .*$)/$(printf $ANSI_RED)\1$(printf $ANSI_RESET)/" |
+    gnused -Ee "s/(Merge ((remote(-tracking)? )?branch|pull request) .+)/$(printf $ANSI_RED)\1$(printf $ANSI_RESET)/" |
 
     # Line columns up based on } delimiter
     #column -s '}' -t |
