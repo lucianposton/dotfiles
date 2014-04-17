@@ -89,7 +89,6 @@ autoload -U colors
 
 mailpath=$HOME/.maildir/new
 
-export TERM="xterm-color"
 export CLICOLOR="true"
 export LS_COLORS='di=35:fi=0:ln=31:pi=4:so=4:bd=4:cd=33:or=31:*.deb=90'
 
