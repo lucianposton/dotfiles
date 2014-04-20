@@ -13,8 +13,11 @@
     ui = auto
 [alias]
     st = status
+    s = status
     co = checkout
+    c = commit
     br = branch
+    b = branch
     aa = add --all
     amend = commit --amend
     d = diff

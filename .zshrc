@@ -38,6 +38,7 @@ export REPORTTIME=10
 
 alias grep='grep --color=auto'
 alias ls='ls --color=auto'
+alias g='git'
 
 setopt autocd
 setopt extendedglob
