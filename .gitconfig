@@ -7,17 +7,15 @@
     smtpuser = lucian.poston@gmail.com
     smtpserverport = 587
     cccmd = git-cc
-[github]
-    user = lucianposton
 [color]
     ui = auto
 [alias]
-    st = status
     s = status
+    st = status
     co = checkout
     c = commit
-    br = branch
     b = branch
+    br = branch
     a = add
     aa = add --all
     amend = commit --amend
@@ -25,9 +23,12 @@
     dc = diff --cached
     ds = diff --stat
     dw = diff --color-words='[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+'
+    m = merge
     mff = merge --ff-only
     mnoff = merge --no-ff
-    pullff = pull --ff-only
+    p = pull
+    pff = pull --ff-only
+    f = fetch
     fa = fetch --all
     sh = show --format=fuller --decorate
     pupr = pup --remote
@@ -62,5 +63,7 @@
     tool = vimdiff
 [push]
     default = simple
+[github]
+    user = lucianposton
 [amazon]
     append-cr-url = true
