@@ -41,12 +41,11 @@
     # la = all commits, all reachable refs
     l = "!. ~/bin/.git-helpers && pretty_tabulated_git_log"
     la = !git l --all
-    r = !git l -30
+    r = !git l -25
     ra = !git r --all
     ld = "!. ~/bin/.git-helpers && date_git_log"
     lda = !git ld --all
-    head = !git l -1
-    h = !git head
+    h = !git l -1
     hp = "!. ~/bin/.git-helpers && show_git_head"
     lol = "!. ~/bin/.git-helpers && pretty_git_log"
 
