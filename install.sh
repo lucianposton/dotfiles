@@ -47,6 +47,8 @@ read -n 1 -ep "Update submodules? (y/n) "
 [[ $REPLY =~ ^[Nn]$ ]] && exit 0
 cd $DotfilesDir && git submodule update --recursive --init
 
+# TODO install fonts for powerline
+
 # TODO install homebrew
 # http://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/
 #brew install --default-names coreutils findutils gnu-tar gnu-sed gawk gnutls gnu-indent gnu-getopt
