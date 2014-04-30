@@ -60,6 +60,7 @@
 [merge]
     conflictstyle = diff3
     tool = vimdiff
+    log = 100
 [push]
     default = simple
 [github]
