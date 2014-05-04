@@ -39,6 +39,8 @@ export REPORTTIME=10
 alias grep='grep --color=auto'
 alias ls='ls --color=auto'
 alias g='git'
+alias prettyxml='xmllint --format -'
+alias prettyjson='python -m json.tool'
 
 setopt autocd
 setopt extendedglob
