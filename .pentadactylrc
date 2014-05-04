@@ -1,8 +1,31 @@
-"hg6896
 
 loadplugins '\.(js|penta)$'
 group user
-set editor='urxvt -e vim +<line> <file>'
+
+autocmd LocationChange (mail|www)\.google\.com/(calendar|mail|reader)/ -js modes.set(modes.PASS_THROUGH)
+autocmd LocationChange docs\.google\.com/(document|present|spreadsheet) -js modes.set(modes.PASS_THROUGH)
+autocmd LocationChange github\.com/ -js modes.set(modes.PASS_THROUGH)
+autocmd LocationChange bitbucket\.org/ -js modes.set(modes.PASS_THROUGH)
+
+set guioptions=bCrsn
 set hlfind
+set editor='urxvt -e vim +<line> <file>'
+set hintkeys=asdfghjkl;
+
+" - Scroll page.
+map -modes=n j -builtin 3j
+map -modes=n J <C-d>
+map -modes=n k -builtin 3k
+map -modes=n K <C-u>
+map -modes=n b <PageUp>
+
+" - Abbreviate
+cabbreviate dl downloads
+
 
 " vim: set ft=pentadactyl:
+
+" = References =
+" [1] macros - Mapping Super+hjkl to arrow keys under X - Super User
+" - http://superuser.com/questions/96299/mapping-superhjkl-to-arrow-keys-under-x
+" - https://github.com/chusiang/tuxENV/blob/master/home/_pentadactylrc
