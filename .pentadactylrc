@@ -8,6 +8,7 @@ autocmd LocationChange github\.com/ -js modes.set(modes.PASS_THROUGH)
 autocmd LocationChange bitbucket\.org/ -js modes.set(modes.PASS_THROUGH)
 
 set guioptions=bCrsn
+set guioptions+=s
 set hlfind
 set editor='urxvt -e vim +<line> <file>'
 set hintkeys=asdfghjkl;
