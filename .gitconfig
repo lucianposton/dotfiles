@@ -67,3 +67,5 @@
     user = lucianposton
 [amazon]
     append-cr-url = true
+[include]
+    path = dotfiles.local/.gitconfig
