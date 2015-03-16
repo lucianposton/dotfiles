@@ -10,6 +10,7 @@
 [color]
     ui = auto
 [alias]
+    start = !git init && git commit --allow-empty -m \"Initial commit\"
     s = status
     st = status
     co = checkout
@@ -63,6 +64,8 @@
     log = 100
 [push]
     default = simple
+[diff "xxd"]
+    textconv = xxd  # then *.sav diff=xxd in .gitattributes
 [github]
     user = lucianposton
 [amazon]
