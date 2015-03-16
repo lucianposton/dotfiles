@@ -2,10 +2,10 @@
 loadplugins '\.(js|penta)$'
 group user
 
-autocmd LocationChange (mail|www)\.google\.com/(calendar|mail|reader)/ -js modes.set(modes.PASS_THROUGH)
-autocmd LocationChange docs\.google\.com/(document|present|spreadsheet) -js modes.set(modes.PASS_THROUGH)
-autocmd LocationChange github\.com/ -js modes.set(modes.PASS_THROUGH)
-autocmd LocationChange bitbucket\.org/ -js modes.set(modes.PASS_THROUGH)
+"autocmd LocationChange (mail|www)\.google\.com/(calendar|mail|reader)/ -js modes.set(modes.PASS_THROUGH)
+"autocmd LocationChange docs\.google\.com/(document|present|spreadsheet) -js modes.set(modes.PASS_THROUGH)
+"autocmd LocationChange github\.com/ -js modes.set(modes.PASS_THROUGH)
+"autocmd LocationChange bitbucket\.org/ -js modes.set(modes.PASS_THROUGH)
 
 set guioptions=bCrsn
 set guioptions+=s
