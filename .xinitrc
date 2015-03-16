@@ -7,3 +7,5 @@ xmodmap $HOME/.xmodmaprc
 exec ssh-agent -- ck-launch-session xmonad
 #exec startxfce4
 #scrotwm
+
+#xinput --set-prop 'pointer:Razer Razer Naga' 'Device Accel Constant Deceleration' 2 || echo "Razer Naga device not found"
