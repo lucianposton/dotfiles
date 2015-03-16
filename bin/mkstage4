@@ -75,7 +75,6 @@ default_exclude_list="
 /dev
 /etc/ssh/ssh_host_*
 /lost+found
-/media
 /mnt
 /proc
 /run
@@ -88,6 +87,7 @@ default_exclude_list="
 /var/tmp
 $stage4Location
 `echo $CCACHE_DIR`"
+# /media
  
 # files/devices/folders, which need to be backed up (preserve folder structure).
 # don't touch it unless you know what you are doing! no recursive backup of folders.
@@ -216,7 +216,7 @@ verify "$custom_exclude_list" "\$custom_exclude_list"
  echo -e "=================="
 
 mbrBackupDir=$stage4Location/$stage4prefix
-mkdir $mbrBackupDir
+mkdir -p $mbrBackupDir
 for i in $mbrDevices; do
     deviceBasename=$(basename $i)
     dd if=$i of="$mbrBackupDir/$deviceBasename".mbr count=1 bs=512
