@@ -171,6 +171,8 @@ exec /bin/busybox switch_root /newroot /sbin/init ${CMDLINE}
 EOL
 )
 
+[ "$(whoami)" == "root" ] || exec sudo -- "$0" "$@"
+
 if [ "$1" == "kernel" ]
 then
     mount /boot || echo "/boot already mounted"
@@ -276,13 +278,14 @@ if [ "$1" == "world" ]
 then
     layman -S
     eix-sync
-    emerge -vuND --with-bdeps=y @world || ( revdep-rebuild -i && die "update world failed" )
-    if ! hash genlop || genlop -l --date today | grep -q haskell
+    emerge -vu --autounmask-write --with-bdeps=y portage || ( revdep-rebuild -i && die "update portage failed" )
+    emerge -vuND --autounmask-write --with-bdeps=y @world || ( revdep-rebuild -i && die "update world failed" )
+    if ! hash genlop || genlop -l --date yesterday | grep -q haskell
     then
         hash haskell-updater && haskell-updater
     fi
 
-    if ! hash genlop || genlop -l --date today | grep -q x11-base/xorg-server
+    if ! hash genlop || genlop -l --date yesterday | grep -q x11-base/xorg-server
     then
         emerge -v @x11-module-rebuild
     fi
