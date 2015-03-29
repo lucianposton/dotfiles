@@ -54,7 +54,10 @@ read -n 1 -ep "Update submodules? (y/n) "
 [[ $REPLY =~ ^[Yy]$ ]] && cd $DotfilesDir && git submodule update --recursive --init
 
 if [[ `uname` == 'Darwin' ]]; then
-    # TODO install fonts for powerline
+    # OSX uses a different font directory
+    chmod -a "group:everyone deny delete" "$HOME/Library/Fonts" || echo "Skipping ACL removal on '$HOME/Library/Fonts'"
+    install_as_symlink "$HOME/.fonts" "$HOME/Library/Fonts"
+    echo "Probably need to reboot for fonts to take effect..."
 
     # TODO install homebrew
     # http://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/
