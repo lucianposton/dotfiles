@@ -29,7 +29,7 @@ OldDotfilesDir=$HOME/dotfiles_old
 
 if [[ -e $OldDotfilesDir ]]
 then
-    read -n 1 -ep "$OldDotfilesDir exists and files will be overwritten. Continue? (y/n) "
+    read -n 1 -ep "$OldDotfilesDir backup already exists. Continue? (y/n) "
     [[ $REPLY =~ ^[Nn]$ ]] && exit 1
 fi
 
@@ -38,7 +38,22 @@ mkdir -p $OldDotfilesDir
 install_as_symlink() {
     source_file="$1"
     target_file="$2"
-    [[ -e "$target_file" ]] && mv -v "$target_file" "$OldDotfilesDir/"
+    # shenanigans because BSD mv doesn't have --backup
+    if [[ -e "$target_file" ]]; then #&& mv -v "$target_file" "$OldDotfilesDir/"
+        target_file_basename=$(basename "$target_file")
+        target_file_backup="$OldDotfilesDir/$target_file_basename"
+        if [[ ! -e "$target_file_backup" ]]; then
+            # file does not exist in the backup directory
+            mv -v "$target_file" "$target_file_backup"
+        else
+            num=2
+            while [[ -e "$target_file_backup.$num" ]]; do
+                (( num++ ))
+            done
+            mv -v "$target_file" "$target_file_backup.$num"
+        fi
+    fi
+
     echo "Creating symlink '$target_file' to source file '$source_file'"
     ln -s "$source_file" "$target_file"
 }
