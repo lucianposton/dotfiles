@@ -48,7 +48,7 @@ tar_output="--file"
 split_options="--suffix-length=1 --bytes=685m"
  
 # options for the tar command
-tarOptions=" --preserve-permissions --create --absolute-names --totals --ignore-failed-read"
+tarOptions=" --preserve-permissions --create --absolute-names --totals --ignore-failed-read --xattrs"
  
 # where to put the stage4
 stage4Location=/mnt/backup/stage4
