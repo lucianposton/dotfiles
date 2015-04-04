@@ -25,6 +25,9 @@ dir /root       700 0 0
 # copy motd
 file    /etc/msg                /etc/msg                            644 0 0
 
+# copy fstab
+file    /etc/fstab              /etc/fstab                          644 0 0
+
 # mdadm
 file    /bin/mdadm              /sbin/mdadm                         755 0 0
 file    /etc/mdadm.conf         /etc/mdadm.conf                     644 0 0
@@ -32,9 +35,26 @@ file    /etc/mdadm.conf         /etc/mdadm.conf                     644 0 0
 # lvm
 file    /bin/lvm                /sbin/lvm.static                    755 0 0
 
+# gpg
+#file    /bin/gpg                /usr/bin/gpg2                       755 0 0
+
+# cryptsetup keys and headers
+file    /etc/luks/luks.header   /boot/luks/luks.header              400 0 0
+file    /etc/luks/luks.keyfile.header /boot/luks/luks.keyfile.header 400 0 0
+file    /etc/luks/luks.keyfile  /boot/luks/luks.keyfile             400 0 0
+
+# cryptsetup
+file    /bin/cryptsetup         /sbin/cryptsetup                    755 0 0
+
+# cryptsetup random devices
+nod     /dev/urandom                                                0600 0 0 c 1 9
+nod     /dev/random                                                 0600 0 0 c 1 8
+nod     /dev/null                                                   0600 0 0 c 1 3
+
 # framebuffer
 file    /sbin/v86d              /sbin/v86d                          755 0 0
 nod     /dev/console                                                0600 0 0 c 5 1
+nod     /dev/tty                                                    0600 0 0 c 5 0
 nod     /dev/tty1                                                   0600 0 0 c 4 1
 nod     /dev/zero                                                   0600 0 0 c 1 5
 nod     /dev/mem                                                    0600 0 0 c 1 1
@@ -68,10 +88,10 @@ initramfs_init=$(cat << 'EOL'
 #!/bin/busybox sh
 
 rescue_shell() {
-	echo "$@"
-	echo "Something went wrong. Dropping you to a shell."
-	busybox --install -s
-	exec /bin/sh
+    echo "$@"
+    echo "Something went wrong. Dropping you to a shell."
+    busybox --install -s
+    exec /bin/sh
 }
 
 check_filesystem() {
@@ -118,6 +138,45 @@ check_filesystem() {
     rescue_shell
 }
 
+cryptsetup_device_by_uuidlabel() {
+    cryptsetup --tries 5 --header /etc/luks/luks.keyfile.header open --type luks /etc/luks/luks.keyfile lukskey
+
+    for cmd in $(cat /proc/cmdline) ; do
+        case $cmd in
+            crypt_root=*)
+                type=$(echo $cmd | cut -d= -f2)
+                echo "Setting up dm-crypt device"
+                if [ $type == "LABEL" ] || [ $type == "UUID" ] ; then
+                    uuid=$(echo $cmd | cut -d= -f3)
+                    cryptsetup --key-file=/dev/mapper/lukskey --header /etc/luks/luks.header open --type luks $(findfs "$type"="$uuid") luksdevice
+                else
+                    cryptsetup --key-file=/dev/mapper/lukskey --header /etc/luks/luks.header open --type luks $(echo $cmd | cut -d= -f2) luksdevice
+                fi
+                ;;
+        esac
+    done
+
+    cryptsetup close lukskey
+}
+
+mount_root_by_uuidlabel() {
+    for cmd in $(cat /proc/cmdline) ; do
+        case $cmd in
+            root=*)
+                type=$(echo $cmd | cut -d= -f2)
+                echo "Mounting rootfs"
+                if [ $type == "LABEL" ] || [ $type == "UUID" ] ; then
+                    uuid=$(echo $cmd | cut -d= -f3)
+                    mount -o ro $(findfs "$type"="$uuid") /newroot
+                else
+                    mount -o ro $(echo $cmd | cut -d= -f2) /newroot
+                fi
+                ;;
+        esac
+    done
+}
+
+
 # temporarily mount proc, sys, and dev
 mount -t proc none /proc
 mount -t sysfs none /sys
@@ -131,22 +190,41 @@ CMDLINE=`cat /proc/cmdline`
 
 cat /etc/msg
 
-#/bin/mdadm -A /dev/md0 /dev/sda1 /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1
-#/bin/mdadm -A /dev/md1 /dev/sda3 /dev/sdb3 /dev/sdc3 /dev/sdd3 /dev/sde3
-#/bin/mdadm -A /dev/md2 /dev/sda4 /dev/sdb4 /dev/sdc4 /dev/sdd4 /dev/sde4
+# TODO use something like this instead
+#for arg in $(cat /proc/cmdline); do
+#    case $arg in
+#        rescue*) export rescue=1;;
+#        ro|rw) export mtopt=$arg;;
+#        single) export level=2;;
+#        console*|font*|init*|keyfile*|keymap*|lvm*|root*) export $arg;;
+#    esac
+#done
+#
+#if [ $lvm ]; then
+#   ...
+#fi
 
+# RAID
 mdadm -As /dev/md0
 mdadm -As /dev/md1
 mdadm -As /dev/md2
 
-mount -t ext4 -r /dev/md2 /newroot || rescue_shell "Error mounting root"
+# dm-crypt LUKS
+cryptsetup_device_by_uuidlabel || rescue_shell "Error with cryptsetup_device_by_uuidlabel"
 
+# LVM
 lvm vgchange -a ly || rescue_shell "Error enabling volume groups"
 lvm vgscan --mknodes || rescue_shell "Error scanning for volume groups"
 
+# Mount /
+# TODO fsck for /. Use fsck -A instead of check_filesystem() ?
+mount_root_by_uuidlabel || rescue_shell "Error with mount_root_by_uuidlabel"
+
 ln -s /newroot/etc/fstab /etc/fstab
 
-mountpoints="/usr"
+# Extra mounts within root e.g. /usr
+mountpoints=(
+)
 
 for m in $mountpoints ; do
   check_filesystem $m
