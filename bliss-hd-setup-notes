@@ -1,0 +1,77 @@
+# partition table of /dev/sda
+unit: sectors
+
+/dev/sda1 : start=     6144, size=  2088960, Id=83, bootable
+/dev/sda2 : start=  2095104, size=1951430064, Id=8e
+/dev/sda3 : start=        0, size=        0, Id= 0
+/dev/sda4 : start=        0, size=        0, Id= 0
+
+
+mdadm -C /dev/md0 -l 1 -n 5 /dev/sd[abcde]1
+mdadm -C /dev/md1 -c 128 -l 5 -n 5 /dev/sd[abcde]3
+mdadm -C /dev/md2 -c 128 -l 5 -n 5 /dev/sd[abcde]4
+
+pvcreate /dev/md1
+vgcreate vg_raid5 /dev/md1 --alloc contiguous -s 64m
+//lvcreate vg_raid5 -L 10G -n root
+lvcreate vg_raid5 -L 25G -n usr
+lvcreate vg_raid5 -L 50G -n var
+lvcreate vg_raid5 -L 500G -n home
+
+mke2fs -t ext4 -b 4096 -m 0 /dev/md0
+//mke2fs -t ext4 -b 4096 -E stride=32,stripe-width=128 -m 1 /dev/vg_raid5/root
+mke2fs -t ext4 -b 4096 -E stride=32,stripe-width=128 -m 1 /dev/md2
+mke2fs -t ext4 -b 4096 -E stride=32,stripe-width=128 -m 1 /dev/vg_raid5/usr
+mke2fs -t ext4 -b 4096 -E stride=32,stripe-width=128 -m 5 /dev/vg_raid5/var
+mke2fs -t ext4 -b 4096 -E stride=32,stripe-width=128 -m 0.01 /dev/vg_raid5/home
+
+
+/etc/mdadm.conf:
+ARRAY /dev/md0 metadata=0.90 UUID=17bba61a:cf50a486:cb201669:f728008a
+ARRAY /dev/md1 metadata=0.90 spares=1 UUID=c5798538:af83039d:cb201669:f728008a
+
+
+# samsung 840 evo
+# page size: 8KiB
+# erase block size: 1536KiB
+
+# partition table of /dev/sdb
+unit: sectors
+
+/dev/sdb1 : start=     2048, size=   192512, Id=fd, bootable
+/dev/sdb2 : start=  5998592, size= 52740096, Id=82
+/dev/sdb3 : start= 58738688, size=1894786480, Id=fd
+/dev/sdb4 : start=   194560, size=  5804032, Id=fd
+
+
+truncate -s 2048 /boot/luks/bliss-luks.keyfile
+truncate -s 2M /boot/luks/bliss-luks.keyfile.header
+cryptsetup luksFormat /boot/luks/bliss-luks.keyfile -c aes-xts-plain64 -s 512 -h sha512 --iter-time 20000 --use-random --header /boot/luks/bliss-luks.keyfile.header
+cryptsetup open --type luks lukskey /boot/luks/bliss-luks.keyfile --header /boot/luks/bliss-luks.keyfile.header
+dd if=/dev/random of=/dev/mapper/lukskey
+
+truncate -s 2M /boot/luks/bliss-luks.header
+cryptsetup -c aes-xts-plain64 -s 256 -h sha512 --iter-time 10000 --use-random --header /boot/luks/bliss-luks.header --key-file=/dev/mapper/lukskey luksFormat /dev/sda2
+cryptsetup --key-file=/dev/mapper/lukskey --header /boot/luks/bliss-luks.header open --type luks /dev/sda2 luksdevice
+
+# finally unmount key
+cryptsetup close lukskey
+
+pvcreate --dataalignment 3072k /dev/md1
+vgcreate vg_luks /dev/mapper/luksdevice --alloc contiguous -s 64m
+lvcreate vg_luks -L 10G -n swap
+lvcreate vg_luks -L 800G -n root
+
+# http://pastebin.com/0Jvn3PyQ
+mke2fs -t ext4 -b 4096 -m 0.1 -E stride=2,stripe-width=384 /dev/vg_luks/root
+
+
+device (hd0) /dev/sda
+root (hd0,0)
+setup (hd0)
+
+device (hd0) /dev/sdb
+root (hd0,0)
+setup (hd0)
+
+
