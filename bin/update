@@ -325,6 +325,8 @@ then
     ./scripts/gen_initramfs_list.sh -o /tmp/initramfs /tmp/initramfs_list
     /usr/sbin/splash_geninitramfs --verbose --res 1280x1024 --append /tmp/initramfs Emergance
 
+    # TODO: both backup and current links point to same files when kernel
+    # version doesn't change
     mv -i --backup=numbered /tmp/initramfs /boot/$next_initramfs
     make install
     cd /boot
