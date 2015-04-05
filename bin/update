@@ -220,7 +220,7 @@ lvm vgscan --mknodes || rescue_shell "Error scanning for volume groups"
 # TODO fsck for /. Use fsck -A instead of check_filesystem() ?
 mount_root_by_uuidlabel || rescue_shell "Error with mount_root_by_uuidlabel"
 
-ln -s /newroot/etc/fstab /etc/fstab
+ln -fs /newroot/etc/fstab /etc/fstab
 
 # Extra mounts within root e.g. /usr
 mountpoints=(
