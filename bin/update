@@ -353,7 +353,7 @@ then
     df -h | grep boot | egrep --color '[0-9]{1,2}%'
     cd -
     sleep 1
-    umount /boot
+    umount /boot || echo "/boot umount failed!"
 
     echo
     portage_version=`echo "$next_version" | sed 's/-[A-Za-z][A-Za-z]\+//'`
