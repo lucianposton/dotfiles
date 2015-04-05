@@ -139,7 +139,7 @@ check_filesystem() {
 }
 
 cryptsetup_device_by_uuidlabel() {
-    cryptsetup --tries 5 --header /etc/luks/luks.keyfile.header open --type luks /etc/luks/luks.keyfile lukskey
+    cryptsetup --header /etc/luks/luks.keyfile.header open --type luks /etc/luks/luks.keyfile lukskey
 
     for cmd in $(cat /proc/cmdline) ; do
         case $cmd in
