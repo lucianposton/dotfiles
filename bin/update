@@ -167,9 +167,9 @@ mount_root_by_uuidlabel() {
                 echo "Mounting rootfs"
                 if [ $type == "LABEL" ] || [ $type == "UUID" ] ; then
                     uuid=$(echo $cmd | cut -d= -f3)
-                    mount -o ro $(findfs "$type"="$uuid") /newroot
+                    mount -t ext4 -o ro $(findfs "$type"="$uuid") /newroot
                 else
-                    mount -o ro $(echo $cmd | cut -d= -f2) /newroot
+                    mount -t ext4 -o ro $(echo $cmd | cut -d= -f2) /newroot
                 fi
                 ;;
         esac
