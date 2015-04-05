@@ -324,17 +324,30 @@ then
     ./scripts/gen_initramfs_list.sh -o /tmp/initramfs /tmp/initramfs_list
     /usr/sbin/splash_geninitramfs --verbose --res 1280x1024 --append /tmp/initramfs Emergance
 
-    # TODO: both backup and current links point to same files when kernel
+    # TODO: both backup and current links can point to same files when kernel
     # version doesn't change
     mv -i --backup=numbered /tmp/initramfs /boot/$next_initramfs
     make install
     cd /boot
-    ls -l
-    ln -sfT $(readlink current) backup
-    ln -sfT $(readlink initramfs) initramfs.bak
-    ln -sfT vmlinuz-$next_version current
-    ln -sfT $next_initramfs initramfs
-    ls -l
+
+    echo 'Update backup symlinks to point to current?'
+    select yn in "Yes" "No";
+    do
+        case $yn in
+            Yes )
+                ls -l
+                ln -sfT $(readlink current) backup
+                ln -sfT $(readlink initramfs) initramfs.bak
+                ln -sfT vmlinuz-$next_version current
+                ln -sfT $next_initramfs initramfs
+                ls -l
+                break;;
+            No )
+                ln -sfT vmlinuz-$next_version current
+                ln -sfT $next_initramfs initramfs
+                break;;
+        esac
+    done
 
     echo "/boot filesystem disk space usage:"
     df -h | grep boot | egrep --color '[0-9]{1,2}%'
