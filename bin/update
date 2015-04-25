@@ -404,7 +404,7 @@ then
     fi
 
     emerge -tvu --autounmask-write --with-bdeps=y portage || ( revdep-rebuild -i && die "update portage failed" )
-    emerge -tvuND --autounmask-write --with-bdeps=y @world || ( revdep-rebuild -i && die "update world failed" )
+    emerge -tvuND --autounmask-write --with-bdeps=y --complete-graph @world || ( revdep-rebuild -i && die "update world failed" )
     if ! hash genlop || genlop -l --date yesterday | grep -q haskell
     then
         hash haskell-updater && haskell-updater
