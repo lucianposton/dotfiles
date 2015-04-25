@@ -204,9 +204,9 @@ cat /etc/msg
 #fi
 
 # RAID
-mdadm -As /dev/md0
-mdadm -As /dev/md1
-mdadm -As /dev/md2
+#mdadm -As /dev/md0
+#mdadm -As /dev/md1
+#mdadm -As /dev/md2
 
 # dm-crypt LUKS
 cryptsetup_device_by_uuidlabel || rescue_shell "Error with cryptsetup_device_by_uuidlabel"
