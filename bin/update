@@ -250,7 +250,36 @@ EOL
 
 [ "$(whoami)" == "root" ] || exec sudo -- "$0" "$@"
 
-if [ "$1" == "kernel" ]
+# http://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
+OPT_SYNC=1
+OPT_MODE=world
+OPT_ECLEAN=
+for i in "$@"
+do
+    case $i in
+        --no-sync)
+            OPT_SYNC=
+            ;;
+
+        --eclean)
+            OPT_ECLEAN=1
+            ;;
+
+        -w|--world)
+            OPT_MODE=world
+            ;;
+
+        -k|--kernel)
+            OPT_MODE=kernel
+            ;;
+
+        *)
+            # unknown stuff
+            ;;
+    esac
+done
+
+if [ "$OPT_MODE" == "kernel" ]
 then
     mount /boot || echo "/boot already mounted"
     sleep 1
@@ -365,13 +394,15 @@ then
     echo "Emerging kernel modules..."
     sleep 2
     emerge -v @module-rebuild
-    exit
 fi
 
-if [ "$1" == "world" ]
+if [ "$OPT_MODE" == "world" ]
 then
-    layman -S
-    eix-sync
+    if [ -n "$OPT_SYNC" ]; then
+        layman -S
+        eix-sync
+    fi
+
     emerge -vu --autounmask-write --with-bdeps=y portage || ( revdep-rebuild -i && die "update portage failed" )
     emerge -vuND --autounmask-write --with-bdeps=y @world || ( revdep-rebuild -i && die "update world failed" )
     if ! hash genlop || genlop -l --date yesterday | grep -q haskell
@@ -388,7 +419,8 @@ then
     emerge -c
     revdep-rebuild -i
     dispatch-conf
-    exit
 fi
 
-echo "update world or kernel?"
+if [ -n "$OPT_ECLEAN" ]; then
+    eclean --deep distfiles
+fi
