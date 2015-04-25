@@ -322,7 +322,9 @@ then
     make -C /usr/src/linux/usr/ gen_init_cpio
     chmod +x usr/gen_init_cpio scripts/gen_initramfs_list.sh
     ./scripts/gen_initramfs_list.sh -o /tmp/initramfs /tmp/initramfs_list
-    /usr/sbin/splash_geninitramfs --verbose --res 1280x1024 --append /tmp/initramfs Emergance
+
+    # TODO: v86d causing problems somewhere around 3.18.11
+    #/usr/sbin/splash_geninitramfs --verbose --res 1280x1024 --append /tmp/initramfs Emergance
 
     # TODO: both backup and current links can point to same files when kernel
     # version doesn't change
