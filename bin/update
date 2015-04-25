@@ -393,7 +393,7 @@ then
     echo
     echo "Emerging kernel modules..."
     sleep 2
-    emerge -v @module-rebuild
+    emerge -tv @module-rebuild
 fi
 
 if [ "$OPT_MODE" == "world" ]
@@ -403,8 +403,8 @@ then
         eix-sync
     fi
 
-    emerge -vu --autounmask-write --with-bdeps=y portage || ( revdep-rebuild -i && die "update portage failed" )
-    emerge -vuND --autounmask-write --with-bdeps=y @world || ( revdep-rebuild -i && die "update world failed" )
+    emerge -tvu --autounmask-write --with-bdeps=y portage || ( revdep-rebuild -i && die "update portage failed" )
+    emerge -tvuND --autounmask-write --with-bdeps=y @world || ( revdep-rebuild -i && die "update world failed" )
     if ! hash genlop || genlop -l --date yesterday | grep -q haskell
     then
         hash haskell-updater && haskell-updater
@@ -412,10 +412,10 @@ then
 
     if ! hash genlop || genlop -l --date yesterday | grep -q x11-base/xorg-server
     then
-        emerge -v @x11-module-rebuild
+        emerge -tv @x11-module-rebuild
     fi
 
-    emerge -v @preserved-rebuild
+    emerge -tv @preserved-rebuild
     emerge -c
     revdep-rebuild -i
     dispatch-conf
