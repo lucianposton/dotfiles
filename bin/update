@@ -405,8 +405,8 @@ then
         eix-sync
     fi
 
-    emerge -tvu --autounmask-write --with-bdeps=y portage || ( revdep-rebuild -i && die "update portage failed" )
-    emerge -tvuND --autounmask-write --with-bdeps=y --complete-graph @world || ( revdep-rebuild -i && die "update world failed" )
+    emerge -tvu --quiet-build --autounmask-write --with-bdeps=y portage || ( revdep-rebuild -i && die "update portage failed" )
+    emerge -tvuND --quiet-build --backtrack=30 --autounmask-write --with-bdeps=y --complete-graph @world || ( revdep-rebuild -i && die "update world failed" )
     if ! hash genlop || genlop -l --date yesterday | grep -q haskell
     then
         hash haskell-updater && haskell-updater
@@ -414,12 +414,12 @@ then
 
     if ! hash genlop || genlop -l --date yesterday | grep -q x11-base/xorg-server
     then
-        emerge -tv @x11-module-rebuild
+        emerge -tv --quiet-build @x11-module-rebuild
     fi
 
-    emerge -tv @preserved-rebuild
+    emerge -tv --quiet-build --autounmask-write @preserved-rebuild
     emerge -c
-    revdep-rebuild -i
+    revdep-rebuild -i -- --quiet-build
     dispatch-conf
 fi
 
