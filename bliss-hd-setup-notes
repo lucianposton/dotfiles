@@ -51,6 +51,7 @@ cryptsetup open --type luks lukskey /boot/luks/bliss-luks.keyfile --header /boot
 dd if=/dev/random of=/dev/mapper/lukskey
 
 truncate -s 2M /boot/luks/bliss-luks.header
+# Maybe use --align param for ssd perf?
 cryptsetup -c aes-xts-plain64 -s 256 -h sha512 --iter-time 10000 --use-random --header /boot/luks/bliss-luks.header --key-file=/dev/mapper/lukskey luksFormat /dev/sda2
 cryptsetup --key-file=/dev/mapper/lukskey --header /boot/luks/bliss-luks.header open --type luks /dev/sda2 luksdevice
 
