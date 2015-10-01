@@ -24,6 +24,7 @@
     dc = diff --cached
     ds = diff --stat
     dw = diff --color-words='[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+'
+    dcw = diff --cached --color-words='[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+'
     m = merge
     mff = merge --ff-only
     mnoff = merge --no-ff
