@@ -140,6 +140,8 @@ check_filesystem() {
 cryptsetup_device_by_uuidlabel() {
     cryptsetup --header /etc/luks/luks.keyfile.header open --type luks /etc/luks/luks.keyfile lukskey
 
+    # Maybe can use udevd in initramfs in order to use /dev/disk/by-id/*
+    # instead of UUID or /dev/sda labels
     for cmd in $(cat /proc/cmdline) ; do
         case $cmd in
             crypt_root=*)
@@ -216,7 +218,7 @@ lvm vgchange -a ly || rescue_shell "Error enabling volume groups"
 lvm vgscan --mknodes || rescue_shell "Error scanning for volume groups"
 
 # Mount /
-# TODO fsck for /. Use fsck -A instead of check_filesystem() ?
+# TODO fsck for /. Use fsck -p -A instead of check_filesystem() ?
 check_filesystem /
 mount_root_by_uuidlabel || rescue_shell "Error with mount_root_by_uuidlabel"
 
