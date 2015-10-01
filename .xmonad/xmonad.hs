@@ -141,7 +141,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask .|. myAltMask .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
 
     -- Restart xmonad
-    , ((modMask              , xK_q     ), restart "xmonad" True)
+    , ((modMask               .|. shiftMask, xK_q     ), restart "xmonad" True)
     ]
     ++
 
