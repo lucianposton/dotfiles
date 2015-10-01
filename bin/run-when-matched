@@ -1,0 +1,14 @@
+#!/usr/bin/perl
+
+# run: run-when-matched "regex-to-find" "commandtorun"
+
+die "usage: $0 <regex> <exec-this> [exec-this-arg1 ...]\n"
+   unless @ARGV >= 2;
+
+my ($re, @run) = @ARGV;
+
+while (<STDIN>) {
+    last if /$re/;
+}
+
+exec { $run[0] } @run;
