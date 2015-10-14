@@ -13,6 +13,28 @@ set hlfind
 set editor='urxvt -e vim +<line> <file>'
 set hintkeys=asdfghjkl;
 
+" - Map toggle fullscreen
+javascript <<EOF
+    dactyl.isFullscreen = false;
+    dactyl.toggleFullscreen = function () {
+        if (dactyl.isFullscreen) {
+            dactyl.isFullscreen = false;
+            dactyl.execute(":set nofullscreen");
+            dactyl.execute(":set showtabline=always");
+        } else {
+            dactyl.isFullscreen = true;
+            dactyl.execute(":set fullscreen");
+            dactyl.execute(":set showtabline=never");
+        }
+    };
+EOF
+
+map <Space>f -js dactyl.toggleFullscreen();
+
+" - Scroll tabs
+nmap l gt
+nmap h gT
+
 " - Scroll page.
 map -modes=n j -builtin 3j
 map -modes=n J <C-d>
@@ -24,9 +46,9 @@ map -modes=n b <PageUp>
 cabbreviate dl downloads
 
 
-" vim: set ft=pentadactyl:
-
 " = References =
 " [1] macros - Mapping Super+hjkl to arrow keys under X - Super User
 " - http://superuser.com/questions/96299/mapping-superhjkl-to-arrow-keys-under-x
 " - https://github.com/chusiang/tuxENV/blob/master/home/_pentadactylrc
+
+" vim: set ft=pentadactyl:
