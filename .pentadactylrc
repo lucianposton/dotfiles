@@ -54,6 +54,9 @@ style -name ublick chrome://browser/content/browser.xul #nav-bar * { visibility:
 "     display: none;
 " }
 
+" - Black background for empty tabs
+style -name newtab-black-background about:blank,about:newtab #newtab-scrollbox, html { background:black !important; }
+
 
 " = References =
 " [1] macros - Mapping Super+hjkl to arrow keys under X - Super User
