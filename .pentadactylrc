@@ -19,10 +19,12 @@ javascript <<EOF
     dactyl.toggleFullscreen = function () {
         if (dactyl.isFullscreen) {
             dactyl.isFullscreen = false;
+            dactyl.execute(":set guioptions-=s");
             dactyl.execute(":set nofullscreen");
             dactyl.execute(":set showtabline=always");
         } else {
             dactyl.isFullscreen = true;
+            dactyl.execute(":set guioptions+=s");
             dactyl.execute(":set fullscreen");
             dactyl.execute(":set showtabline=never");
         }
