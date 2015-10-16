@@ -77,10 +77,10 @@ au! BufWritePost .vimrc source %
 " command. See usage below.
 function! SelectaCommand(choice_command, selecta_args, vim_command)
   try
-    silent let selection = system(a:choice_command . " | selecta " . a:selecta_args)
+    let selection = system(a:choice_command . " | selecta " . a:selecta_args)
   catch /Vim:Interrupt/
-" Swallow the ^C so that the redraw below happens; otherwise there will be
-" leftovers from selecta on the screen
+    " Swallow the ^C so that the redraw below happens; otherwise there will be
+    " leftovers from selecta on the screen
     redraw!
     return
   endtry
@@ -92,6 +92,8 @@ function! SelectaFile(path)
   call SelectaCommand("find " . a:path . "/* -type f", "", ":e")
 endfunction
 
+" Find all files in all non-dot directories starting in the working directory.
+" Fuzzy select one of those. Open the selected file with :e.
 nnoremap <leader>f :call SelectaFile(".")<cr>
 nnoremap <leader>gv :call SelectaFile("app/views")<cr>
 nnoremap <leader>gc :call SelectaFile("app/controllers")<cr>
