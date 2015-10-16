@@ -47,6 +47,13 @@ map -modes=n b <PageUp>
 " - Abbreviate
 cabbreviate dl downloads
 
+" - Fix uBlock display bug when Toolbar hidded with :set go-=T
+style -name ublick chrome://browser/content/browser.xul #nav-bar * { visibility: visible; }
+" /* Blacklist the nav-bar children? */
+" #nav-bar-customization-target, #PanelUI-button, #window-controls, #nav-bar-overflow-buton {
+"     display: none;
+" }
+
 
 " = References =
 " [1] macros - Mapping Super+hjkl to arrow keys under X - Super User
