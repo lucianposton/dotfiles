@@ -57,6 +57,10 @@ style -name ublick chrome://browser/content/browser.xul #nav-bar * { visibility:
 " - Black background for empty tabs
 style -name newtab-black-background about:blank,about:newtab #newtab-scrollbox, html { background:black !important; }
 
+" - about:config customizations
+":set! extensions.ublock0.forceLegacyToolbarButton=true
+:set! browser.tabs.closeWindowWithLastTab=false
+
 
 " = References =
 " [1] macros - Mapping Super+hjkl to arrow keys under X - Super User
