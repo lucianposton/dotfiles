@@ -1,60 +1,57 @@
 Xcursor.theme:gentoo-silver
 
-!URxvt.perl-ext-common: default,tabbed,matcher
-!URxvt.urlLauncher: firefox-bin
-URxvt.tabbed.tabbar-fg: 4
-URxvt.tabbed.tabbar-bg: 0
-URxvt.tabbed.tab-fg:    3
-URxvt.tabbed.tab-bg:    0
-URxvt.matcher.button:1
-URxvt*depth: 32
-URxvt*geometry: 120x35
-URxvt*saveLines:10000
-URxvt*scrollBar:true
-URxvt*scrollBar_right:true
-URxvt*scrollTtyOutput:false
-URxvt*scrollWithBuffer:true
-URxvt*scrollTtyKeypress:true
-!URxvt*font: xft:Monospace:size=12
-!URxvt*font: xft:Monaco for Powerline:size=12
-URxvt*font: xft:Meslo LG S for Powerline:size=12
+URxvt*.perl-ext-common: default,matcher
+URxvt*.urlLauncher: firefox
+URxvt*.matcher.button:1
+URxvt*.matcher.rend.0:Uline Bold fg5
+URxvt*.geometry: 120x35
+URxvt*.depth: 32
+URxvt*.background:  [80]#000000
+URxvt*.foreground:  #dfdfdf
+URxvt*.cursorColor: green
+URxvt*.saveLines:10000
+URxvt*.scrollBar:true
+URxvt*.scrollstyle:plain
+URxvt*.scrollBar_right:true
+URxvt*.scrollTtyOutput:false
+URxvt*.scrollWithBuffer:true
+URxvt*.scrollTtyKeypress:true
+!URxvt*.font: xft:Monospace:size=12
+!URxvt*.font: xft:Monaco for Powerline:size=12
+URxvt*.font: xft:Meslo LG S for Powerline:size=12
 
-URxvt*background: rgba:0000/0000/0000/eeee
-URxvt*foreground:  #dfdfdf
-URxvt*cursorColor: green
-
-!URxvt*colorBDMode:true
-!URxvt*colorBD: #FFFFFF
+!URxvt*.colorBDMode:true
+!URxvt*.colorBD: #FFFFFF
 
 ! Black + DarkGrey
-URxvt*color0: #000000
-URxvt*color8:  #555555
+URxvt*.color0: #000000
+URxvt*.color8:  #555555
 
 ! DarkRed + Red
-URxvt*color1: #cd0000
-URxvt*color9: #ff0000
+URxvt*.color1: #cd0000
+URxvt*.color9: #ff0000
 
 ! DarkGreen + Green
-URxvt*color2: #00cd00
-URxvt*color10: #00ff00
+URxvt*.color2: #00cd00
+URxvt*.color10: #00ff00
 
 ! DarkYellow + Yellow
-URxvt*color3: #cdcd00
-URxvt*color11: #ffff00
+URxvt*.color3: #cdcd00
+URxvt*.color11: #ffff00
 
 ! DarkBlue + Blue
-URxvt*color4: #0000cd
-URxvt*color12: #0055ff
+URxvt*.color4: #0000cd
+URxvt*.color12: #0055ff
 
 ! DarkMangenta + Mangenta
-URxvt*color5: #cd00cd
-URxvt*color13: #ff00ff
+URxvt*.color5: #cd00cd
+URxvt*.color13: #ff00ff
 
 ! DarkCyan + Cyan
-URxvt*color6: #00cdcd
-URxvt*color14: #00cdff
+URxvt*.color6: #00cdcd
+URxvt*.color14: #00cdff
 
 ! LightGrey + White
-URxvt*color7: #bebebe
-URxvt*color15: #ffffff
+URxvt*.color7: #bebebe
+URxvt*.color15: #ffffff
 
