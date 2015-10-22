@@ -34,8 +34,8 @@ var INFO =
                 ["dt", {}, "-appname"],     ["dd", {}, "The value of ", ["tt", {}, "navigator.appName"]],
                 ["dt", {}, "-appversion"],  ["dd", {}, "The value of ", ["tt", {}, "navigator.appVersion"]],
                 ["dt", {}, "-platform"],    ["dd", {}, "The value of ", ["tt", {}, "navigator.platform"]],
-                ["dt", {}, "-vendor"],      ["dd", {}, "The value of ", ["tt", {}, "navigator.vendor"]],
-                ["dt", {}, "-vendorsub"],   ["dd", {}, "The value of ", ["tt", {}, "navigator.vendorsub"]]]]],
+                ["dt", {}, "-oscpu"],       ["dd", {}, "The value of ", ["tt", {}, "navigator.oscpu"]],
+                ["dt", {}, "-buildid"],     ["dd", {}, "The value of ", ["tt", {}, "navigator.buildid"]]]]],
 
     ["item", {},
         ["tags", {}, ":deluseragent :delua"],
@@ -60,7 +60,7 @@ let init = function init_() {
     init = function () {};
 
     UserAgent = Struct("name", "useragent", "appname", "appcodename",
-                           "appversion", "platform", "vendor", "vendorsub", "userset");
+                           "appversion", "platform", "oscpu", "buildid", "userset");
     UserAgent.prototype.__defineGetter__("options", function ()
         opts.slice(1).map(function (opt) [opt.name, this[opt.name]], this)
             .filter(function (opt) opt[1]));
@@ -92,8 +92,8 @@ let opts = [
     ["appname",     "The value of navigator.appName",     "general.appname.override"],
     ["appversion",  "The value of navigator.appVersion",  "general.appversion.override"],
     ["platform",    "The value of navigator.platform",    "general.platform.override"],
-    ["vendor",      "The value of navigator.vendor",      "general.useragent.vendor"],
-    ["vendorsub",   "The value of navigator.vendorsub",   "general.useragent.vendorSub"]
+    ["oscpu",       "The value of navigator.oscpu",       "general.oscpu.override"],
+    ["buildid",     "The value of navigator.buildid",     "general.buildID.override"]
 ].map(Opt.fromArray, Opt);
 
 group.options.add(["useragent", "ua"],
