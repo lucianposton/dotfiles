@@ -10,28 +10,35 @@ group user
 set guioptions=bCrsn
 set guioptions+=s
 set hlfind
+set incfind
 set editor='urxvt -e vim +<line> <file>'
 set hintkeys=asdfghjkl;
 
-" - Map toggle fullscreen
+qmark y https://www.youtube.com/feed/subscriptions
+
+" - Toggle fullscreen
 javascript <<EOF
-    dactyl.isFullscreen = false;
-    dactyl.toggleFullscreen = function () {
-        if (dactyl.isFullscreen) {
-            dactyl.isFullscreen = false;
+dactyl.toggleFullscreen = (function() {
+    var isFullscreen = false;
+    return function () {
+        if (isFullscreen) {
+            isFullscreen = false;
             dactyl.execute(":set guioptions-=s");
             dactyl.execute(":set nofullscreen");
             dactyl.execute(":set showtabline=always");
         } else {
-            dactyl.isFullscreen = true;
+            isFullscreen = true;
             dactyl.execute(":set guioptions+=s");
             dactyl.execute(":set fullscreen");
             dactyl.execute(":set showtabline=never");
         }
     };
+})();
 EOF
 
 map <Space>f -js dactyl.toggleFullscreen();
+
+nmap <Leader>h :history<CR>
 
 " - Scroll tabs
 nmap l gt
@@ -57,9 +64,42 @@ style -name ublick chrome://browser/content/browser.xul #nav-bar * { visibility:
 " - Black background for empty tabs
 style -name newtab-black-background about:blank,about:newtab #newtab-scrollbox, html { background:black !important; }
 
+" - Custom UAs
+" https://techblog.willshouse.com/2012/01/03/most-common-user-agents/
+javascript <<EOF
+(function() {
+    /* -appname and -appcodename always return Netscape and Mozilla in modern browsers */
+    /* -vendor -vendorsub no longer work in FF */
+    dactyl.execute(":useragent ff-common" +
+            " -appversion=" + navigator.appVersion.replace(/X11/,"Windows").replace(/ /g,"\\ ") +
+            " -platform=" + navigator.platform.replace(/Linux x86_64/,"Win32").replace(/ /g,"\\ ") +
+            " -buildid=" + "20151014143721" +
+            " -oscpu=" + navigator.oscpu.replace(/Linux x86_64/,"Windown NT 6.1; WOW64").replace(/ /g,"\\ ") +
+            " " + navigator.userAgent.replace(/X11/,"Windows NT 6.1").replace(/Linux x86_64/,"WOW64"));
+})();
+dactyl.execute(":set useragent=ff-common");
+dactyl.toggleUA = (function() {
+    var ff_common_enabled = true;
+    return function () {
+        if (ff_common_enabled) {
+            ff_common_enabled = false;
+            dactyl.execute(":set useragent=default");
+        } else {
+            ff_common_enabled = true;
+            dactyl.execute(":set useragent=ff-common");
+        }
+    };
+})();
+EOF
+
+map <Space>u -js dactyl.toggleUA();
+
+
 " - about:config customizations
-":set! extensions.ublock0.forceLegacyToolbarButton=true
-:set! browser.tabs.closeWindowWithLastTab=false
+"set! extensions.ublock0.forceLegacyToolbarButton=true
+set! browser.tabs.closeWindowWithLastTab=false
+set! browser.sessionstore.privacy_level=0
+set! browser.sessionstore.privacy_level_deferred=2
 
 
 " = References =
@@ -67,4 +107,4 @@ style -name newtab-black-background about:blank,about:newtab #newtab-scrollbox, 
 " - http://superuser.com/questions/96299/mapping-superhjkl-to-arrow-keys-under-x
 " - https://github.com/chusiang/tuxENV/blob/master/home/_pentadactylrc
 
-" vim: set ft=pentadactyl:
+" vim: syntax=vim
