@@ -1,7 +1,7 @@
 Xcursor.theme:gentoo-silver
 
 URxvt*.perl-ext-common: default,matcher
-URxvt*.urlLauncher: firefox
+URxvt*.url-launcher: xdg-open
 URxvt*.matcher.button:1
 URxvt*.matcher.rend.0:Uline Bold fg5
 URxvt*.geometry: 120x35
