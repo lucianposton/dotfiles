@@ -8,9 +8,7 @@ should_ignore() {
        ".."
        ".git"
        ".gitignore"
-       "add.sh"
-       "install.sh"
-       "submodules"
+       "setup"
    )
 
    for f in ${ignored_files[@]}
