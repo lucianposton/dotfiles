@@ -8,6 +8,8 @@ should_ignore() {
        ".."
        ".git"
        ".gitignore"
+       ".gitmodules"
+       ".gitattributes"
        "setup"
    )
 
