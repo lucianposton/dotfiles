@@ -1,5 +1,8 @@
 set nocompatible
 
+set nomodeline
+let g:secure_modelines_verbose = 1
+
 set backspace=indent,eol,start
 set history=50
 set ruler
