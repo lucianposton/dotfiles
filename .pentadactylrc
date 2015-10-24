@@ -23,12 +23,10 @@ dactyl.toggleFullscreen = (function() {
     return function () {
         if (isFullscreen) {
             isFullscreen = false;
-            dactyl.execute(":set guioptions-=s");
             dactyl.execute(":set nofullscreen");
             dactyl.execute(":set showtabline=always");
         } else {
             isFullscreen = true;
-            dactyl.execute(":set guioptions+=s");
             dactyl.execute(":set fullscreen");
             dactyl.execute(":set showtabline=never");
         }
