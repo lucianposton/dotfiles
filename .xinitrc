@@ -39,6 +39,8 @@ xfce)
 
     start-pulseaudio-x11
 
+    #TODO Setup XDG crap, autostart apps, etc. See /etc/xdg/xfce4/xinitrc
+
     command=xmonad
 ;;
 esac
