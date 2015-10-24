@@ -41,6 +41,7 @@ alias ls='ls --color=auto'
 alias g='git'
 alias prettyxml='xmllint --format -'
 alias prettyjson='python -m json.tool'
+alias xargs1pl="tr '\n' '\0' | xargs -0 -n1"
 
 setopt autocd
 setopt extendedglob
