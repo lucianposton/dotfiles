@@ -120,4 +120,4 @@ nnoremap <c-g> :call SelectaIdentifier()<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Powerline
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set rtp+=~/dotfiles/submodules/powerline/powerline/bindings/vim
+set rtp+=~/dotfiles/setup/submodules/powerline/powerline/bindings/vim

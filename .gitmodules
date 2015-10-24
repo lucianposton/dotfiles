@@ -1,8 +1,8 @@
 [submodule "submodules/selecta"]
-	path = submodules/selecta
+	path = setup/submodules/selecta
 	url = https://github.com/garybernhardt/selecta.git
 	branch = master
 [submodule "submodules/powerline"]
-	path = submodules/powerline
+	path = setup/submodules/powerline
 	url = https://github.com/Lokaltog/powerline.git
 	branch = develop
