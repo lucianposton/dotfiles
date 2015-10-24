@@ -74,7 +74,11 @@ if [[ `uname` == 'Darwin' ]]; then
     install_as_symlink "$HOME/.fonts" "$HOME/Library/Fonts"
     echo "Probably need to reboot for fonts to take effect..."
 
-    # TODO install homebrew
+    xcode-select --install
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    brew update
+
+    # TODO install gnu utils
     # http://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/
     #brew install --default-names coreutils findutils gnu-tar gnu-sed gawk gnutls gnu-indent gnu-getopt
     # ...
