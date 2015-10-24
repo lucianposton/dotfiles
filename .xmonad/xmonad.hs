@@ -18,7 +18,7 @@ import XMonad.Actions.GridSelect
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
-myTerminal      = "urxvt"
+myTerminal      = "urxvtcd.sh || urxvtc || urxvt || xterm"
 
 -- Width of the window border in pixels.
 --
