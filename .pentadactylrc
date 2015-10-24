@@ -105,4 +105,4 @@ set! browser.sessionstore.privacy_level_deferred=2
 " - http://superuser.com/questions/96299/mapping-superhjkl-to-arrow-keys-under-x
 " - https://github.com/chusiang/tuxENV/blob/master/home/_pentadactylrc
 
-" vim: syntax=vim
+" vim: ft=vim
