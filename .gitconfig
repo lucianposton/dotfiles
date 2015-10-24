@@ -74,4 +74,4 @@
     append-cr-url = true
     pull-request-by-default = true
 [include]
-    path = dotfiles.local/.gitconfig
+    path = dotfiles-local/.gitconfig
