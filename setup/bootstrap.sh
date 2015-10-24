@@ -24,8 +24,8 @@ should_ignore() {
    return 1
 }
 
-DotfilesDir=$HOME/dotfiles
-OldDotfilesDir=$HOME/dotfiles_old
+DotfilesDir="$( cd "$( dirname "$0" )" && git rev-parse --show-toplevel )"
+OldDotfilesDir="$HOME/dotfiles_old"
 
 if [[ -e $OldDotfilesDir ]]
 then

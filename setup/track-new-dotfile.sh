@@ -23,7 +23,7 @@ then
 	exit 1
 fi
 
-DOTFILESDIR="$( cd "$( dirname "$0" )" && pwd )"
+DOTFILESDIR="$( cd "$( dirname "$0" )" && git rev-parse --show-toplevel )"
 FILEDIR="$( cd "$( dirname "$PATHTOFILE" )" && pwd )"
 
 if [[ $FILEDIR != $HOME ]]
