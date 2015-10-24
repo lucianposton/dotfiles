@@ -54,7 +54,6 @@ endif
 
 set t_Co=256
 
-au BufRead,BufNewFile *.mi set filetype=mason
 
 highlight Comment ctermfg=grey guifg=grey
 "highlight WhiteSpaceEOL ctermbg=darkgreen guibg=lightblue
@@ -70,7 +69,8 @@ highlight BadWhiteSpace ctermbg=lightblue guibg=lightblue
 "au! InsertLeave * match BadWhiteSpace /\t\|\s\+$/
 "au! BufWinLeave * call clearmatches()
 
-au! BufWritePost .vimrc source %
+au! BufWritePost $MYVIMRC source $MYVIMRC
+au! BufRead,BufNewFile *.mi set filetype=mason
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
