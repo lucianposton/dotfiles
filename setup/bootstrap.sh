@@ -68,6 +68,8 @@ done
 read -n 1 -ep "Update submodules? (y/n) "
 [[ $REPLY =~ ^[Yy]$ ]] && cd $DotfilesDir && git submodule update --recursive --init
 
+git config --local --replace-all include.path '../setup/gitconfig_secret_filters' gitconfig_secret_filters
+
 if [[ `uname` == 'Darwin' ]]; then
     # OSX uses a different font directory
     chmod -a "group:everyone deny delete" "$HOME/Library/Fonts" || echo "Skipping ACL removal on '$HOME/Library/Fonts'"
