@@ -34,20 +34,22 @@ dactyl.toggleFullscreen = (function() {
 })();
 EOF
 
-map <Space>f -js dactyl.toggleFullscreen();
+map -modes=n -builtin <Space>f -js dactyl.toggleFullscreen();
 
-nmap <Leader>h :history<CR>
+map -modes=n -builtin <Leader>h :history<CR>
 
-" - Scroll tabs
-nmap l gt
-nmap h gT
+" - Tabs
+map -modes=n -builtin l gt
+map -modes=n -builtin h gT
+map -modes=n -builtin <C-l> -ex :tabmove! +1
+map -modes=n -builtin <C-h> -ex :tabmove! -1
 
 " - Scroll page.
-map -modes=n j -builtin 3j
-map -modes=n J <C-d>
-map -modes=n k -builtin 3k
-map -modes=n K <C-u>
-map -modes=n b <PageUp>
+map -modes=n -builtin j 3j
+map -modes=n -builtin J <C-d>
+map -modes=n -builtin k 3k
+map -modes=n -builtin K <C-u>
+map -modes=n -builtin b <PageUp>
 
 " - Abbreviate
 cabbreviate dl downloads
@@ -90,13 +92,13 @@ dactyl.toggleUA = (function() {
 })();
 EOF
 
-map <Space>u -js dactyl.toggleUA();
+map -modes=n -builtin <Space>u -js dactyl.toggleUA();
 
 
 " - about:config customizations
 "set! extensions.ublock0.forceLegacyToolbarButton=true
 set! browser.tabs.closeWindowWithLastTab=false
-set! browser.sessionstore.privacy_level=0
+set! browser.sessionstore.privacy_level=2
 set! browser.sessionstore.privacy_level_deferred=2
 
 
