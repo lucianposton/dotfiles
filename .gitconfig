@@ -11,6 +11,7 @@
     ui = auto
 [alias]
     start = !git init && git commit --allow-empty -m \"Initial commit\"
+    exec = "!exec "
     s = status
     st = status
     co = checkout
