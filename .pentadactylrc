@@ -11,7 +11,7 @@ set guioptions=bCrsn
 set guioptions+=s
 set hlfind
 set incfind
-set editor='urxvt -e vim +<line> <file>'
+set editor='urxvtcd.sh -e vim +<line> +"sil! call cursor(0, <column>)" <file>'
 set hintkeys=asdfghjkl;
 
 qmark y https://www.youtube.com/feed/subscriptions
