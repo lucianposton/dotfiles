@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# https://gist.github.com/dmalikov/8676161
+
+for author in `git log --format='%ae' | sort -u`; do
+    changes=`git log --author=$author --pretty=tformat: --numstat | awk '{ add += $1 ; subs += $2 } END { printf "%s ++ / %s --\n",add,subs }'`
+    commits=`git log --author=$author --oneline | wc -l`
+    echo "$author: $commits commits / $changes"
+done | sort -rn -k2
