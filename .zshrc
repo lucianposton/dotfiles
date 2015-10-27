@@ -1,3 +1,6 @@
+# After .zshrc, .zprofile, and /etc/zshrc, this file is sourced by
+# *interactive* shells.
+
 ANSI_BLACK='\033[30m'
 ANSI_BLACK_BOLD='\033[0;30;1m'
 ANSI_RED='\033[31m'

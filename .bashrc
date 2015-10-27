@@ -1,10 +1,10 @@
-# /etc/skel/.bashrc
+# This file is sourced by *interactive non-login* shells (or when bash detects
+# it is run remotely with rsh). Depending on bash compile flags
+# (SSH_SOURCE_BASHRC), this file may be sourced when bash detects it is run
+# remotely with ssh.
 #
-# This file is sourced by all *interactive* bash shells on startup,
-# including some apparently interactive shells such as scp and rcp
-# that can't tolerate any output.  So make sure this doesn't display
-# anything or bad things will happen !
-
+# If SYS_BASHRC, e.g. /etc/bash/bashrc, was defined at compile time, this
+# file will be sourced after SYS_BASHRC.
 
 # Test for an interactive shell.  There is no need to set anything
 # past this point for scp and rcp, and it's important to refrain from
@@ -16,6 +16,10 @@ fi
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
+
+# export SOURCED_BASHRC so .bash_profile doesn't double source this file in
+# certain scenarios.
+export SOURCED_BASHRC=1
 
 # don't put duplicate lines in the history. See bash(1) for more options
 # ... or force ignoredups and ignorespace
