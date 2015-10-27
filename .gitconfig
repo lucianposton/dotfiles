@@ -6,7 +6,6 @@
     smtpserver = smtp.gmail.com
     smtpuser = lucian.poston@gmail.com
     smtpserverport = 587
-    cccmd = git-cc
 [color]
     ui = auto
 [alias]
