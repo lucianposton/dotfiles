@@ -48,8 +48,8 @@ alias scratch="ssh -X 10.57.162.6"
 #stty erase 
 stty erase 
 
-if [ -e $HOME/.profile_custom ]
+if [ -e $HOME/dotfiles_local/.profile_custom ]
 then
-	. $HOME/.profile_custom
+	. $HOME/dotfiles_local/.profile_custom
 fi
 
