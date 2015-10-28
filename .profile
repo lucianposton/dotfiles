@@ -4,6 +4,10 @@
 #
 # Since this file is shared by multiple shells, it should not contain settings
 # specifically related to any one shell.
+#
+# See
+# https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/
+# for overview of shell startup scripts.
 
 # 027 to prevent others from reading newly created files, but also may affect
 # system files created while sudo'd.
