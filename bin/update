@@ -4,7 +4,7 @@ set -e
 
 die() { echo "$@" ; exit 1; }
 
-initramfs_list=$(cat <<'EOL'
+INITRAMFS_LIST=$(cat <<'EOL'
 # directory structure
 dir /proc       755 0 0
 dir /sys        755 0 0
@@ -83,7 +83,7 @@ file    /init                   /tmp/initramfs_init                 755 0 0
 EOL
 )
 
-initramfs_init=$(cat << 'EOL'
+INITRAMFS_INIT=$(cat << 'EOL'
 #!/bin/busybox sh
 
 rescue_shell() {
@@ -113,7 +113,7 @@ check_filesystem() {
     trap : INT QUIT
 
     # using our own fsck, not the builtin one from busybox
-    /sbin/fsck -p $fsck_opts $1
+    /sbin/fsck -p $fsck_opts "$1"
 
     case $? in
         0)      return 0;;
@@ -147,7 +147,7 @@ cryptsetup_device_by_uuidlabel() {
             crypt_root=*)
                 type=$(echo $cmd | cut -d= -f2)
                 echo "Setting up dm-crypt device"
-                if [ $type == "LABEL" ] || [ $type == "UUID" ] ; then
+                if [ "$type" = "LABEL" ] || [ "$type" = "UUID" ] ; then
                     uuid=$(echo $cmd | cut -d= -f3)
                     cryptsetup --key-file=/dev/mapper/lukskey --header /etc/luks/luks.header open --type luks $(findfs "$type"="$uuid") luksdevice
                 else
@@ -166,7 +166,7 @@ mount_root_by_uuidlabel() {
             root=*)
                 type=$(echo $cmd | cut -d= -f2)
                 echo "Mounting rootfs"
-                if [ $type == "LABEL" ] || [ $type == "UUID" ] ; then
+                if [ "$type" = "LABEL" ] || [ "$type" = "UUID" ] ; then
                     uuid=$(echo $cmd | cut -d= -f3)
                     mount -t ext4 -o ro $(findfs "$type"="$uuid") /newroot
                 else
@@ -228,14 +228,14 @@ ln -fs /newroot/etc/fstab /etc/fstab
 mountpoints=""
 
 for m in $mountpoints ; do
-  check_filesystem $m
+  check_filesystem "$m"
 
   echo "Mounting $m read-only"
-  mkdir -p $m
-  mount -r $m || rescue_shell "Error mounting $m"
+  mkdir -p "$m"
+  mount -r "$m" || rescue_shell "Error mounting $m"
 
-  mkdir -p "/newroot"$m
-  mount --move $m "/newroot"$m || rescue_shell "Error moving $m to newroot"
+  mkdir -p "/newroot$m"
+  mount --move "$m" "/newroot$m" || rescue_shell "Error moving $m to newroot"
 done
 
 echo "Done. Switching to real root."
@@ -245,7 +245,7 @@ umount /proc
 umount /dev
 
 # switch to real root and execute init
-exec /bin/busybox switch_root /newroot /sbin/init ${CMDLINE}
+exec /bin/busybox switch_root /newroot /sbin/init "${CMDLINE}"
 
 EOL
 )
@@ -287,38 +287,38 @@ then
     sleep 1
     echo "/boot filesystem disk space usage:"
     df -h | grep boot | egrep --color '[0-9]{1,2}%'
-    free_boot_space_MB=$(df -BM --output=target,avail | grep boot | egrep -o '[0-9]+')
-    if [ $free_boot_space_MB -lt 15 ]; then
-        read -n 1 -ep "Only $free_boot_space_MB MB avaiable on /boot. Continue? (y/n) "
-        [[ $REPLY =~ ^[Nn]$ ]] && umount /boot && exit 0
+    FREE_BOOT_SPACE_MB=$(df -BM --output=target,avail | grep boot | egrep -o '[0-9]+')
+    if [ "$FREE_BOOT_SPACE_MB" -lt "15" ]; then
+        read -n 1 -ep "Only $FREE_BOOT_SPACE_MB MB avaiable on /boot. Continue? (y/n) "
+        [[ "$REPLY" =~ ^[Nn]$ ]] && umount /boot && exit 0
     fi
 
-    echo "$initramfs_list" > /tmp/initramfs_list
-    echo "$initramfs_init" > /tmp/initramfs_init
-    running_version=$(uname -r)
-    running_dir="linux-$running_version"
+    echo "$INITRAMFS_LIST" > /tmp/initramfs_list
+    echo "$INITRAMFS_INIT" > /tmp/initramfs_init
+    RUNNING_VERSION=$(uname -r)
+    RUNNING_DIR="linux-$RUNNING_VERSION"
 
     cd /usr/src
-    prior_dir=$(readlink linux)
-    prior_version=${prior_dir#"linux-"}
+    PRIOR_DIR=$(readlink linux)
+    PRIOR_VERSION=${PRIOR_DIR#"linux-"}
 
     eselect kernel list
     echo
-    read -p "eselect kernel set " num
-    eselect kernel set $num
-    next_dir=$(readlink linux)
-    next_version=${next_dir#"linux-"}
-    next_initramfs="initramfs-$next_version"
+    read -p "eselect kernel set " NUM
+    eselect kernel set "$NUM"
+    NEXT_DIR=$(readlink linux)
+    NEXT_VERSION=${NEXT_DIR#"linux-"}
+    NEXT_INITRAMFS="initramfs-$NEXT_VERSION"
 
     cd /usr/src/linux
     echo
-    echo "Which old config should be copied to $next_dir?"
-    options=("$prior_dir (prior symlink)" "$running_version (running kernel)" "None")
-    select opt in "${options[@]}" "Quit";
+    echo "Which old config should be copied to $NEXT_DIR?"
+    OPTIONS=("$PRIOR_DIR (prior symlink)" "$RUNNING_VERSION (running kernel)" "None")
+    select opt in "${OPTIONS[@]}" "Quit";
     do
         case "$REPLY" in
             1 ) echo "Using directory from prior symlink";
-                cp -i --backup=numbered ../$prior_dir/.config ./
+                cp -i --backup=numbered "../${PRIOR_DIR}/.config" ./
                 make oldconfig
                 break;;
             2 ) echo "Using running kernel";
@@ -328,7 +328,7 @@ then
                 break;;
             3 ) echo "Not copying an old config";
                 break;;
-            $(( ${#options[@]}+1 )) ) die "Peace!";
+            $(( ${#OPTIONS[@]}+1 )) ) die "Peace!";
                 break;;
         esac
     done
@@ -359,7 +359,7 @@ then
 
     # TODO: both backup and current links can point to same files when kernel
     # version doesn't change
-    mv -i --backup=numbered /tmp/initramfs /boot/$next_initramfs
+    mv -i --backup=numbered /tmp/initramfs "/boot/$NEXT_INITRAMFS"
     make install
     cd /boot
 
@@ -369,15 +369,15 @@ then
         case $yn in
             Yes )
                 ls -l
-                ln -sfT $(readlink current) backup
-                ln -sfT $(readlink initramfs) initramfs.bak
-                ln -sfT vmlinuz-$next_version current
-                ln -sfT $next_initramfs initramfs
+                ln -sfT "$(readlink current)" backup
+                ln -sfT "$(readlink initramfs)" initramfs.bak
+                ln -sfT "vmlinuz-${NEXT_VERSION}" current
+                ln -sfT "$NEXT_INITRAMFS" initramfs
                 ls -l
                 break;;
             No )
-                ln -sfT vmlinuz-$next_version current
-                ln -sfT $next_initramfs initramfs
+                ln -sfT "vmlinuz-${NEXT_VERSION}" current
+                ln -sfT "$NEXT_INITRAMFS" initramfs
                 break;;
         esac
     done
@@ -389,9 +389,9 @@ then
     umount /boot || echo "/boot umount failed!"
 
     echo
-    portage_version=`echo "$next_version" | sed 's/-[A-Za-z][A-Za-z]\+//'`
-    kernel_flavor=`echo "$next_version" | perl -nle 'm/-([A-Za-z][A-Za-z]+)/; print $1'`
-    emerge --noreplace =sys-kernel/$kernel_flavor-sources-$portage_version
+    PORTAGE_VERSION=`echo "$NEXT_VERSION" | sed 's/-[A-Za-z][A-Za-z]\+//'`
+    KERNEL_FLAVOR=`echo "$NEXT_VERSION" | perl -nle 'm/-([A-Za-z][A-Za-z]+)/; print $1'`
+    emerge --noreplace "=sys-kernel/${KERNEL_FLAVOR}-sources-${PORTAGE_VERSION}"
     echo
     echo "Emerging kernel modules..."
     sleep 2
