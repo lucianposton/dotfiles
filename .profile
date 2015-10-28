@@ -29,6 +29,10 @@ export LS_COLORS="di=35:fi=0:ln=31:pi=4:so=4:bd=4:cd=33:or=31:*.deb=90"
 
 # Create predictable $SSH_AUTH_SOCK to enable reattached tmux/screen sessions
 # to continue to use ssh-agent.
+#
+# Could alternatively use keychain (https://wiki.gentoo.org/wiki/Keychain) or
+# something like scripts from
+# http://superuser.com/questions/141044/sharing-the-same-ssh-agent-among-multiple-login-sessions
 if [ -n "$SSH_AUTH_SOCK" ] ; then
     ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/.ssh_auth_sock"
     chmod go-rwx "$HOME/.ssh/.ssh_auth_sock"
