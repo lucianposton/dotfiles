@@ -24,49 +24,56 @@ should_ignore() {
    return 1
 }
 
-DotfilesDir="$( cd "$( dirname "$0" )" && git rev-parse --show-toplevel )"
-OldDotfilesDir="$HOME/dotfiles_old"
+DOTFILESDIR="$( cd "$( dirname "$0" )" && git rev-parse --show-toplevel )"
+OLDDOTFILESDIR="$HOME/dotfiles_old"
 
-if [[ -e $OldDotfilesDir ]]
+if [[ -e "$OLDDOTFILESDIR" ]]
 then
-    read -n 1 -ep "$OldDotfilesDir backup already exists. Continue? (y/n) "
-    [[ $REPLY =~ ^[Nn]$ ]] && exit 1
+    read -n 1 -ep "$OLDDOTFILESDIR backup already exists. Continue? (y/n) "
+    [[ "$REPLY" =~ ^[Nn]$ ]] && exit 1
 fi
 
-mkdir -p $OldDotfilesDir
+mkdir -p "$OLDDOTFILESDIR"
 
 install_as_symlink() {
-    source_file="$1"
-    target_file="$2"
+    SOURCE_FILE="$1"
+    TARGET_FILE="$2"
     # shenanigans because BSD mv doesn't have --backup
-    if [[ -e "$target_file" ]]; then #&& mv -v "$target_file" "$OldDotfilesDir/"
-        target_file_basename=$(basename "$target_file")
-        target_file_backup="$OldDotfilesDir/$target_file_basename"
-        if [[ ! -e "$target_file_backup" ]]; then
+    if [[ -e "$TARGET_FILE" ]]; then #&& mv -v "$TARGET_FILE" "$OLDDOTFILESDIR/"
+        TARGET_FILE_BASENAME="$(basename "$TARGET_FILE")"
+        TARGET_FILE_BACKUP="$OLDDOTFILESDIR/$TARGET_FILE_BASENAME"
+        if [[ ! -e "$TARGET_FILE_BACKUP" ]]; then
             # file does not exist in the backup directory
-            mv -v "$target_file" "$target_file_backup"
+            mv -v "$TARGET_FILE" "$TARGET_FILE_BACKUP"
         else
-            num=2
-            while [[ -e "$target_file_backup.$num" ]]; do
-                (( num++ ))
+            NUM_SUFFIX=2
+            while [[ -e "${TARGET_FILE_BACKUP}.${NUM_SUFFIX}" ]]; do
+                NUM_SUFFIX=$(( NUM_SUFFIX + 1 ))
             done
-            mv -v "$target_file" "$target_file_backup.$num"
+            mv -v "$TARGET_FILE" "${TARGET_FILE_BACKUP}.${NUM_SUFFIX}"
         fi
     fi
 
-    echo "Creating symlink '$target_file' to source file '$source_file'"
-    ln -s "$source_file" "$target_file"
+    echo "Creating symlink '$TARGET_FILE' to source file '$SOURCE_FILE'"
+    ln -s "$SOURCE_FILE" "$TARGET_FILE"
 }
 
-cd $DotfilesDir
-for i in .* *
+cd "$DOTFILESDIR"
+
+# Changes globbing so that * matches include .* files but exclude . and ..
+GLOBIGNORE=".:.."
+
+# Remove others' permissions (mainly just for .ssh directory).
+chmod o-rwx *
+
+for i in *
 do
-    should_ignore $i && continue
-    install_as_symlink "$DotfilesDir/$i" "$HOME/$i"
+    should_ignore "$i" && continue
+    install_as_symlink "$DOTFILESDIR/$i" "$HOME/$i"
 done
 
 read -n 1 -ep "Update submodules? (y/n) "
-[[ $REPLY =~ ^[Yy]$ ]] && cd $DotfilesDir && git submodule update --recursive --init
+[[ "$REPLY" =~ ^[Yy]$ ]] && cd "$DOTFILESDIR" && git submodule update --recursive --init
 
 git config --local --replace-all include.path '../setup/gitconfig_secret_filters' gitconfig_secret_filters
 
