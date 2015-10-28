@@ -23,28 +23,11 @@ HISTFILE=~/.zhistory
 HISTSIZE=16000
 SAVEHIST=15000
 
-export PATH=$HOME/bin:$PATH
-
-export EDITOR=vim
-
 #export EPREFIX=/home/poston/gentoo
 #export PATH=${EPREFIX}/bin:$PATH
 
-export P4CONFIG=.p4config
-export BRAZIL_WORKSPACE_DEFAULT_LAYOUT=short
-export PATH=/apollo/env/SDETools/bin:$PATH
-#export PATH=/apollo/env/eclipse-3.7/bin:$PATH
-#export PATH=$PATH:/apollo/env/envImprovement/bin
-
 export REPORTTIME=10
 #export TIMEFMT=" Elapsed: %*E User: %U Kernel: %*S"
-
-alias grep='grep --color=auto'
-alias ls='ls --color=auto'
-alias g='git'
-alias prettyxml='xmllint --format -'
-alias prettyjson='python -m json.tool'
-alias xargs1pl="tr '\n' '\0' | xargs -0 -n1"
 
 setopt autocd
 setopt extendedglob
@@ -52,7 +35,6 @@ setopt correctall
 setopt hist_ignore_all_dups
 setopt hist_ignore_space
 setopt share_history
-
 
 bindkey -v
 bindkey -M viins 'jj' vi-cmd-mode
