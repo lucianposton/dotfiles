@@ -24,39 +24,30 @@ should_ignore() {
    return 1
 }
 
-DOTFILESDIR="$( cd "$( dirname "$0" )" && git rev-parse --show-toplevel )"
-OLDDOTFILESDIR="$HOME/dotfiles_old"
-
-if [[ -e "$OLDDOTFILESDIR" ]]
-then
-    read -n 1 -ep "$OLDDOTFILESDIR backup already exists. Continue? (y/n) "
-    [[ "$REPLY" =~ ^[Nn]$ ]] && exit 1
-fi
-
-mkdir -p "$OLDDOTFILESDIR"
-
 install_as_symlink() {
     SOURCE_FILE="$1"
     TARGET_FILE="$2"
     # shenanigans because BSD mv doesn't have --backup
     if [[ -e "$TARGET_FILE" ]]; then #&& mv -v "$TARGET_FILE" "$OLDDOTFILESDIR/"
+        mkdir -p "$OLDDOTFILESDIR"
         TARGET_FILE_BASENAME="$(basename "$TARGET_FILE")"
         TARGET_FILE_BACKUP="$OLDDOTFILESDIR/$TARGET_FILE_BASENAME"
-        if [[ ! -e "$TARGET_FILE_BACKUP" ]]; then
-            # file does not exist in the backup directory
-            mv -v "$TARGET_FILE" "$TARGET_FILE_BACKUP"
-        else
+        if [[ -e "$TARGET_FILE_BACKUP" ]]; then
             NUM_SUFFIX=2
             while [[ -e "${TARGET_FILE_BACKUP}.${NUM_SUFFIX}" ]]; do
                 NUM_SUFFIX=$(( NUM_SUFFIX + 1 ))
             done
-            mv -v "$TARGET_FILE" "${TARGET_FILE_BACKUP}.${NUM_SUFFIX}"
+            TARGET_FILE_BACKUP="${TARGET_FILE_BACKUP}.${NUM_SUFFIX}"
         fi
+        mv "$TARGET_FILE" "$TARGET_FILE_BACKUP"
+        echo "Moved existing $TARGET_FILE_BASENAME to $TARGET_FILE_BACKUP"
     fi
 
-    echo "Creating symlink '$TARGET_FILE' to source file '$SOURCE_FILE'"
     ln -s "$SOURCE_FILE" "$TARGET_FILE"
 }
+
+DOTFILESDIR="$( cd "$( dirname "$0" )" && git rev-parse --show-toplevel )"
+OLDDOTFILESDIR="$HOME/dotfiles_old"
 
 cd "$DOTFILESDIR"
 
