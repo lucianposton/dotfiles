@@ -27,6 +27,14 @@ export PROMPT=$'
 export CLICOLOR="true"
 export LS_COLORS="di=35:fi=0:ln=31:pi=4:so=4:bd=4:cd=33:or=31:*.deb=90"
 
+# Create predictable $SSH_AUTH_SOCK to enable reattached tmux/screen sessions
+# to continue to use ssh-agent.
+if [ -n "$SSH_AUTH_SOCK" ] ; then
+    ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/.ssh_auth_sock"
+    chmod go-rwx "$HOME/.ssh/.ssh_auth_sock"
+    export SSH_AUTH_SOCK="$HOME/.ssh/.ssh_auth_sock"
+fi
+
 alias ls='ls -F --color=auto'
 alias la='ls -A'
 alias l='ls -lA'
