@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# https://github.com/TheChymera/mkstage4
+# based on https://github.com/TheChymera/mkstage4
 
 # checks if run as root:
 if ! [ "`whoami`" == "root" ]
@@ -11,23 +11,13 @@ fi
 
 #set flag variables to null
 EXCLUDE_BOOT=0
-EXCLUDE_CONNMAN=0
 QUIET=0
 
 # reads options:
 while getopts ':t:sqc' flag; do
   case "${flag}" in
-    t)
-      TARGET="$OPTARG"
-      ;;
-    s)
-      TARGET="/"
-      ;;
     q)
       QUIET=1
-      ;;
-    c)
-      EXCLUDE_CONNMAN=1
       ;;
     b)
       EXCLUDE_BOOT=1
@@ -79,36 +69,32 @@ fi
 #Shifts pointer to read custom tar options
 shift;OPTIONS="$@"
 
+# TODO: The following are missing from the backup
+# /dev/console
+# /dev/null
+
 # Excludes:
 EXCLUDES="\
---exclude=proc/* \
---exclude=sys/* \
---exclude=tmp/* \
---exclude=mnt/*/* \
---exclude=var/lock/* \
---exclude=var/log/* \
---exclude=var/run/* \
---exclude=.bash_history \
---exclude=lost+found \
---exclude=usr/portage/*"
+--exclude=/proc/* \
+--exclude=/sys/* \
+--exclude=/tmp/* \
+--exclude=/mnt/*/* \
+--exclude=/media/*/* \
+--exclude=/dev/* \
+--exclude=/run/* \
+--exclude=/var/lock/* \
+--exclude=/var/run/* \
+--exclude=/var/tmp/* \
+--exclude=/lost+found \
+--exclude=/usr/portage/distfiles/* \
+--exclude=.ccache/* \
+"
 
-if [ "$TARGET" == "/" ]
-then
-  EXCLUDES+=" --exclude=$STAGE4_FILENAME"
-fi
-
-if [ ${EXCLUDE_CONNMAN} -eq 1 ]
-then
-  EXCLUDES+=" --exclude=var/lib/connman/*"
-fi
-
-if [ ${EXCLUDE_BOOT} -eq 1 ]
-then
-  EXCLUDES+=" --exclude=$boot/*"
-fi
+EXCLUDES+=" --exclude=$STAGE4_FILENAME"
 
 # Generic tar options:
-TAR_OPTIONS="-cjpP --ignore-failed-read -f"
+TAR_OPTIONS="-cjpP --xattrs --acls -f"
+#TAR_OPTIONS="-cjpP --ignore-failed-read -f"
 
 # if not in quiet mode, this message will be displayed:
 if [ "$AGREE" != "yes" ]
@@ -135,7 +121,9 @@ fi
 # start stage4 creation:
 if [ "$AGREE" == "yes" ]
 then
-  cd $TARGET && tar $TAR_OPTIONS $STAGE4_FILENAME * $EXCLUDES $OPTIONS
+  tar -C $TARGET $TAR_OPTIONS $STAGE4_FILENAME / $EXCLUDES $OPTIONS
+#  cd $TARGET && tar $TAR_OPTIONS - / $EXCLUDES $OPTIONS | sudo -u $USER ssh somewhere "cat - > $HOME/backup.tar.bz2"
+  md5sum $STAGE4_FILENAME > ${STAGE4_FILENAME}.md5
 fi
 
 exit 0
