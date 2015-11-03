@@ -406,7 +406,6 @@ fi
 if [ "$OPT_MODE" == "world" ]
 then
     if [ -n "$OPT_SYNC" ]; then
-        layman -S
         eix-sync
     fi
 
