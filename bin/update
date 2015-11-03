@@ -140,7 +140,7 @@ check_filesystem() {
 cryptsetup_device_by_uuidlabel() {
     cryptsetup --header /etc/luks/luks.keyfile.header open --type luks /etc/luks/luks.keyfile lukskey
 
-    # Maybe can use udevd in initramfs in order to use /dev/disk/by-id/*
+    # TODO: Maybe can use udevd in initramfs in order to use /dev/disk/by-id/*
     # instead of UUID or /dev/sda labels
     for cmd in $(cat /proc/cmdline) ; do
         case $cmd in
@@ -240,6 +240,7 @@ done
 
 echo "Done. Switching to real root."
 
+# init will mount /sys /proc and /dev later
 umount /sys
 umount /proc
 umount /dev
@@ -348,6 +349,10 @@ then
     # manually create initramfs from directory
     #cd initram || die
     #find . | cpio --quiet -o -H newc | gzip -9 > ../initramfs
+
+    # https://forums.gentoo.org/viewtopic-t-1014242-view-next.html?sid=9b262ff7daa08ca1b824b278364bcbbd
+    # emerge pax-utils USE=python
+    # lddtree  --copy-to-tree=/usr/src/initramfs     /sbin/cryptsetup
 
     # Use gen_initramfs_list.sh to build initramfs
     make -C /usr/src/linux/usr/ gen_init_cpio
