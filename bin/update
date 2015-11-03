@@ -400,7 +400,7 @@ then
     echo
     echo "Emerging kernel modules..."
     sleep 2
-    emerge -tv @module-rebuild
+    emerge -tv --quiet-build @module-rebuild
 fi
 
 if [ "$OPT_MODE" == "world" ]
