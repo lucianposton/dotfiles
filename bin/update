@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -251,43 +251,7 @@ exec /bin/busybox switch_root /newroot /sbin/init "${CMDLINE}"
 EOL
 )
 
-[ "$(whoami)" == "root" ] || exec sudo -- "$0" "$@"
-
-# http://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
-OPT_SYNC=1
-OPT_MODE=world
-OPT_ECLEAN=
-for i in "$@"
-do
-    case $i in
-        --no-sync)
-            OPT_SYNC=
-            ;;
-
-        --eclean)
-            OPT_ECLEAN=1
-            ;;
-
-        -w|--world)
-            OPT_MODE=world
-            ;;
-
-        -k|--kernel)
-            OPT_MODE=kernel
-            ;;
-
-        -i|--initramfs)
-            OPT_MODE=initramfs
-            ;;
-
-        *)
-            # unknown stuff
-            ;;
-    esac
-done
-
-if [ "$OPT_MODE" == "kernel" ]
-then
+check_and_initialize_boot() {
     mount /boot || echo "/boot already mounted"
     sleep 1
     echo "/boot filesystem disk space usage:"
@@ -297,30 +261,56 @@ then
         read -n 1 -ep "Only $FREE_BOOT_SPACE_MB MB avaiable on /boot. Continue? (y/n) "
         [[ "$REPLY" =~ ^[Nn]$ ]] && umount /boot && exit 0
     fi
+}
 
-    RUNNING_VERSION=$(uname -r)
-    RUNNING_DIR="linux-$RUNNING_VERSION"
+check_and_cleanup_boot() {
+    echo "/boot filesystem disk space usage:"
+    df -h | grep boot | egrep --color '[0-9]{1,2}%'
+    cd -
+    sleep 1
+    umount /boot || echo "/boot umount failed!"
+}
 
-    cd /usr/src
-    PRIOR_DIR=$(readlink linux)
-    PRIOR_VERSION=${PRIOR_DIR#"linux-"}
+define_version_variables() {
+    # *_RELEASE e.g. "3.18.11-gentoo"
+    # *_DIRECTORY e.g. "linux-3.18.11-gentoo"
 
+    RUNNING_KERNEL_RELEASE=$(uname -r)
+    RUNNING_KERNEL_DIRECTORY="linux-$RUNNING_KERNEL_RELEASE"
+
+    CURRENT_KERNEL_DIRECTORY=$(readlink /usr/src/linux)
+    CURRENT_KERNEL_RELEASE=${CURRENT_KERNEL_DIRECTORY#"linux-"}
+
+    CURRENT_INITRAMFS_FILENAME="initramfs-$CURRENT_KERNEL_RELEASE"
+}
+
+select_new_kernel_and_set_version_variables() {
     eselect kernel list
     echo
     read -p "eselect kernel set " NUM
     eselect kernel set "$NUM"
-    NEXT_DIR=$(readlink linux)
-    NEXT_VERSION=${NEXT_DIR#"linux-"}
+
+    NEW_KERNEL_DIRECTORY=$(readlink /usr/src/linux)
+    NEW_KERNEL_RELEASE=${NEW_KERNEL_DIRECTORY#"linux-"}
+
+    NEW_KERNEL_PORTAGE_VERSION=`echo "$NEW_KERNEL_RELEASE" | sed 's/-[A-Za-z][A-Za-z]\+//'`
+    NEW_KERNEL_FLAVOR=`echo "$NEW_KERNEL_RELEASE" | perl -nle 'm/-([A-Za-z][A-Za-z]+)/; print $1'`
+}
+
+update_kernel() {
+    check_and_initialize_boot
+    define_version_variables
+    select_new_kernel_and_set_version_variables
 
     cd /usr/src/linux
     echo
-    echo "Which old config should be copied to $NEXT_DIR?"
-    OPTIONS=("$PRIOR_DIR (prior symlink)" "$RUNNING_VERSION (running kernel)" "None")
+    echo "Which old config should be copied to $NEW_KERNEL_DIRECTORY?"
+    OPTIONS=("$CURRENT_KERNEL_DIRECTORY (prior symlink)" "$RUNNING_KERNEL_RELEASE (running kernel)" "None")
     select opt in "${OPTIONS[@]}" "Quit";
     do
         case "$REPLY" in
             1 ) echo "Using directory from prior symlink";
-                cp -i --backup=numbered "../${PRIOR_DIR}/.config" ./
+                cp -i --backup=numbered "../${CURRENT_KERNEL_DIRECTORY}/.config" ./
                 make oldconfig
                 break;;
             2 ) echo "Using running kernel";
@@ -348,66 +338,39 @@ then
     make modules_install
     make install
 
-    cd /boot
-
-    echo 'Update backup symlinks to point to current?'
+    echo 'Update backup symlink to point to current?'
     select yn in "Yes" "No";
     do
         case $yn in
             Yes )
                 ls -l
-                ln -sfT "$(readlink current)" backup
-                ln -sfT "vmlinuz-${NEXT_VERSION}" current
+                ln -sfT "$(readlink current)" /boot/backup
+                ln -sfT "vmlinuz-${NEW_KERNEL_RELEASE}" /boot/current
                 ls -l
                 break;;
             No )
-                ln -sfT "vmlinuz-${NEXT_VERSION}" current
+                ln -sfT "vmlinuz-${NEW_KERNEL_RELEASE}" /boot/current
                 break;;
         esac
     done
 
-    echo "/boot filesystem disk space usage:"
-    df -h | grep boot | egrep --color '[0-9]{1,2}%'
-    cd -
-    sleep 1
-    umount /boot || echo "/boot umount failed!"
+    check_and_cleanup_boot
 
-    echo
-    PORTAGE_VERSION=`echo "$NEXT_VERSION" | sed 's/-[A-Za-z][A-Za-z]\+//'`
-    KERNEL_FLAVOR=`echo "$NEXT_VERSION" | perl -nle 'm/-([A-Za-z][A-Za-z]+)/; print $1'`
-    emerge --noreplace "=sys-kernel/${KERNEL_FLAVOR}-sources-${PORTAGE_VERSION}"
-    echo
+    emerge --noreplace --quiet "=sys-kernel/${NEW_KERNEL_FLAVOR}-sources-${NEW_KERNEL_PORTAGE_VERSION}"
+
     echo "Emerging kernel modules..."
-    sleep 2
-    emerge -tv --quiet-build @module-rebuild
-fi
+    emerge --quiet-build @module-rebuild
+}
 
-if [ "$OPT_MODE" == "initramfs" ]
-then
+update_initramfs() {
     # TODO: lvm2 no longer static
     exit 90
 
-    mount /boot || echo "/boot already mounted"
-    sleep 1
-    echo "/boot filesystem disk space usage:"
-    df -h | grep boot | egrep --color '[0-9]{1,2}%'
-    FREE_BOOT_SPACE_MB=$(df -BM --output=target,avail | grep boot | egrep -o '[0-9]+')
-    if [ "$FREE_BOOT_SPACE_MB" -lt "15" ]; then
-        read -n 1 -ep "Only $FREE_BOOT_SPACE_MB MB avaiable on /boot. Continue? (y/n) "
-        [[ "$REPLY" =~ ^[Nn]$ ]] && umount /boot && exit 0
-    fi
+    check_and_initialize_boot
+    define_version_variables
 
     echo "$INITRAMFS_LIST" > /tmp/initramfs_list
     echo "$INITRAMFS_INIT" > /tmp/initramfs_init
-    RUNNING_VERSION=$(uname -r)
-    RUNNING_DIR="linux-$RUNNING_VERSION"
-
-    cd /usr/src
-    NEXT_DIR=$(readlink linux)
-    NEXT_VERSION=${NEXT_DIR#"linux-"}
-    NEXT_INITRAMFS="initramfs-$NEXT_VERSION"
-
-    cd /usr/src/linux
 
     # manually create initramfs from directory
     #cd initram || die
@@ -418,6 +381,7 @@ then
     # lddtree  --copy-to-tree=/usr/src/initramfs     /sbin/cryptsetup
 
     # Use gen_initramfs_list.sh to build initramfs
+    cd /usr/src/linux
     make -C /usr/src/linux/usr/ gen_init_cpio
     chmod +x usr/gen_init_cpio scripts/gen_initramfs_list.sh
     ./scripts/gen_initramfs_list.sh -o /tmp/initramfs /tmp/initramfs_list
@@ -427,38 +391,28 @@ then
 
     # TODO: both backup and current links can point to same files when kernel
     # version doesn't change
-    mv -i --backup=numbered /tmp/initramfs "/boot/$NEXT_INITRAMFS"
-    cd /boot
+    mv -i --backup=numbered /tmp/initramfs "/boot/$CURRENT_INITRAMFS_FILENAME"
 
-    echo 'Update backup symlinks to point to current?'
+    echo 'Update backup symlink to point to current?'
     select yn in "Yes" "No";
     do
         case $yn in
             Yes )
                 ls -l
-                ln -sfT "$(readlink initramfs)" initramfs.bak
-                ln -sfT "$NEXT_INITRAMFS" initramfs
+                ln -sfT "$(readlink initramfs)" /boot/initramfs.bak
+                ln -sfT "$CURRENT_INITRAMFS_FILENAME" /boot/initramfs
                 ls -l
                 break;;
             No )
-                ln -sfT "$NEXT_INITRAMFS" initramfs
+                ln -sfT "$CURRENT_INITRAMFS_FILENAME" /boot/initramfs
                 break;;
         esac
     done
 
-    echo "/boot filesystem disk space usage:"
-    df -h | grep boot | egrep --color '[0-9]{1,2}%'
-    cd -
-    sleep 1
-    umount /boot || echo "/boot umount failed!"
-fi
+    check_and_cleanup_boot
+}
 
-if [ "$OPT_MODE" == "world" ]
-then
-    if [ -n "$OPT_SYNC" ]; then
-        eix-sync
-    fi
-
+update_world() {
     emerge -tvu --quiet-build --autounmask-write --with-bdeps=y portage || ( revdep-rebuild -i && die "update portage failed" )
     emerge -tvuND --quiet-build --backtrack=30 --autounmask-write --with-bdeps=y --complete-graph @world || ( revdep-rebuild -i && die "update world failed" )
     if ! hash genlop || genlop -l --date yesterday | grep -q haskell
@@ -475,8 +429,84 @@ then
     emerge -c
     revdep-rebuild -i -- --quiet-build
     dispatch-conf
-fi
+}
 
-if [ -n "$OPT_ECLEAN" ]; then
-    eclean --deep distfiles
-fi
+parse_options() {
+    # http://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
+    OPT_SYNC=1
+    OPT_MODE=world
+    OPT_ECLEAN=
+    for i in "$@"
+    do
+        case $i in
+            -h|--help)
+                echo "Usage: $(basename $0) [OPTIONS]"
+                echo
+                echo "   -w, --world      Update world"
+                echo "       --no-sync    Skip syncing before updating world"
+                echo "       --eclean     Clean distfiles after updating world"
+                echo
+                echo "   -k, --kernel     Update kernel"
+                echo
+                echo "   -i, --initramfs  Update initramfs"
+                echo
+                echo "   -h, --help       Display this help"
+                exit 0
+                ;;
+            --no-sync)
+                OPT_SYNC=
+                ;;
+
+            --eclean)
+                OPT_ECLEAN=1
+                ;;
+
+            -w|--world)
+                OPT_MODE=world
+                ;;
+
+            -k|--kernel)
+                OPT_MODE=kernel
+                ;;
+
+            -i|--initramfs)
+                OPT_MODE=initramfs
+                ;;
+
+            *)
+                # unknown stuff
+                ;;
+        esac
+    done
+}
+
+main() {
+    parse_options "$@"
+
+    [ "$(whoami)" == "root" ] || exec sudo -- "$0" "$@"
+
+    if [ "$OPT_MODE" == "kernel" ]
+    then
+        update_kernel
+    fi
+
+    if [ "$OPT_MODE" == "initramfs" ]
+    then
+        update_initramfs
+    fi
+
+    if [ "$OPT_MODE" == "world" ]
+    then
+        if [ -n "$OPT_SYNC" ]; then
+            eix-sync
+        fi
+
+        update_world
+
+        if [ -n "$OPT_ECLEAN" ]; then
+            eclean --deep distfiles
+        fi
+    fi
+}
+
+main "$@"
