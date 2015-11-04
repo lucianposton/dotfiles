@@ -23,11 +23,17 @@ HISTFILE=~/.zhistory
 HISTSIZE=16000
 SAVEHIST=15000
 
-#export EPREFIX=/home/poston/gentoo
-#export PATH=${EPREFIX}/bin:$PATH
-
-export REPORTTIME=10
-#export TIMEFMT=" Elapsed: %*E User: %U Kernel: %*S"
+# TODO move to common location for use in bash
+alias ls='ls -F --color=auto'
+alias la='ls -A'
+alias l='ls -lA'
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias g='git'
+alias prettyxml='xmllint --format -'
+alias prettyjson='python -m json.tool'
+alias xargs1pl="tr '\n' '\0' | xargs -0 -n1"
 
 setopt autocd
 setopt extendedglob
@@ -78,17 +84,8 @@ autoload -U colors
 
 mailpath=$HOME/.maildir/new
 
-export CLICOLOR="true"
-export LS_COLORS='di=35:fi=0:ln=31:pi=4:so=4:bd=4:cd=33:or=31:*.deb=90'
-
-export PROMPT=$'
-%{\e[0;31m%}[ %{\e[0;36m%}%M %{\e[0;31m%}: %{\e[0;32m%}%d%{\e[0;31m%} ]
-%{\e[0;33m%}%n%{\e[0m%} > '
-
 export PATH=$PATH:$HOME/dotfiles/setup/submodules/powerline/scripts
 source $HOME/dotfiles/setup/submodules/powerline/powerline/bindings/zsh/powerline.zsh
-
-export P4CONFIG=.p4config
 
 git-recursive () { find . -maxdepth 2 -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $*)" \; }
 git-recursive-deep () { find . -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $*)" \; }
