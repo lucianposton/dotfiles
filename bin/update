@@ -298,8 +298,6 @@ then
         [[ "$REPLY" =~ ^[Nn]$ ]] && umount /boot && exit 0
     fi
 
-    echo "$INITRAMFS_LIST" > /tmp/initramfs_list
-    echo "$INITRAMFS_INIT" > /tmp/initramfs_init
     RUNNING_VERSION=$(uname -r)
     RUNNING_DIR="linux-$RUNNING_VERSION"
 
@@ -313,7 +311,6 @@ then
     eselect kernel set "$NUM"
     NEXT_DIR=$(readlink linux)
     NEXT_VERSION=${NEXT_DIR#"linux-"}
-    NEXT_INITRAMFS="initramfs-$NEXT_VERSION"
 
     cd /usr/src/linux
     echo
@@ -349,27 +346,8 @@ then
 
     make
     make modules_install
-
-    # manually create initramfs from directory
-    #cd initram || die
-    #find . | cpio --quiet -o -H newc | gzip -9 > ../initramfs
-
-    # https://forums.gentoo.org/viewtopic-t-1014242-view-next.html?sid=9b262ff7daa08ca1b824b278364bcbbd
-    # emerge pax-utils USE=python
-    # lddtree  --copy-to-tree=/usr/src/initramfs     /sbin/cryptsetup
-
-    # Use gen_initramfs_list.sh to build initramfs
-    make -C /usr/src/linux/usr/ gen_init_cpio
-    chmod +x usr/gen_init_cpio scripts/gen_initramfs_list.sh
-    ./scripts/gen_initramfs_list.sh -o /tmp/initramfs /tmp/initramfs_list
-
-    # TODO: v86d causing problems somewhere around 3.18.11
-    #/usr/sbin/splash_geninitramfs --verbose --res 1280x1024 --append /tmp/initramfs Emergance
-
-    # TODO: both backup and current links can point to same files when kernel
-    # version doesn't change
-    mv -i --backup=numbered /tmp/initramfs "/boot/$NEXT_INITRAMFS"
     make install
+
     cd /boot
 
     echo 'Update backup symlinks to point to current?'
@@ -379,14 +357,11 @@ then
             Yes )
                 ls -l
                 ln -sfT "$(readlink current)" backup
-                ln -sfT "$(readlink initramfs)" initramfs.bak
                 ln -sfT "vmlinuz-${NEXT_VERSION}" current
-                ln -sfT "$NEXT_INITRAMFS" initramfs
                 ls -l
                 break;;
             No )
                 ln -sfT "vmlinuz-${NEXT_VERSION}" current
-                ln -sfT "$NEXT_INITRAMFS" initramfs
                 break;;
         esac
     done
