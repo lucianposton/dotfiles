@@ -73,53 +73,43 @@ TERM xterm-debian
 # string consists of one or more of the following numeric codes:
 #
 # Attribute codes:
-# 00=none
-# 01=bold
+# 00=none           05=blink
+# 01=bold           07=reverse
+# 03=italics        08=concealed
 # 04=underscore
-# 05=blink
-# 07=reverse
-# 08=concealed
 #
 # Text color codes:
-# 30=black
-# 31=red
-# 32=green
-# 33=yellow
-# 34=blue
-# 35=magenta
-# 36=cyan
-# 37=white
+# 30=black          34=blue
+# 31=red            35=magenta
+# 32=green          36=cyan
+# 33=yellow         37=gray
 #
 # Background color codes:
-# 40=black
-# 41=red
-# 42=green
-# 43=yellow
-# 44=blue
-# 45=magenta
-# 46=cyan
-# 47=white
+# 40=black          44=blue
+# 41=red            45=magenta
+# 42=green          46=cyan
+# 43=yellow         47=gray
 
-NORMAL 00                   # no color code at all
-FILE 00                     # regular file: use no color at all
-RESET 0                     # reset to "normal" color
-DIR 01;34                   # directory
-LINK 01;36                  # symbolic link.  (If you set this to 'target' instead of a
-                            # numerical value, the color is as for the file pointed to.)
-MULTIHARDLINK 00            # regular file with more than one link
-FIFO 40;33                  # pipe
-SOCK 01;35                  # socket
-DOOR 01;35                  # door
-BLK 40;33;01                # block device driver
-CHR 40;33;01                # character device driver
-ORPHAN 01;05;37;41          # orphaned syminks
-MISSING 01;05;37;41         # ... and the files they point to
-SETUID 37;41                # file that is setuid (u+s)
-SETGID 30;43                # file that is setgid (g+s)
-CAPABILITY 30;41            # file with capability
-STICKY_OTHER_WRITABLE 30;42 # dir, sticky (+t) and other-writable (o+w)
-OTHER_WRITABLE 34;42        # dir, not sticky (-t) and other-writable (o+w)
-STICKY 37;44                # dir, sticky (+t) and not other-writable (o-w)
+NORMAL 00                           # no color code at all
+FILE 00                             # regular file: use no color at all
+RESET 0                             # reset to "normal" color
+DIR 35                              # directory
+MULTIHARDLINK 03                    # regular file with more than one link
+LINK 36                             # symbolic link. set to 'target' to use
+                                    # the color of the file pointed to
+BLK 04;33;01                        # block device driver
+CHR 04;33                           # character device driver
+FIFO 04;32                          # pipe
+SOCK 04;36                          # socket
+DOOR 04;31;01;03                    # door
+ORPHAN 01;41                        # orphaned syminks
+MISSING 01;41                       # ... and the files they point to
+SETUID 41                           # file that is setuid (u+s)
+SETGID 41;30                        # file that is setgid (g+s)
+CAPABILITY 30;47                    # file with capability
+OTHER_WRITABLE 30;46                # dir, not sticky (-t) and other-writable (o+w)
+STICKY_OTHER_WRITABLE 01;07;32;41   # dir, sticky (+t) and other-writable (o+w)
+STICKY 30;42                        # dir, sticky (+t) and not other-writable (o-w)
 
 # This is for files with execute permission:
 EXEC 01;32
@@ -134,6 +124,7 @@ EXEC 01;32
 .com 01;32
 .btm 01;32
 .bat 01;32
+.msi 01;32
 
 # Or if you want to colorize scripts even if they do not have the
 # executable bit actually set.
@@ -141,47 +132,47 @@ EXEC 01;32
 #.csh 01;32
 
  # archives or compressed (bright red)
-.tar 01;31
-.tgz 01;31
-.arc 01;31
-.arj 01;31
-.taz 01;31
-.lha 01;31
-.lz4 01;31
-.lzh 01;31
-.lzma 01;31
-.tlz 01;31
-.txz 01;31
-.tzo 01;31
-.t7z 01;31
-.zip 01;31
-.z   01;31
-.Z   01;31
-.dz  01;31
-.gz  01;31
-.lrz 01;31
-.lz  01;31
-.lzo 01;31
-.xz  01;31
-.bz2 01;31
-.bz  01;31
-.tbz 01;31
-.tbz2 01;31
-.tz  01;31
-.deb 01;31
-.rpm 01;31
-.jar 01;31
-.war 01;31
-.ear 01;31
-.sar 01;31
-.rar 01;31
-.alz 01;31
-.ace 01;31
-.zoo 01;31
-.cpio 01;31
-.7z  01;31
-.rz  01;31
-.cab 01;31
+.tar 31
+.tgz 31
+.arc 31
+.arj 31
+.taz 31
+.lha 31
+.lz4 31
+.lzh 31
+.lzma 31
+.tlz 31
+.txz 31
+.tzo 31
+.t7z 31
+.zip 31
+.z   31
+.Z   31
+.dz  31
+.gz  31
+.lrz 31
+.lz  31
+.lzo 31
+.xz  31
+.bz2 31
+.bz  31
+.tbz 31
+.tbz2 31
+.tz  31
+.deb 31
+.rpm 31
+.jar 31
+.war 31
+.ear 31
+.sar 31
+.rar 31
+.alz 31
+.ace 31
+.zoo 31
+.cpio 31
+.7z  31
+.rz  31
+.cab 31
 
 # image formats
 .jpg 01;35
@@ -237,31 +228,33 @@ EXEC 01;32
 .ogx 01;35
 
 # Document files
-.pdf 00;32
-.ps 00;32
-.txt 00;32
-.patch 00;32
-.diff 00;32
-.log 00;32
-.tex 00;32
-.doc 00;32
+.pdf 32
+.ps 32
+.txt 32
+.patch 32
+.diff 32
+.log 32
+.tex 32
+.doc 32
+.xml 32
+.ini 32
 
 # audio formats
-.aac 00;36
-.au 00;36
-.flac 00;36
-.m4a 00;36
-.mid 00;36
-.midi 00;36
-.mka 00;36
-.mp3 00;36
-.mpc 00;36
-.ogg 00;36
-.ra 00;36
-.wav 00;36
+.aac 34
+.au 34
+.flac 34
+.m4a 34
+.mid 34
+.midi 34
+.mka 34
+.mp3 34
+.mpc 34
+.ogg 34
+.ra 34
+.wav 34
 
 # http://wiki.xiph.org/index.php/MIME_Types_and_File_Extensions
-.axa 00;36
-.oga 00;36
-.spx 00;36
-.xspf 00;36
+.axa 34
+.oga 34
+.spx 34
+.xspf 34
