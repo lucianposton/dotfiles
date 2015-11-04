@@ -252,8 +252,9 @@ EOL
 )
 
 check_and_initialize_boot() {
-    mount /boot || echo "/boot already mounted"
+    mount /boot || true # assume already mounted
     sleep 1
+    echo
     echo "/boot filesystem disk space usage:"
     df -h | grep boot | egrep --color '[0-9]{1,2}%'
     FREE_BOOT_SPACE_MB=$(df -BM --output=target,avail | grep boot | egrep -o '[0-9]+')
@@ -264,9 +265,9 @@ check_and_initialize_boot() {
 }
 
 check_and_cleanup_boot() {
+    echo
     echo "/boot filesystem disk space usage:"
     df -h | grep boot | egrep --color '[0-9]{1,2}%'
-    cd -
     sleep 1
     umount /boot || echo "/boot umount failed!"
 }
@@ -287,7 +288,8 @@ define_version_variables() {
 select_new_kernel_and_set_version_variables() {
     eselect kernel list
     echo
-    read -p "eselect kernel set " NUM
+    echo "Select new kernel:"
+    read -p "   eselect kernel set " NUM
     eselect kernel set "$NUM"
 
     NEW_KERNEL_DIRECTORY=$(readlink /usr/src/linux)
@@ -343,10 +345,8 @@ update_kernel() {
     do
         case $yn in
             Yes )
-                ls -l
-                ln -sfT "$(readlink current)" /boot/backup
+                ln -sfT "$(readlink /boot/current)" /boot/backup
                 ln -sfT "vmlinuz-${NEW_KERNEL_RELEASE}" /boot/current
-                ls -l
                 break;;
             No )
                 ln -sfT "vmlinuz-${NEW_KERNEL_RELEASE}" /boot/current
@@ -356,8 +356,9 @@ update_kernel() {
 
     check_and_cleanup_boot
 
-    emerge --noreplace --quiet "=sys-kernel/${NEW_KERNEL_FLAVOR}-sources-${NEW_KERNEL_PORTAGE_VERSION}"
+    emerge --noreplace --quiet-build "=sys-kernel/${NEW_KERNEL_FLAVOR}-sources-${NEW_KERNEL_PORTAGE_VERSION}"
 
+    echo
     echo "Emerging kernel modules..."
     emerge --quiet-build @module-rebuild
 }
@@ -398,10 +399,8 @@ update_initramfs() {
     do
         case $yn in
             Yes )
-                ls -l
-                ln -sfT "$(readlink initramfs)" /boot/initramfs.bak
+                ln -sfT "$(readlink /boot/initramfs)" /boot/initramfs.bak
                 ln -sfT "$CURRENT_INITRAMFS_FILENAME" /boot/initramfs
-                ls -l
                 break;;
             No )
                 ln -sfT "$CURRENT_INITRAMFS_FILENAME" /boot/initramfs
