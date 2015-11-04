@@ -23,35 +23,35 @@ URxvt*.font: xft:Meslo LG S for Powerline:size=12
 !URxvt*.colorBDMode:true
 !URxvt*.colorBD: #FFFFFF
 
-! Black + DarkGrey
-URxvt*.color0: #000000
-URxvt*.color8:  #555555
+! Black + Bold DarkGrey
+URxvt*.color0: #202020
+URxvt*.color8:  #606060
 
-! DarkRed + Red
+! Red + Bold Red
 URxvt*.color1: #cd0000
 URxvt*.color9: #ff0000
 
-! DarkGreen + Green
+! Green + Bold Green
 URxvt*.color2: #00cd00
 URxvt*.color10: #00ff00
 
-! DarkYellow + Yellow
+! Yellow + Bold Yellow
 URxvt*.color3: #cdcd00
 URxvt*.color11: #ffff00
 
-! DarkBlue + Blue
-URxvt*.color4: #0000cd
-URxvt*.color12: #0055ff
+! Blue + Bold Blue
+URxvt*.color4: #0050ee
+URxvt*.color12: #0070ff
 
-! DarkMangenta + Mangenta
+! Mangenta + Bold Mangenta
 URxvt*.color5: #cd00cd
 URxvt*.color13: #ff00ff
 
-! DarkCyan + Cyan
+! Cyan + Bold Cyan
 URxvt*.color6: #00cdcd
 URxvt*.color14: #00cdff
 
-! LightGrey + White
-URxvt*.color7: #bebebe
+! Grey + Bold White
+URxvt*.color7: #909090
 URxvt*.color15: #ffffff
 
