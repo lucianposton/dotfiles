@@ -29,6 +29,7 @@ xfce)
 
     #compton -b
     compton -b --paint-on-overlay
+    #xloadimage -onroot -fullscreen image.png
     #nitrogen --restore
     #feh --bg-scale xplanet.png
     nice -n 19 xwinwrap -ni -o 1 -ov -fs -s -st -sp -b -nf -- /usr/lib/misc/xscreensaver/cubicgrid -root -window-id WID -delay 60000 -speed 0.25 -tick 25 -bigdots &
@@ -91,7 +92,7 @@ fi
 # TODO move to local xinitrc.d
 #xboxdrv -s --dpad-as-button
 xinput --set-prop 'pointer:Razer Razer Naga' 'Device Accel Constant Deceleration' 2 || echo "Razer Naga device not found"
-xinput --set-prop 'pointer:Logitech Unifying Device. Wireless PID:4024' 'Evdev Scrolling Distance' -2, -2, 1 || echo "Logitech Wireless Touch Keyboard K400 device not found"
+xinput --set-prop 'pointer:Logitech K400' 'Evdev Scrolling Distance' -2, -2, 1 || echo "Logitech K400 device not found"
 
 # TODO
 #PYTHONPATH=/usr/lib/python3.4/site-packages powerline-daemon -q
