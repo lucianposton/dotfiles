@@ -65,6 +65,7 @@ style -name ublick chrome://browser/content/browser.xul #nav-bar * { visibility:
 style -name newtab-black-background about:blank,about:newtab #newtab-scrollbox, html { background:black !important; }
 
 " - Custom UAs
+" 42 buildid 20151029151421
 " https://techblog.willshouse.com/2012/01/03/most-common-user-agents/
 " http://www.quirksmode.org/js/detect.html
 " https://panopticlick.eff.org/index.php?action=log&js=yes
