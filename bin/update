@@ -149,6 +149,7 @@ cryptsetup_device_by_uuidlabel() {
                 echo "Setting up dm-crypt device"
                 if [ "$type" = "LABEL" ] || [ "$type" = "UUID" ] ; then
                     uuid=$(echo $cmd | cut -d= -f3)
+                    # --allow-discards to allow TRIM, but sec issues
                     cryptsetup --key-file=/dev/mapper/lukskey --header /etc/luks/luks.header open --type luks $(findfs "$type"="$uuid") luksdevice
                 else
                     cryptsetup --key-file=/dev/mapper/lukskey --header /etc/luks/luks.header open --type luks $(echo $cmd | cut -d= -f2) luksdevice
