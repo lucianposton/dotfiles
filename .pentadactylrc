@@ -45,10 +45,10 @@ map -modes=n -builtin <C-l> -ex :tabmove! +1
 map -modes=n -builtin <C-h> -ex :tabmove! -1
 
 " - Scroll page.
-map -modes=n -builtin j 3j
-map -modes=n -builtin J <C-d>
-map -modes=n -builtin k 3k
-map -modes=n -builtin K <C-u>
+map -modes=n -builtin j <C-d>
+map -modes=n -builtin J 3j
+map -modes=n -builtin k <C-u>
+map -modes=n -builtin K 3k
 map -modes=n -builtin b <PageUp>
 
 " - Abbreviate
