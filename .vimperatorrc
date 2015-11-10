@@ -1,9 +1,30 @@
 "2.3.1 (created: 2010/04/07 18:56:53)
 
-inoremap jj <Esc>
-inoremap jk <Esc>
-noremap <C-c> <C-v><C-c>
-noremap <C-v> <C-v><C-v>
+"inoremap jj <Esc>
+"inoremap jk <Esc>
+"noremap <C-c> <C-v><C-c>
+"noremap <C-v> <C-v><C-v>
 "set wildoptions=auto
+
+" - Tabs
+nnoremap l gt
+nnoremap h gT
+nnoremap <C-l> -ex :tabmove! +1<CR>
+nnoremap <C-h> -ex :tabmove! -1<CR>
+
+" - Scroll page.
+nnoremap j <C-d>
+nnoremap J 3j
+nnoremap k <C-u>
+nnoremap K 3k
+nnoremap b <PageUp>
+
+set gui=nonavigation
+set hlsearch
+set incsearch
+set editor='urxvtcd.sh -e vim +<line> +"sil! call cursor(0, <column>)" <file>'
+set hintchars=asdfghjkl;
+
+highlight Hint font-family: monospace; font-size: 15px; font-weight: bold; color: white; background-color: red; border-color: ButtonShadow; border-width: 0px; border-style: solid; padding: 0px 1px 0px 1px;
 
 " vim: set ft=vimperator:
