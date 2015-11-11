@@ -14,6 +14,7 @@ import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 import qualified XMonad.Layout.NoBorders as NB
 import XMonad.Actions.GridSelect
+import Graphics.X11.ExtraTypes.XF86
 
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
@@ -161,6 +162,16 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
         | (key, sc) <- zip [xK_q, xK_w, xK_e, xK_r] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, myAltMask)]]
+    ++
+
+    --
+    -- XFree86 keysyms
+    --
+    [ ((0      , xF86XK_AudioMute         ), spawn "pactl set-sink-mute 0 toggle")
+    , ((0      , xF86XK_AudioRaiseVolume  ), spawn "pactl set-sink-volume 0 -- -5%")
+    , ((0      , xF86XK_AudioLowerVolume  ), spawn "pactl set-sink-volume 0 +5%")
+    ]
+
 
 button6 = 6 :: Button
 button7 = 7 :: Button
