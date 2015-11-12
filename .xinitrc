@@ -92,7 +92,7 @@ fi
 # TODO move to local xinitrc.d
 #xboxdrv -s --dpad-as-button
 xinput --set-prop 'pointer:Razer Razer Naga' 'Device Accel Constant Deceleration' 2 || echo "Razer Naga device not found"
-xinput --set-prop 'pointer:Logitech K400' 'Evdev Scrolling Distance' -2, -2, 1 || echo "Logitech K400 device not found"
+xinput --set-prop 'pointer:Logitech K400 Plus' 'Evdev Scrolling Distance' -2, -2, 1 || echo "Logitech K400 Plus device not found"
 
 # TODO
 #PYTHONPATH=/usr/lib/python3.4/site-packages powerline-daemon -q
