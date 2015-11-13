@@ -338,6 +338,7 @@ update_kernel() {
     done
 
     make
+    make modules
     make modules_install
     make install
 
@@ -436,21 +437,23 @@ parse_options() {
     OPT_SYNC=1
     OPT_MODE=world
     OPT_ECLEAN=
+    OPT_ECLEAN_KERNEL=
     for i in "$@"
     do
         case $i in
             -h|--help)
                 echo "Usage: $(basename $0) [OPTIONS]"
                 echo
-                echo "   -w, --world      Update world"
-                echo "       --no-sync    Skip syncing before updating world"
-                echo "       --eclean     Clean distfiles after updating world"
+                echo "   -w, --world         Update world"
+                echo "       --no-sync       Skip syncing before updating world"
+                echo "       --eclean        Clean distfiles after updating world"
                 echo
-                echo "   -k, --kernel     Update kernel"
+                echo "   -k, --kernel        Update kernel"
+                echo "       --eclean-kernel Clean kernels after updating kernel"
                 echo
-                echo "   -i, --initramfs  Update initramfs"
+                echo "   -i, --initramfs     Update initramfs"
                 echo
-                echo "   -h, --help       Display this help"
+                echo "   -h, --help          Display this help"
                 exit 0
                 ;;
             --no-sync)
@@ -467,6 +470,10 @@ parse_options() {
 
             -k|--kernel)
                 OPT_MODE=kernel
+                ;;
+
+            --eclean-kernel)
+                OPT_ECLEAN_KERNEL=1
                 ;;
 
             -i|--initramfs)
@@ -488,6 +495,10 @@ main() {
     if [ "$OPT_MODE" == "kernel" ]
     then
         update_kernel
+
+        if [ -n "$OPT_ECLEAN_KERNEL" ]; then
+            eclean-kernel -n 3 -A
+        fi
     fi
 
     if [ "$OPT_MODE" == "initramfs" ]
