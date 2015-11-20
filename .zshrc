@@ -20,8 +20,8 @@ ANSI_WHITE_BOLD='\033[0;37;1m'
 ANSI_RESET='\033[0m'
 
 HISTFILE=~/.zhistory
-HISTSIZE=16000
-SAVEHIST=15000
+HISTSIZE=101000
+SAVEHIST=100000
 
 # TODO move to common location for use in bash
 alias ls='ls -F --color=auto'
