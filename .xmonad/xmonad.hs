@@ -8,15 +8,19 @@
 --
 
 import XMonad
+import qualified Data.Map as M
 import Data.Monoid
 import System.Exit
 
 import qualified XMonad.StackSet as W
-import qualified Data.Map        as M
 import qualified XMonad.Layout.NoBorders as NB
-import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.EwmhDesktops as EWMH
+import XMonad.Layout.Fullscreen as FS
 import XMonad.Actions.GridSelect
+import XMonad.Hooks.SetWMName
+
 import Graphics.X11.ExtraTypes.XF86
+
 
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
@@ -267,26 +271,11 @@ myManageHook = composeAll
 ------------------------------------------------------------------------
 -- Event handling
 
--- * EwmhDesktops users should change this to ewmhDesktopsEventHook
---
 -- Defines a custom handler function for X Events. The function should
 -- return (All True) if the default handler is to be run afterwards. To
 -- combine event hooks use mappend or mconcat from Data.Monoid.
 --
 myEventHook = mempty
-
---myEwmhDesktopsEventHook :: Event -> X All
---myEwmhDesktopsEventHook e@(ClientMessageEvent
---    {ev_message_type = mt}) = do
---    a_aw <- getAtom "_NET_ACTIVE_WINDOW"
---    curTime <- liftIO getCurrentTime
---    StartupTime starupTime <- XS.get
---    if    mt == a_aw
---       && curTime `diffUTCTime` starupTime <= 5.0
---       then return (All True)
---       else ewmhDesktopsEventHook e
---myEwmhDesktopsEventHook e = ewmhDesktopsEventHook e
---myEventHook = mempty
 
 ------------------------------------------------------------------------
 -- Status bars and logging
@@ -307,23 +296,58 @@ myLogHook = return ()
 -- with mod-q.  Used by, e.g., XMonad.Layout.PerWorkspace to initialize
 -- per-workspace layout choices.
 --
--- By default, do nothing.
 myStartupHook = return ()
+
+------------------------------------------------------------------------
+-- Setup Fullscreen support
+
+--myFullscreenSupport :: LayoutClass l Window =>
+--  XConfig l -> XConfig (ModifiedLayout FullscreenFull l)
+myFullscreenSupport c = c {
+      handleEventHook = handleEventHook c <+> FS.fullscreenEventHook
+    , manageHook = manageHook c <+> FS.fullscreenManageHook
+--    , layoutHook = FS.fullscreenFull $ layoutHook c
+  }
 
 ------------------------------------------------------------------------
 -- Setup EWMH
 
 myEwmh :: XConfig a -> XConfig a
-myEwmh c = c { startupHook     = startupHook c     <+> ewmhDesktopsStartup
-             , handleEventHook = handleEventHook c <+> ewmhDesktopsEventHook
---             , handleEventHook = handleEventHook c <+> fullscreenEventHook <+> ewmhDesktopsEventHook
-             , logHook         = logHook c         <+> ewmhDesktopsLogHook
-             }
+myEwmh c = c {
+      startupHook     = startupHook c
+--                        <+> myEwmhStartup
+                        <+> EWMH.ewmhDesktopsStartup
+    , handleEventHook = handleEventHook c
+--                        <+> EWMH.fullscreenEventHook
+                        <+> EWMH.ewmhDesktopsEventHook
+    , logHook         = logHook c
+                        <+> EWMH.ewmhDesktopsLogHook
+}
+
+myEwmhStartup :: X ()
+myEwmhStartup = withDisplay $ \dpy -> do
+    r <- asks theRoot
+    a <- getAtom "_NET_SUPPORTED"
+    c <- getAtom "ATOM"
+    supp <- mapM getAtom ["_NET_WM_STATE_HIDDEN"
+                         ,"_NET_WM_STATE_FULLSCREEN"
+                         ,"_NET_NUMBER_OF_DESKTOPS"
+                         ,"_NET_CLIENT_LIST"
+                         ,"_NET_CLIENT_LIST_STACKING"
+                         ,"_NET_CURRENT_DESKTOP"
+                         ,"_NET_DESKTOP_NAMES"
+                         ,"_NET_ACTIVE_WINDOW"
+                         ,"_NET_WM_DESKTOP"
+                         ,"_NET_WM_STRUT"
+                         ]
+    io $ changeProperty32 dpy r a c propModeReplace (fmap fromIntegral supp)
+
+    setWMName "xmonad"
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
 
-main = xmonad $ myEwmh myDefaultConfig
+main = xmonad $ myEwmh $ myFullscreenSupport myDefaultConfig
 
 ------------------------------------------------------------------------
 -- Default config
