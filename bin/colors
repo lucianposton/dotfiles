@@ -1,4 +1,5 @@
-#!/bin/zsh
+#!/usr/bin/env bash
+
 echo -e "\\e[0mCOLOR_NC (No color)"
 echo -e "\\e[0;30mCOLOR_BLACK\\t\\e[1;30mCOLOR_DARK_GRAY"
 echo -e "\\e[0;31mCOLOR_RED\\t\\e[1;31mCOLOR_LIGHT_RED"
