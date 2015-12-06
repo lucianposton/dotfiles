@@ -1,1 +1,2 @@
 .irssi/config filter=irssi-secrets
+.xmonad/xmonad.hs filter=xmonad-monitor-order
