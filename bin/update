@@ -467,6 +467,8 @@ parse_options() {
                 echo "       --no-sync       Skip syncing before updating world"
                 echo "       --eclean        Clean distfiles after updating world"
                 echo
+                echo "   -s, --only-sync     Only sync repos and exit"
+                echo
                 echo "   -k, --kernel        Update kernel"
                 echo "       --eclean-kernel Clean kernels after updating kernel"
                 echo
@@ -477,6 +479,10 @@ parse_options() {
                 ;;
             --no-sync)
                 OPT_SYNC=
+                ;;
+
+            -s|--only-sync)
+                OPT_ONLY_SYNC=1
                 ;;
 
             --eclean)
@@ -511,8 +517,7 @@ main() {
 
     [ "$(whoami)" == "root" ] || exec sudo -- "$0" "$@"
 
-    if [ "$OPT_MODE" == "kernel" ]
-    then
+    if [ "$OPT_MODE" == "kernel" ]; then
         update_kernel
 
         if [ -n "$OPT_ECLEAN_KERNEL" ]; then
@@ -520,15 +525,16 @@ main() {
         fi
     fi
 
-    if [ "$OPT_MODE" == "initramfs" ]
-    then
+    if [ "$OPT_MODE" == "initramfs" ]; then
         update_initramfs
     fi
 
-    if [ "$OPT_MODE" == "world" ]
-    then
+    if [ "$OPT_MODE" == "world" ]; then
         if [ -n "$OPT_SYNC" ]; then
             eix-sync
+            if [ -n "$OPT_ONLY_SYNC" ]; then
+                exit
+            fi
         fi
 
         update_world
