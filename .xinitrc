@@ -16,7 +16,7 @@ failsafe)
 xfce)
     command=startxfce4
 ;;
-*)
+"")
     # https://wiki.haskell.org/Xmonad/Frequently_asked_questions#Problems_with_Java_applications.2C_Applet_java_console
     export _JAVA_AWT_WM_NONREPARENTING=1
 
@@ -43,6 +43,9 @@ xfce)
     #TODO Setup XDG crap, autostart apps, etc. See /etc/xdg/xfce4/xinitrc
 
     command=xmonad
+;;
+*)
+    command="$1"
 ;;
 esac
 
