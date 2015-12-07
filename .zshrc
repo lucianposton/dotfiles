@@ -90,4 +90,5 @@ source $HOME/dotfiles/setup/submodules/powerline/powerline/bindings/zsh/powerlin
 git-recursive () { find . -maxdepth 2 -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $*)" \; }
 git-recursive-deep () { find . -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $*)" \; }
 
-startx() { command startx "$@" &> startx.log }
+startx() { command startx "$@" &> /tmp/startx.log }
+xinit() { command xinit "$@" &> /tmp/xinit.log }
