@@ -7,16 +7,20 @@ kill_and_daemonize () {
 }
 
 
-case "${1}" in
+# To override $SESSION, you must execute as either
+# 1) xinit xfce
+# 2) startx ~/.xinit xfce
+SESSION="${1:-xmonad}"
+case "${SESSION}" in
 failsafe)
     xterm -geometry 80x50+494+51 &
     xterm -geometry 80x20+494-0 &
     exec xterm -geometry 80x66+0+0 -name login
 ;;
-xfce)
+xfce|xfce4)
     command=startxfce4
 ;;
-"")
+xmonad)
     # https://wiki.haskell.org/Xmonad/Frequently_asked_questions#Problems_with_Java_applications.2C_Applet_java_console
     export _JAVA_AWT_WM_NONREPARENTING=1
 
@@ -45,7 +49,7 @@ xfce)
     command=xmonad
 ;;
 *)
-    command="$1"
+    command="$SESSION"
 ;;
 esac
 
