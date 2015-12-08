@@ -16,6 +16,13 @@ debug_die() {
   exit 1
 }
 
+# initramfs notes:
+# https://www.kernel.org/doc/Documentation/filesystems/ramfs-rootfs-initramfs.txt
+# https://wiki.gentoo.org/wiki/Custom_Initramfs
+# http://gentoo-en.vfose.ru/wiki/Initramfs
+# https://wiki.gentoo.org/wiki/Dm-crypt
+# https://wiki.gentoo.org/wiki/DM-Crypt_LUKS
+# https://wiki.archlinux.org/index.php/Dm-crypt/Device_encryption
 INITRAMFS_LIST=$(cat <<'EOL'
 # directory structure
 dir /proc       755 0 0
