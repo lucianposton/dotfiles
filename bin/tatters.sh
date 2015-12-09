@@ -21,9 +21,9 @@ start_overlay_mode() {
 start_file_mode() {
     JOB_NAME=tatters
     tatt -j "$JOB_NAME" -f "$1"
-    echo sudo "./${JOB_NAME}-useflags.sh" || echo "Failed to run/find ./${JOB_NAME}-useflags.sh"
-    echo sudo "./${JOB_NAME}-rdeps.sh" || echo "Failed to run/find ./${JOB_NAME}-rdeps.sh"
-    echo sudo "./${JOB_NAME}-cleanup.sh" || echo "Failed to run/find ./${JOB_NAME}-cleanup"
+    sudo "./${JOB_NAME}-useflags.sh" || echo "Failed to run/find ./${JOB_NAME}-useflags.sh"
+    sudo "./${JOB_NAME}-rdeps.sh" || echo "Failed to run/find ./${JOB_NAME}-rdeps.sh"
+    sudo "./${JOB_NAME}-cleanup.sh" || echo "Failed to run/find ./${JOB_NAME}-cleanup"
 }
 
 parse_options() {
