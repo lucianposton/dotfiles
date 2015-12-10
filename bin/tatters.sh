@@ -19,7 +19,7 @@ start_overlay_mode() {
 
 # $1 is path to file
 start_file_mode() {
-    JOB_NAME=tatters
+    JOB_NAME=${OPT_JOB_NAME:-tatters}
     tatt -j "$JOB_NAME" -f "$1"
     sudo "./${JOB_NAME}-useflags.sh" || echo "Failed to run/find ./${JOB_NAME}-useflags.sh"
     sudo "./${JOB_NAME}-rdeps.sh" || echo "Failed to run/find ./${JOB_NAME}-rdeps.sh"
@@ -34,15 +34,17 @@ parse_options() {
     OPT_MODE=overlay
     OPT_OVERLAY=didactic-duck
 
-    while getopts "h?m:df:" opt; do
+    while getopts "h?m:df:j:" opt; do
         case "$opt" in
             h|\?)
                 echo "Usage: $(basename $0) [OPTIONS]"
                 echo
-                echo "   -o, --overlay [ARG] search atoms in overlay"
-                echo "   -m, --match [ARG]   string to match against atoms"
+                echo "   -o, --overlay [ARG] Search atoms in overlay"
+                echo "   -m, --match [ARG]   String to match against atoms"
                 echo
                 echo "   -f, --file [ARG]    Use atoms listed in file"
+                echo
+                echo "   -j, --job [ARG]     Set job name"
                 echo
                 echo "   -h, --help          Display this help"
                 exit 0
@@ -60,6 +62,10 @@ parse_options() {
             f)
                 OPT_MODE=file
                 OPT_FILE=$OPTARG
+                ;;
+
+            j)
+                OPT_JOB_NAME=$OPTARG
                 ;;
 
         esac
