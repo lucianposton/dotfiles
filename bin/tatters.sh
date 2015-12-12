@@ -19,11 +19,10 @@ start_overlay_mode() {
 
 # $1 is path to file
 start_file_mode() {
-    JOB_NAME=${OPT_JOB_NAME:-tatters}
-    tatt -j "$JOB_NAME" -f "$1"
-    sudo "./${JOB_NAME}-useflags.sh" || echo "Failed to run/find ./${JOB_NAME}-useflags.sh"
-    sudo "./${JOB_NAME}-rdeps.sh" || echo "Failed to run/find ./${JOB_NAME}-rdeps.sh"
-    sudo "./${JOB_NAME}-cleanup.sh" || echo "Failed to run/find ./${JOB_NAME}-cleanup"
+    tatt -j "$OPT_JOB_NAME" -f "$1"
+    sudo "./${OPT_JOB_NAME}-useflags.sh" || echo "Failed to run/find ./${OPT_JOB_NAME}-useflags.sh"
+    sudo "./${OPT_JOB_NAME}-rdeps.sh" || echo "Failed to run/find ./${OPT_JOB_NAME}-rdeps.sh"
+    sudo "./${OPT_JOB_NAME}-cleanup.sh" || echo "Failed to run/find ./${OPT_JOB_NAME}-cleanup"
 }
 
 parse_options() {
@@ -34,7 +33,7 @@ parse_options() {
     OPT_MODE=overlay
     OPT_OVERLAY=didactic-duck
 
-    while getopts "h?m:df:j:" opt; do
+    while getopts "h?o:m:f:j:" opt; do
         case "$opt" in
             h|\?)
                 echo "Usage: $(basename $0) [OPTIONS]"
@@ -80,6 +79,8 @@ parse_options() {
     if [ -n "$1" ] && [ -z "${OPT_MATCH+x}" ]; then
         OPT_MATCH=$1
     fi
+
+    OPT_JOB_NAME=${OPT_JOB_NAME:-tatters}
 }
 
 main() {
