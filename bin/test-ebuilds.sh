@@ -47,6 +47,13 @@ start_job() {
     local JOB_FILE=$1
     local JOB_NAME=$2
     scp "$JOB_FILE" "$OPT_VM_HOSTNAME":
+    if [ "$OPT_USE" ]; then
+        # TODO: should be in tatters.sh
+        ssh -t "$OPT_VM_HOSTNAME" "$(cat << EOF
+            echo 'USE="\${USE}' "${OPT_USE}"'"' | sudo tee -a /etc/portage/make.conf
+EOF
+)"
+    fi
 
     ssh -t "$OPT_VM_HOSTNAME" "$(cat << EOF
         sudo eix-sync -q \
@@ -59,24 +66,99 @@ EOF
 # $1 is job name
 save_job_report() {
     local JOB_NAME=$1
+    local REPORT_FILE="$JOB_NAME".report
     mkdir -p "${OPT_REPORTS_DIR}/${JOB_NAME}/"
-    scp "$OPT_VM_HOSTNAME":"$JOB_NAME".report "${OPT_REPORTS_DIR}/${JOB_NAME}/"
+    scp "$OPT_VM_HOSTNAME":"$REPORT_FILE" "${OPT_REPORTS_DIR}/${JOB_NAME}/" || echo "No report generated"
+    local REMOTE_PORTAGE_TMPDIR="$(ssh "$OPT_VM_HOSTNAME" 'portageq envvar PORTAGE_TMPDIR')"
+    rsync -mvzrltD -e ssh \
+        --include='*/' \
+        --include='build.log' \
+        --exclude='*' \
+        "$OPT_VM_HOSTNAME":"${REMOTE_PORTAGE_TMPDIR}/portage" \
+        "${OPT_REPORTS_DIR}/${JOB_NAME}/" \
+        || true # No other simple way to ignore remote read permissions errors
 }
 
 install_xauth() {
-    ssh -T "$OPT_VM_HOSTNAME" "$(cat <<'EOF'
+    ssh -t "$OPT_VM_HOSTNAME" "$(cat <<'EOF'
         ./bin/prepare_vm_x.sh
 EOF
 )"
 }
 
+# $1..$n parameters are job files
+run_jobs() {
+    declare -a JOB_FILES=("${@}")
+    echo -e "${YELLOW}${BK_BLACK}The following ${BOLD}${#JOB_FILES[@]}${YELLOW}${BK_BLACK} jobs will be processed:${RESET}"
+    local c=1
+    for JOB_FILE in "${JOB_FILES[@]}"; do
+        local JOB_NAME=$(basename "$JOB_FILE" | sed -e "s/.${JOB_BATCH_FILE_EXT}//")
+        echo -e "${BOLD}${BK_BLACK}${c}${RESET}${BK_BLACK}: ${JOB_NAME}${RESET}"
+        c=$((c+1))
+    done
+
+    local c=1
+    for JOB_FILE in "${JOB_FILES[@]}"; do
+        local JOB_NAME=$(basename "$JOB_FILE" | sed -e "s/.${JOB_BATCH_FILE_EXT}//")
+        echo
+        echo -e "${YELLOW}${BK_BLACK}Starting job ${BOLD}${c}${YELLOW}${BK_BLACK} of ${BOLD}${#JOB_FILES[@]}${YELLOW}${BK_BLACK}, ${BOLD}${JOB_NAME}${RESET}"
+        echo
+        initialize_vm
+        start_job "$JOB_FILE" "$JOB_NAME"
+        save_job_report "$JOB_NAME"
+
+        if [ "$OPT_INSTALL_XAUTH" ]
+        then
+            install_xauth
+        else
+            poweroff_vm
+        fi
+        c=$((c+1))
+    done
+}
+
 initialize_vm() {
     VBoxManage snapshot "$OPT_VM_NAME" restorecurrent
     VBoxManage startvm "$OPT_VM_NAME" --type headless
+    sleep 5
 }
 
 poweroff_vm() {
     VBoxManage controlvm "$OPT_VM_NAME" poweroff
+}
+
+initialize_colors() {
+    # TODO: Test whether shell is interactive
+    BLACK='\033[0;30m'
+    BLACK_BOLD='\033[0;30;1m'
+    RED='\033[0;31m'
+    RED_BOLD='\033[0;31;1m'
+    GREEN='\033[0;32m'
+    GREEN_BOLD='\033[0;32;1m'
+    YELLOW='\033[0;33m'
+    YELLOW_BOLD='\033[0;33;1m'
+    BLUE='\033[0;34m'
+    BLUE_BOLD='\033[0;34;1m'
+    MAGENTA='\033[0;35m'
+    MAGENTA_BOLD='\033[0;35;1m'
+    CYAN='\033[0;36m'
+    CYAN_BOLD='\033[0;36;1m'
+    WHITE='\033[0;37m'
+    WHITE_BOLD='\033[0;37;1m'
+
+    BK_BLACK='\033[40m'
+    BK_RED='\033[41m'
+    BK_GREEN='\033[42m'
+    BK_YELLOW='\033[43m'
+    BK_BLUE='\033[44m'
+    BK_MAGENTA='\033[45m'
+    BK_CYAN='\033[46m'
+    BK_GRAY='\033[47m'
+
+    RESET='\033[0m'
+    BOLD='\033[1m'
+    ITALICS='\033[3m'
+    UNDERSCORE='\033[4m'
 }
 
 parse_options() {
@@ -88,8 +170,8 @@ parse_options() {
     fi
     set -e
 
-    local SHORT="o:m:f:r:n:v:bxj:h?"
-    local LONG="overlay:,match:,file:,reports-dir:,vm-name:,vm-hostname:,batch,xauth,job-name:,help"
+    local SHORT="o:m:f:r:n:v:bxj:u:h?"
+    local LONG="overlay:,match:,file:,reports-dir:,vm-name:,vm-hostname:,batch,xauth,job-name:,use:,help"
     local NORMALIZED
     NORMALIZED=$(getopt --options $SHORT --longoptions $LONG --name "$( basename $0)" -- "$@")
     if [ $? != 0 ]; then
@@ -120,6 +202,7 @@ parse_options() {
                 echo "   -b, --batch             Emerge everything in single vm session"
                 echo "   -x, --xauth             Setup X11 forwarding on VM"
                 echo "   -j, --job-name [ARG]    Set tatt job name"
+                echo "   -u, --use [ARG]         Additional USE flags to set"
                 echo
                 echo "   -h, --help              Display this help"
                 exit 0
@@ -162,6 +245,10 @@ parse_options() {
                 OPT_TATT_JOB_NAME=$2
                 shift 2
                 ;;
+            -u|--use)
+                OPT_USE=$2
+                shift 2
+                ;;
             --)
                 shift
                 break
@@ -183,34 +270,21 @@ parse_options() {
 main() {
     local SCRIPT_NAME=$(basename "$0")
     parse_options "$@"
+    initialize_colors
 
     local JOB_DIR=$(create_job_dir "$SCRIPT_NAME")
     create_job_batch_files "$JOB_DIR"
     shopt -s nullglob
-    local JOB_FILES=( "${JOB_DIR}"/*."${JOB_BATCH_FILE_EXT}" )
+    declare -a JOB_FILES=( "${JOB_DIR}"/*."${JOB_BATCH_FILE_EXT}" )
     shopt -u nullglob
 
     if [ "$OPT_INSTALL_XAUTH" ] && [ "${#JOB_FILES[@]}" -gt 1 ]; then
         OPT_INSTALL_XAUTH=
         echo "Disabled X11Foward setup since there are multiple jobs" 1>&2
+        echo
     fi
 
-    for JOB_FILE in "${JOB_FILES[@]}"; do
-        local JOB_NAME=$(basename "$JOB_FILE" | sed -e 's/.batch//')
-        echo
-        echo -e "\033[0;33;40mStarting job \033[01m${JOB_NAME}\033[0m"
-        echo
-        initialize_vm
-        start_job "$JOB_FILE" "$JOB_NAME"
-        save_job_report "$JOB_NAME"
-
-        if [ "$OPT_INSTALL_XAUTH" ]
-        then
-            install_xauth
-        else
-            poweroff_vm
-        fi
-    done
+    run_jobs "${JOB_FILES[@]}"
 }
 
 main "$@"
