@@ -54,6 +54,7 @@ endif
 
 set t_Co=256
 
+highlight Search ctermfg=black guifg=black
 
 highlight Comment ctermfg=grey guifg=grey
 "highlight WhiteSpaceEOL ctermbg=darkgreen guibg=lightblue
