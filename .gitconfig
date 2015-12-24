@@ -56,8 +56,6 @@
     excludesfile = ~/.gitignore_global
     editor = vim
     pager = less -RFX
-[format]
-    signoff = true
 [rerere]
     enabled = true
 [merge]
