@@ -47,8 +47,16 @@ start_job() {
     local JOB_FILE=$1
     local JOB_NAME=$2
     scp "$JOB_FILE" "$OPT_VM_HOSTNAME":
+
+    if [ "$OPT_UPDATE" ]; then
+        ssh -t "$OPT_VM_HOSTNAME" "$(cat << EOF
+            sudo eix-sync -q \
+                && ./bin/update --no-sync
+EOF
+)"
+    fi
+
     if [ "$OPT_USE" ]; then
-        # TODO: should be in tatters.sh
         ssh -t "$OPT_VM_HOSTNAME" "$(cat << EOF
             echo 'USE="\${USE}' "${OPT_USE}"'"' | sudo tee -a /etc/portage/make.conf
 EOF
@@ -56,9 +64,7 @@ EOF
     fi
 
     ssh -t "$OPT_VM_HOSTNAME" "$(cat << EOF
-        sudo eix-sync -q \
-            && ./bin/update --no-sync \
-            && ./bin/tatters.sh -j "$JOB_NAME" -f "$(basename $JOB_FILE)"
+        ./bin/tatters.sh -j "$JOB_NAME" -f "$(basename $JOB_FILE)"
 EOF
 )"
 }
@@ -171,7 +177,7 @@ parse_options() {
     set -e
 
     local SHORT="o:m:f:r:n:v:bxj:u:h?"
-    local LONG="overlay:,match:,file:,reports-dir:,vm-name:,vm-hostname:,batch,xauth,job-name:,use:,help"
+    local LONG="overlay:,match:,file:,reports-dir:,vm-name:,vm-hostname:,batch,xauth,no-update,job-name:,use:,help"
     local NORMALIZED
     NORMALIZED=$(getopt --options $SHORT --longoptions $LONG --name "$( basename $0)" -- "$@")
     if [ $? != 0 ]; then
@@ -184,6 +190,7 @@ parse_options() {
     OPT_OVERLAY=didactic-duck
     OPT_TATT_JOB_NAME=tatters
     OPT_REPORTS_DIR=/tmp/tatt-reports
+    OPT_UPDATE=1
 
     while true; do
         case "$1" in
@@ -201,6 +208,7 @@ parse_options() {
                 echo "       --vm-hostname [ARG] Hostname of VM, if different than name"
                 echo "   -b, --batch             Emerge everything in single vm session"
                 echo "   -x, --xauth             Setup X11 forwarding on VM"
+                echo "       --no-update         Skip syncing and updating system"
                 echo "   -j, --job-name [ARG]    Set tatt job name"
                 echo "   -u, --use [ARG]         Additional USE flags to set"
                 echo
@@ -239,6 +247,10 @@ parse_options() {
                 ;;
             -x|--xauth)
                 OPT_INSTALL_XAUTH=1
+                shift
+                ;;
+            --no-update)
+                OPT_UPDATE=
                 shift
                 ;;
             -j|--job-name)
