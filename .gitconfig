@@ -66,6 +66,16 @@
     default = simple
 [diff "xxd"]
     textconv = xxd  # then *.sav diff=xxd in .gitattributes
+[diff "hexdump"]
+    textconv = hexdump -v -C
+[diff "hexdump-1pl"]
+    textconv = hexdump -v -e '1/1 \"%02x \"' -e '1/1 \"%_p\" \"\n\"'
+[diff "cmp"]
+    command = git-cmp-diff-wrapper.sh
+[diff "zip"]
+    textconv = unzip -v
+[diff "pdf"]
+    textconv = pdfinfo
 [github]
     user = lucianposton
 [amazon]
