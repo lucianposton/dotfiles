@@ -186,8 +186,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- XFree86 keysyms
     --
     [ ((0      , xF86XK_AudioMute         ), spawn "pactl set-sink-mute $(pacmd list-sinks|awk '/\\* index:/{ print $3 }') toggle")
-    , ((0      , xF86XK_AudioRaiseVolume  ), spawn "pactl set-sink-volume $(pacmd list-sinks|awk '/\\* index:/{ print $3 }') -5%")
-    , ((0      , xF86XK_AudioLowerVolume  ), spawn "pactl set-sink-volume $(pacmd list-sinks|awk '/\\* index:/{ print $3 }') +5%")
+    , ((0      , xF86XK_AudioRaiseVolume  ), spawn "pactl set-sink-volume $(pacmd list-sinks|awk '/\\* index:/{ print $3 }') +5%")
+    , ((0      , xF86XK_AudioLowerVolume  ), spawn "pactl set-sink-volume $(pacmd list-sinks|awk '/\\* index:/{ print $3 }') -5%")
     ]
 
 
