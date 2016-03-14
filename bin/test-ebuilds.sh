@@ -167,6 +167,97 @@ initialize_colors() {
     UNDERSCORE='\033[4m'
 }
 
+initialize_colors2() {
+    red=`tput setaf 1`
+    green=`tput setaf 2`
+    yellow=`tput setaf 3`
+    blue=`tput setaf 4`
+    magenta=`tput setaf 5`
+    cyan=`tput setaf 6`
+    white=`tput setaf 7`
+    b=`tput bold`
+    u=`tput sgr 0 1`
+    ul=`tput smul`
+    xl=`tput rmul`
+    stou=`tput smso`
+    xtou=`tput rmso`
+    dim=`tput dim`
+    reverse=`tput rev`
+    reset=`tput sgr0`
+}
+
+msg_info_heading() {
+    echo "${blue}${b}==>${white} $1${reset}"
+}
+
+msg_info() {
+    echo "${blue}${b}==>${reset} $1"
+}
+
+msg_success_heading() {
+    echo "${green}${b}==> $1${reset}"
+}
+
+msg_success() {
+    echo "${green}${b}==>${reset}${green} $1${reset}"
+}
+
+msg_error() {
+    echo "${red}==> ${u}${b}${red}$1${reset}"
+}
+
+msg_error_minor() {
+    echo "${red}==>${reset} $1"
+}
+
+msg_green() {
+    echo "${green}$1${reset}"
+}
+
+msg_red() {
+    echo "${red}$1${reset}"
+}
+
+msg_check() {
+    echo "${green}${bold} ✓${reset}  $1${reset}"
+}
+
+msg_uncheck() {
+    echo "${red}${bold} ✘${reset}  $1${reset}"
+}
+
+msg_notification() {
+    echo "${red}${dim} ➜${reset}  $1${reset}"
+}
+
+
+wait_for_user() {
+    while :
+    do
+        read -p "${blue}==>${reset} $1 [Y/n] " imp
+        case $imp in
+            [yY] ) echo; break ;;
+            '' ) echo; break ;;
+            [nN] ) abortInstall "${red}==>${reset} Process stopped by user. To resume the install run the one-liner command again." ;;
+            * ) echo "Unrecognized option provided. Please provide either 'Y' or 'N'";
+        esac
+    done
+}
+
+exe() {
+    echo "\$ $@"; "$@"
+}
+
+detect_os() {
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        echo "linux"
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "osx"
+    else
+        echo "win"
+    fi
+}
+
 parse_options() {
     set +e
     getopt --test > /dev/null
