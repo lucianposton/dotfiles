@@ -20,6 +20,10 @@ URxvt*.scrollTtyKeypress:true
 !URxvt*.font: xft:Monaco for Powerline:size=12
 URxvt*.font: xft:Meslo LG S for Powerline:size=12
 
+!URxvt.colorIT:      #87af5f
+!URxvt.colorBD:      #0050ee
+!URxvt.colorUL:      #87afd7
+
 !URxvt*.colorBDMode:true
 !URxvt*.colorBD: #FFFFFF
 
