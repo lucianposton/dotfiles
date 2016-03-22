@@ -30,7 +30,7 @@
     mnoff = merge --no-ff
     p = push
     pf = push -f
-    pl = pull --ff-only
+    pff = pull --ff-only
     f = fetch
     fa = fetch --all
     sh = show --format=fuller --decorate -p --stat
