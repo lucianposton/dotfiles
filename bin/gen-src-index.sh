@@ -13,3 +13,5 @@ find . -name '*.py' \
 # -b: just build
 # -q: create inverted index
 cscope -b -q
+
+ctags -R .
