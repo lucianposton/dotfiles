@@ -28,11 +28,12 @@
     m = merge
     mff = merge --ff-only
     mnoff = merge --no-ff
-    p = pull
-    pff = pull --ff-only
+    p = push
+    pf = push -f
+    pl = pull --ff-only
     f = fetch
     fa = fetch --all
-    sh = show --format=fuller --decorate
+    sh = show --format=fuller --decorate -p --stat
     pupr = pup --remote
 
     # h = head
