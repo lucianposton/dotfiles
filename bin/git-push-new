@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [[ -z "$1" ]]; then
+    echo "usage: git push-new <repository>"
+    exit 1
+fi
+
+git push --set-upstream "$1" "$(git rev-parse --abbrev-ref HEAD)"
