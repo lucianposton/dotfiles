@@ -85,8 +85,9 @@ au! BufRead,BufNewFile *.mi set filetype=mason
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "let g:ack_default_options=" -s -H --nocolor --nogroup --column"
 
-nmap <leader>a :tab split<CR>:Ack ""<Left>
-nmap <leader>A :tab split<CR>:Ack <C-r><C-w><CR>
+nmap <leader>a :Ack ""<Left>
+nmap <leader>A :Ack <C-r><C-w><CR>
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Selecta Mappings
