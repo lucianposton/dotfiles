@@ -6,3 +6,6 @@
 	path = setup/submodules/powerline
 	url = https://github.com/Lokaltog/powerline.git
 	branch = develop
+[submodule "setup/submodules/act.vim"]
+	path = setup/submodules/act.vim
+	url = https://github.com/mileszs/ack.vim.git
