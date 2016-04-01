@@ -132,10 +132,12 @@ function! SelectaIdentifier()
 endfunction
 nnoremap <c-g> :call SelectaIdentifier()<cr>
 
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" cscope
+" cscope. See also .vim/plugin/cscope_maps.vim
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 nmap <C-\>r :!gen-src-index.sh<CR>:cs reset<CR><CR>
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Powerline
