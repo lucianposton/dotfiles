@@ -38,6 +38,8 @@ set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusl
 set ignorecase
 set smartcase
 
+set splitright
+
 "cindent
 
 nnoremap <Space>b :ls<CR>:b 
