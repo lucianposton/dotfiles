@@ -75,6 +75,14 @@ au! BufRead,BufNewFile *.mi set filetype=mason
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ack.vim mappings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"let g:ack_default_options=" -s -H --nocolor --nogroup --column"
+
+nmap <leader>a :tab split<CR>:Ack ""<Left>
+nmap <leader>A :tab split<CR>:Ack <C-r><C-w><CR>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Selecta Mappings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Run a given vim command on the results of fuzzy selecting from a given shell
