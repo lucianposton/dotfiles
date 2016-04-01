@@ -1,15 +1,13 @@
-====  quickerfix quick help ===============
-
-  *?:*  a quick summary of these keys, repeat to close
-  *o:*  to open (same as Enter)
-  *O:*  to open and close the quickfix window
- *go:*  to preview file, open but maintain focus on results
-  *t:*  to open in new tab
-  *T:*  to open in new tab without moving to it
-  *h:*  to open in horizontal split
-  *H:*  to open in horizontal split, keeping focus on the results
-  *v:*  to open in vertical split
- *gv:*  to open in vertical split, keeping focus on the results
-  *q:*  to close the quickfix window
-
-========================================
+=========  quickerfix quick help =========
+  *?:*  Toggle this help menu
+  *o:*  Open (same as Enter)
+  *O:*  Open, and close the results window
+ *go:*  Open, but maintain focus on results
+  *t:*  Open in new tab
+  *T:*  Open in new tab without moving to it
+  *h:*  Open in horizontal split
+  *H:*  Open in horizontal split, keeping focus on the results
+  *v:*  Open in vertical split
+ *gv:*  Open in vertical split, keeping focus on the results
+  *q:*  Close the results window
+==========================================
