@@ -28,6 +28,7 @@
     m = merge
     mff = merge --ff-only
     mnoff = merge --no-ff
+    mb = merge-base
     p = push
     pf = push -f
     pff = pull --ff-only
