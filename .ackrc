@@ -1,0 +1,80 @@
+# There are four different ways to match
+#
+# is:  Match the filename exactly
+#
+# ext: Match the extension of the filename exactly
+#
+# match: Match the filename against a Perl regular expression
+#
+# firstlinematch: Match the first 250 characters of the first line
+#   of text against a Perl regular expression.  This is only for
+#   the --type-add option.
+
+# Always sort the files
+#--sort-files
+
+# Always color, even if piping to a another program
+#--color
+
+# Use "less -r" as my pager
+#--pager=less -r
+
+
+### Files to ignore
+
+# git
+--ignore-file=is:.gitignore
+--ignore-file=is:.gitattributes
+--ignore-file=is:.gitconfig
+
+# misc files
+--ignore-file=is:README
+--ignore-file=is:README.md
+--ignore-file=is:README.txt
+--ignore-file=is:COMPILING
+--ignore-file=is:COMPILING.md
+--ignore-file=is:COMPILING.txt
+--ignore-file=is:CONTRIBUTING
+--ignore-file=is:CONTRIBUTING.md
+--ignore-file=is:CONTRIBUTING.txt
+--ignore-file=is:LICENSE
+--ignore-file=is:LICENSE.md
+--ignore-file=is:LICENSE.txt
+--ignore-file=is:README
+--ignore-file=is:README.md
+--ignore-file=is:README.txt
+
+# binaries
+--ignore-file=ext:a
+--ignore-file=ext:so
+
+# cscope
+--ignore-file=is:cscope.out
+--ignore-file=is:cscope.in.out
+--ignore-file=is:cscope.po.out
+--ignore-file=is:cscope.files
+
+# ctags
+--ignore-file=is:tags
+
+# translation files
+--ignore-file=ext:po
+--ignore-file=ext:pot
+
+
+### Directories to ignore
+
+# misc directories
+--ignore-directory=is:doc
+--ignore-directory=is:doxygen_doc
+
+# binaries
+--ignore-directory=is:obj
+
+
+### Filetypes defined
+
+# Perl
+#--type-add=perl:ext:pl,pm,pod,t,psgi
+#--type-add=perl:firstlinematch:/^#!.*\bperl/
+
