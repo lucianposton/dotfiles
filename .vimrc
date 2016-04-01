@@ -45,6 +45,10 @@ set splitright
 nnoremap <Space>b :ls<CR>:b 
 inoremap jj <Esc>
 inoremap jk <Esc>
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
 
 if &t_Co > 2 || has("gui_running")
     syntax on
