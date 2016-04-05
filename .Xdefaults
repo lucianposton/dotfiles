@@ -1,6 +1,11 @@
 Xcursor.theme:gentoo-silver
 
-URxvt*.perl-ext-common: default,matcher
+URxvt*.perl-ext-common: default,matcher,keyboard-select
+URxvt*.keysym.M-Escape: perl:keyboard-select:search
+!why isn't this overwriting?
+!https://github.com/muennich/urxvt-perls
+URxvt*.keysym.M-s: perl:keyboard-select:search
+
 URxvt*.url-launcher: xdg-open
 URxvt*.matcher.button:1
 URxvt*.matcher.rend.0:Uline fg5
