@@ -41,7 +41,7 @@ if has("cscope")
 
 
     " Display these cscope results in the Quickfix window
-    set cscopequickfix=s-,c-,d-,i-,t-,e-
+    set cscopequickfix=s-!,c-!,d-!,i-!,t-!,e-!
 
     nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
     nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
