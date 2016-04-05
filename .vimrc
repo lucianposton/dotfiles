@@ -45,6 +45,7 @@ set number
 
 "cindent
 
+cmap w!! w !sudo tee > /dev/null %
 nnoremap <Space>b :ls<CR>:b 
 inoremap jj <Esc>
 inoremap jk <Esc>
