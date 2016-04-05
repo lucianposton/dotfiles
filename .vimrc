@@ -40,6 +40,9 @@ set smartcase
 
 set splitright
 
+set relativenumber
+set number
+
 "cindent
 
 nnoremap <Space>b :ls<CR>:b 
