@@ -16,11 +16,14 @@
 #stty erase 
 stty erase 
 
-# set PATH so it includes user's private bin if it exists
-export PATH="$HOME/bin:$PATH"
-
-# /usr/local/bin first for homebrew
+# required for some powerline scripts
+export PYTHONPATH="${PYTHONPATH:+"$PYTHONPATH:"}$HOME/dotfiles/setup/submodules/powerline"
+export PATH="${PATH:+"$PATH:"}$HOME/dotfiles/setup/submodules/powerline/scripts"
+# homebrew. /usr/local/bin before standard paths to prefer homebrew binaries
 export PATH="/usr/local/bin:$PATH"
+#export EPREFIX="$HOME/gentoo-prefix"
+#export PATH="$EPREFIX/bin:$PATH"
+export PATH="$HOME/bin:$PATH"
 
 export EDITOR="vim"
 
@@ -37,9 +40,6 @@ export CLICOLOR="true"
 
 export REPORTTIME=10
 #export TIMEFMT=" Elapsed: %*E User: %U Kernel: %*S"
-
-#export EPREFIX="$HOME/gentoo"
-#export PATH="${EPREFIX}/bin:$PATH"
 
 # Create predictable $SSH_AUTH_SOCK to enable reattached tmux/screen sessions
 # to continue to use ssh-agent.

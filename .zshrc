@@ -84,7 +84,6 @@ autoload -U colors
 
 mailpath=$HOME/.maildir/new
 
-export PATH=$PATH:$HOME/dotfiles/setup/submodules/powerline/scripts
 source $HOME/dotfiles/setup/submodules/powerline/powerline/bindings/zsh/powerline.zsh
 
 git-recursive () { find . -maxdepth 2 -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $*)" \; }
