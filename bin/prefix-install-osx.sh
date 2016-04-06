@@ -2,7 +2,14 @@
 
 set -ev
 
-export EPREFIX="$HOME/gentoo"
+echo "outdated. See https://wiki.gentoo.org/wiki/Project:Prefix/Bootstrap"
+exit 99
+
+if [ -z "$EPREFIX" ]; then
+    echo "You must first export EPREFIX to indicate where to install the prefix"
+    exit 1
+fi
+
 export PATH="$EPREFIX/usr/bin:$EPREFIX/bin:$EPREFIX/tmp/usr/bin:$EPREFIX/tmp/bin:$PATH"
 
 ./bootstrap-prefix.sh $EPREFIX latest_tree
