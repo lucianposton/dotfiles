@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+if command_exists "pbcopy"; then
+    if command_exists "reattach-to-user-namespace"; then
+        reattach-to-user-namespace pbcopy
+    else
+        pbcopy
+    fi
+elif command_exists "xclip"; then
+    # When run in a bash script, for some reason, tee >(xclip) | xclip
+    # deadlocks ...
+    xclip -i -f -selection primary | xclip -i -selection clipboard
+elif command_exists "xsel"; then
+    tee >(xsel -i --primary) | xsel -i --clipboard
+elif command_exists "putclip"; then
+    # cygwin clipboard command
+    putclip
+fi
