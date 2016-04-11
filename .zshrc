@@ -45,11 +45,13 @@ setopt share_history
 bindkey -v
 bindkey -M viins 'jj' vi-cmd-mode
 bindkey -M viins 'jk' vi-cmd-mode
+bindkey '^[k' history-beginning-search-backward
+bindkey '^[j' history-beginning-search-forward
 bindkey '^[[A' up-line-or-search
 bindkey '^[[B' down-line-or-search
-bindkey '^R' history-incremental-search-backward
-#bindkey '^R' history-incremental-pattern-search-backward
-#bindkey -M vicmd '?' history-incremental-search-backward
+bindkey -M vicmd '/' history-incremental-search-backward
+bindkey -M vicmd '?' history-incremental-search-forward
+#bindkey '^[/' history-incremental-pattern-search-backward
 
 autoload -U edit-command-line
 zle -N edit-command-line
