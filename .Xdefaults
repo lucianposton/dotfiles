@@ -1,6 +1,6 @@
 Xcursor.theme:gentoo-silver
 
-URxvt*.perl-ext-common: default,matcher,keyboard-select
+URxvt*.perl-ext-common: default,matcher,keyboard-select,selection-to-clipboard
 URxvt*.keysym.M-Escape: perl:keyboard-select:search
 !why isn't this overwriting?
 !https://github.com/muennich/urxvt-perls
