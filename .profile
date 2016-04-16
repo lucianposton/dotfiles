@@ -47,7 +47,7 @@ export REPORTTIME=10
 # Could alternatively use keychain (https://wiki.gentoo.org/wiki/Keychain) or
 # something like scripts from
 # http://superuser.com/questions/141044/sharing-the-same-ssh-agent-among-multiple-login-sessions
-if [ -n "$SSH_AUTH_SOCK" ] ; then
+if [ -n "$SSH_AUTH_SOCK" ] && [ "$SSH_AUTH_SOCK" != "$HOME/.ssh/.ssh_auth_sock" ] ; then
     ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/.ssh_auth_sock"
     chmod go-rwx "$HOME/.ssh/.ssh_auth_sock"
     export SSH_AUTH_SOCK="$HOME/.ssh/.ssh_auth_sock"
