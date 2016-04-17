@@ -104,7 +104,7 @@ channels = (
   { name = "#xmonad"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#haskell"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#bash"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "#wine"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#winehq"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#linguistics"; chatnet = "freenode"; autojoin = "no"; },
   { name = "#nihongo"; chatnet = "freenode"; autojoin = "no"; },
   { name = "#japanese"; chatnet = "freenode"; autojoin = "no"; },
