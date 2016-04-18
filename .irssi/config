@@ -409,6 +409,6 @@ windows = {
   99 = { name = "hilight"; sticky = "yes"; };
 };
 mainwindows = {
-  1 = { first_line = "6"; lines = "23"; };
+  1 = { first_line = "6"; lines = "42"; };
   99 = { first_line = "0"; lines = "6"; };
 };
