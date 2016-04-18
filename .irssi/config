@@ -11,7 +11,7 @@ servers = (
     chatnet = "EFNet";
     port = "9999";
     use_ssl = "yes";
-    autoconnect = "yes";
+    autoconnect = "no";
   },
   {
     address = "chat.freenode.net";
@@ -98,7 +98,6 @@ channels = (
   { name = "#gentoo"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#gentoo-portage"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#math"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "#math"; chatnet = "EFNet"; autojoin = "yes"; },
   { name = "#CataclysmDDA"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#CDDA-dev"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#xmonad"; chatnet = "freenode"; autojoin = "yes"; },
@@ -108,6 +107,7 @@ channels = (
   { name = "#linguistics"; chatnet = "freenode"; autojoin = "no"; },
   { name = "#nihongo"; chatnet = "freenode"; autojoin = "no"; },
   { name = "#japanese"; chatnet = "freenode"; autojoin = "no"; },
+  { name = "#math"; chatnet = "EFNet"; autojoin = "no"; },
   { name = "#cs"; chatnet = "nullirc"; autojoin = "no"; }
 );
 
@@ -339,18 +339,6 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#math";
-        tag = "EFNet";
-      }
-    );
-    sticky = "yes";
-    parent = "1";
-  };
-  6 = {
-    items = (
-      {
-        type = "CHANNEL";
-        chat_type = "IRC";
         name = "#CataclysmDDA";
         tag = "freenode";
       }
@@ -358,7 +346,7 @@ windows = {
     sticky = "yes";
     parent = "1";
   };
-  7 = {
+  6 = {
     items = (
       {
         type = "CHANNEL";
@@ -370,7 +358,7 @@ windows = {
     sticky = "yes";
     parent = "1";
   };
-  8 = {
+  7 = {
     items = (
       {
         type = "CHANNEL";
@@ -382,7 +370,7 @@ windows = {
     sticky = "yes";
     parent = "1";
   };
-  9 = {
+  8 = {
     items = (
       {
         type = "CHANNEL";
@@ -394,7 +382,7 @@ windows = {
     sticky = "yes";
     parent = "1";
   };
-  10 = {
+  9 = {
     items = (
       {
         type = "CHANNEL";
@@ -406,7 +394,7 @@ windows = {
     sticky = "yes";
     parent = "1";
   };
-  11 = {
+  10 = {
     items = (
       {
         type = "CHANNEL";
