@@ -241,6 +241,15 @@ statusbar = {
         barend = { priority = "100"; alignment = "right"; };
       };
     };
+    prompt = {
+      items = {
+        prompt = { priority = "-1"; };
+        prompt_empty = { priority = "-1"; };
+        input = { priority = "10"; };
+        colours = { alignment = "right"; };
+      };
+      position = "100";
+    };
   };
 };
 settings = {
