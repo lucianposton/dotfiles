@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# https://wiki.gentoo.org/wiki/Simple_sandbox
+
 set -e
 
 [ $# -ne 4 ] && echo "Usage: $0 category/package sandbox_user_name sandbox_user_home user_name" && exit 1
