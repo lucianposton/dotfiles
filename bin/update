@@ -22,6 +22,7 @@ debug_die() {
 # http://gentoo-en.vfose.ru/wiki/Initramfs
 # https://wiki.gentoo.org/wiki/Dm-crypt
 # https://wiki.gentoo.org/wiki/DM-Crypt_LUKS
+# https://wiki.gentoo.org/wiki/Custom_Initramfs#Encrypted_keyfile
 # https://wiki.archlinux.org/index.php/Dm-crypt/Device_encryption
 INITRAMFS_LIST=$(cat <<'EOL'
 # directory structure
@@ -160,7 +161,8 @@ cryptsetup_device_by_uuidlabel() {
     cryptsetup --header /etc/luks/luks.keyfile.header open --type luks /etc/luks/luks.keyfile lukskey
 
     # TODO: Maybe can use udevd in initramfs in order to use /dev/disk/by-id/*
-    # instead of UUID or /dev/sda labels
+    # instead of UUID or /dev/sda labels. However, this introduces udev
+    # dependency.
     for cmd in $(cat /proc/cmdline) ; do
         case $cmd in
             crypt_root=*)
@@ -226,9 +228,7 @@ cat /etc/msg
 #fi
 
 # RAID
-#mdadm -As /dev/md0
-#mdadm -As /dev/md1
-#mdadm -As /dev/md2
+#mdadm -As
 
 # dm-crypt LUKS
 cryptsetup_device_by_uuidlabel || rescue_shell "Error with cryptsetup_device_by_uuidlabel"
@@ -524,7 +524,7 @@ parse_options() {
 main() {
     parse_options "$@"
 
-    [ "$(whoami)" == "root" ] || exec sudo -- "$0" "$@"
+    [ "$(whoami)" == "root" ] || exec sudo -i -- "$0" "$@"
 
     if [ "$OPT_MODE" == "kernel" ]; then
         update_kernel
