@@ -19,6 +19,8 @@ stty erase 
 # required for some powerline scripts
 export PYTHONPATH="${PYTHONPATH:+"$PYTHONPATH:"}$HOME/dotfiles/setup/submodules/powerline"
 export PATH="${PATH:+"$PATH:"}$HOME/dotfiles/setup/submodules/powerline/scripts"
+(powerline-daemon -q --replace &)
+
 # homebrew. /usr/local/bin before standard paths to prefer homebrew binaries
 export PATH="/usr/local/bin:$PATH"
 #export EPREFIX="$HOME/gentoo-prefix"
