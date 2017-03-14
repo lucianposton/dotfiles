@@ -1,0 +1,30 @@
+{
+	"segments": {
+		"right": [
+			{
+				"function": "line_percent",
+				"priority": 50,
+				"width": 4,
+				"align": "r"
+			},
+			{
+				"type": "string",
+				"name": "line_current_symbol",
+				"highlight_groups": ["line_current_symbol", "line_current"]
+			},
+			{
+				"function": "line_current",
+				"draw_soft_divider": false,
+				"width": 3,
+				"align": "r"
+			},
+			{
+				"function": "line_count",
+				"draw_soft_divider": false,
+				"before": "/",
+				"width": 3,
+				"align": "r"
+			}
+		]
+	}
+}
