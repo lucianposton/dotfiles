@@ -34,6 +34,7 @@ alias g='git'
 alias prettyxml='xmllint --format -'
 alias prettyjson='python -m json.tool'
 alias xargs1pl="tr '\n' '\0' | xargs -0 -n1"
+alias caps-off="python -c 'from ctypes import *; X11 = cdll.LoadLibrary(\"libX11.so.6\"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'"
 
 setopt autocd
 setopt extendedglob
