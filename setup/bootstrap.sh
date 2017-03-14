@@ -103,3 +103,6 @@ if [[ `uname` == 'Darwin' ]]; then
     #done
 fi
 
+pushd setup/submodules/powerline
+python setup.py --help # The --help flag is enough to compile the powerline client source
+popd
