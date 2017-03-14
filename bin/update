@@ -445,13 +445,13 @@ update_world() {
         emerge -t1v --quiet-build @x11-module-rebuild
     fi
 
-    emerge -t1v --quiet-build --autounmask-write @preserved-rebuild
     if hash smart-live-rebuild
     then
         smart-live-rebuild || die "smart-live-rebuild failed"
     fi
 
     emerge -c
+    emerge -t1v --quiet-build --autounmask-write @preserved-rebuild
     revdep-rebuild -i -- --quiet-build
 }
 
