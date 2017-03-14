@@ -35,6 +35,7 @@
     f = fetch
     fa = fetch --all
     sh = show --format=fuller --decorate -p --stat
+    shw = show --format=fuller --decorate -p --stat --color-words='[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+'
     pupr = pup --remote
 
     # h = head
