@@ -62,6 +62,9 @@ bindkey -M vicmd v edit-command-line
 zle -A .backward-kill-word vi-backward-kill-word
 zle -A .backward-delete-char vi-backward-delete-char
 
+fpath=($HOME/share/zsh/site-functions $fpath)
+fpath=($HOME/dotfiles_local/share/zsh/site-functions $fpath)
+
 # The following lines were added by compinstall
 
 zstyle ':completion:*' list-colors ''
