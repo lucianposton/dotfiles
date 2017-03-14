@@ -16,16 +16,17 @@
 #stty erase 
 stty erase 
 
-# required for some powerline scripts
-export PYTHONPATH="${PYTHONPATH:+"$PYTHONPATH:"}$HOME/dotfiles/setup/submodules/powerline"
-export PATH="${PATH:+"$PATH:"}$HOME/dotfiles/setup/submodules/powerline/scripts"
-(powerline-daemon -q --replace &)
-
 # homebrew. /usr/local/bin before standard paths to prefer homebrew binaries
-export PATH="/usr/local/bin:$PATH"
+export PATH="/usr/local/bin${PATH:+":$PATH"}"
 #export EPREFIX="$HOME/gentoo-prefix"
 #export PATH="$EPREFIX/bin:$PATH"
 export PATH="$HOME/bin:$PATH"
+
+# Powerline scripts dir path placed before ~/bin, so that the compiled
+# powerline is before the python symlink in ~/bin
+export PATH="$HOME/dotfiles/setup/submodules/powerline/scripts:$PATH"
+export PYTHONPATH="${PYTHONPATH:+"$PYTHONPATH:"}$HOME/dotfiles/setup/submodules/powerline"
+(powerline-daemon -q --replace &)
 
 export EDITOR="vim"
 
