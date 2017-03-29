@@ -94,19 +94,25 @@ chatnets = {
 };
 
 channels = (
-  { name = "#bitlbee"; chatnet = "bitlbee"; autojoin = "yes"; },
+  { name = "#bitlbee"; chatnet = "bitlbee"; autojoin = "no"; },
   { name = "#gentoo"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#gentoo-portage"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#gentoo-dev"; chatnet = "freenode"; autojoin = "yes"; },
+  { 
+    name = "#gentoo-dev-help";
+    chatnet = "freenode";
+    autojoin = "yes";
+  },
+  { name = "#gentoo-wiki"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#math"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "#CataclysmDDA"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "#CDDA-dev"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#xmonad"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#haskell"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#bash"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#winehq"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#winehackers"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#linguistics"; chatnet = "freenode"; autojoin = "no"; },
-  { name = "#nihongo"; chatnet = "freenode"; autojoin = "no"; },
-  { name = "#japanese"; chatnet = "freenode"; autojoin = "no"; },
+  { name = "#linode"; chatnet = "freenode"; autojoin = "no"; },
+  { name = "##japanese"; chatnet = "freenode"; autojoin = "no"; },
   { name = "#math"; chatnet = "EFNet"; autojoin = "no"; },
   { name = "#cs"; chatnet = "nullirc"; autojoin = "no"; }
 );
@@ -336,7 +342,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "##math";
+        name = "#gentoo-dev";
         tag = "freenode";
       }
     );
@@ -348,7 +354,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#CataclysmDDA";
+        name = "#gentoo-dev-help";
         tag = "freenode";
       }
     );
@@ -360,7 +366,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#CDDA-dev";
+        name = "#gentoo-wiki";
         tag = "freenode";
       }
     );
@@ -372,7 +378,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#xmonad";
+        name = "#winehq";
         tag = "freenode";
       }
     );
@@ -384,7 +390,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#haskell";
+        name = "#winehackers";
         tag = "freenode";
       }
     );
@@ -396,7 +402,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#bash";
+        name = "#xmonad";
         tag = "freenode";
       }
     );
@@ -408,7 +414,31 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#winehq";
+        name = "#haskell";
+        tag = "freenode";
+      }
+    );
+    sticky = "yes";
+    parent = "1";
+  };
+  11 = {
+    items = (
+      {
+        type = "CHANNEL";
+        chat_type = "IRC";
+        name = "#bash";
+        tag = "freenode";
+      }
+    );
+    sticky = "yes";
+    parent = "1";
+  };
+  12 = {
+    items = (
+      {
+        type = "CHANNEL";
+        chat_type = "IRC";
+        name = "##math";
         tag = "freenode";
       }
     );
