@@ -15,6 +15,7 @@ import System.Exit
 import qualified XMonad.StackSet as W
 import qualified XMonad.Layout.NoBorders as NB
 import XMonad.Hooks.EwmhDesktops as EWMH
+import XMonad.Hooks.ManageDocks
 import XMonad.Layout.Fullscreen as FS
 import XMonad.Actions.GridSelect
 import XMonad.Hooks.SetWMName
@@ -153,7 +154,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Use this binding with avoidStruts from Hooks.ManageDocks.
     -- See also the statusBar function from Hooks.DynamicLog.
     --
-    -- , ((modm              , xK_b     ), sendMessage ToggleStruts)
+    , ((modm              , xK_b     ), sendMessage ToggleStruts)
 
     -- Quit xmonad
     , ((modm .|. myAltMask .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
@@ -233,7 +234,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = tiled ||| Mirror tiled ||| NB.noBorders Full
+myLayoutHook = avoidStruts (tiled ||| Mirror tiled ||| NB.noBorders Full)
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -347,7 +348,7 @@ myEwmhStartup = withDisplay $ \dpy -> do
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
 
-main = xmonad $ myEwmh $ myFullscreenSupport myDefaultConfig
+main = xmonad $ myEwmh $ docks $ myFullscreenSupport myDefaultConfig
 
 ------------------------------------------------------------------------
 -- Default config
@@ -372,7 +373,7 @@ myDefaultConfig = defaultConfig {
         mouseBindings      = myMouseBindings,
 
       -- hooks, layouts
-        layoutHook         = myLayout,
+        layoutHook         = myLayoutHook,
         manageHook         = myManageHook,
         handleEventHook    = myEventHook,
         logHook            = myLogHook,
