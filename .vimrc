@@ -43,6 +43,9 @@ set splitright
 set relativenumber
 set number
 
+set list
+set listchars=tab:├·,trail:␣,nbsp:⍽,extends:►,precedes:◄
+
 "cindent
 
 cmap w!! w !sudo tee > /dev/null %
@@ -73,7 +76,7 @@ highlight Comment ctermfg=grey guifg=grey
 "match WhiteSpaceEOL /^\ \+\\|\s\+$\\|\ \+\ze\t\\|\t\zs\ \+/
 
 highlight BadWhiteSpace ctermbg=lightblue guibg=lightblue
-2match BadWhiteSpace /\t\|\s\+$/
+"2match BadWhiteSpace /\t\|\s\+$/
 "2match BadWhiteSpace /\t\|\s\+$\|\%81v.\+/
 "au! BufWinEnter * match BadWhiteSpace /\t\|\s\+$/
 "au! InsertEnter * match BadWhiteSpace /\t\|\s\+\%#\@<!$/
