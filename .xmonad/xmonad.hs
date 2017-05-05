@@ -19,6 +19,7 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Layout.Fullscreen as FS
 import XMonad.Actions.GridSelect
 import XMonad.Hooks.SetWMName
+import XMonad.Hooks.DynamicLog
 
 import Graphics.X11.ExtraTypes.XF86
 
@@ -234,6 +235,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
+-- TODO http://hackage.haskell.org/package/xmonad-contrib-0.13/docs/XMonad-Layout-PerScreen.html
 myLayoutHook = avoidStruts (tiled ||| Mirror tiled ||| NB.noBorders Full)
   where
      -- default tiling algorithm partitions the screen into two panes
@@ -288,7 +290,7 @@ myEventHook = mempty
 --
 -- > logHook = dynamicLogDzen
 --
-myLogHook = return ()
+myLogHook = dynamicLogString xmobarPP >>= xmonadPropLog
 
 ------------------------------------------------------------------------
 -- Startup hook
