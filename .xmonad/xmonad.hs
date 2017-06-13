@@ -280,6 +280,15 @@ myManageHook = composeAll
 --
 myEventHook = mempty
 
+myEwmhDesktopsEventHook :: Event -> X All
+myEwmhDesktopsEventHook e@(ClientMessageEvent
+    {ev_message_type = mt}) = do
+    a_aw <- getAtom "_NET_ACTIVE_WINDOW"
+    if mt == a_aw
+        then return (All True)
+        else EWMH.ewmhDesktopsEventHook e
+myEwmhDesktopsEventHook e = EWMH.ewmhDesktopsEventHook e
+
 ------------------------------------------------------------------------
 -- Status bars and logging
 
@@ -322,7 +331,8 @@ myEwmh c = c {
                         <+> EWMH.ewmhDesktopsStartup
     , handleEventHook = handleEventHook c
 --                        <+> EWMH.fullscreenEventHook
-                        <+> EWMH.ewmhDesktopsEventHook
+--                        <+> EWMH.ewmhDesktopsEventHook
+                        <+> myEwmhDesktopsEventHook
     , logHook         = logHook c
                         <+> EWMH.ewmhDesktopsLogHook
 }
