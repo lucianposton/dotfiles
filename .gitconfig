@@ -67,6 +67,8 @@
     log = 100
 [push]
     default = simple
+[diff]
+    wsErrorHighlight = new,old#,context
 [diff "xxd"]
     textconv = xxd  # then *.sav diff=xxd in .gitattributes
 [diff "hexdump"]
