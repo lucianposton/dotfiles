@@ -86,7 +86,7 @@ parse_options() {
 main() {
     parse_options "$@"
 
-    #[ "$(whoami)" == "root" ] || exec sudo -- "$0" "$@"
+    #[ "$(id -u)" == "0" ] || exec sudo -- "$0" "$@"
 
     # Script expects pwd to be its directory
     #SCRIPTDIR="$( cd "$( dirname "$0" )" && pwd )"

@@ -3,7 +3,7 @@
 # based on https://github.com/TheChymera/mkstage4
 
 # checks if run as root:
-if ! [ "`whoami`" == "root" ]
+if ! [ "$(id -u)" == "0" ]
 then
   echo "`basename $0`: must be root."
   exit 1
