@@ -54,6 +54,8 @@ transfer() {
         curl --progress-bar --upload-file "-" "https://transfer.sh/$file" >> $tmpfile
     fi
    
+    # Make sure file has eol
+    cat $tmpfile | tail -n1 $tmpfile | read -r _ || echo >> $tmpfile
     # cat output link
     cat $tmpfile
 
