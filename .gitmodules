@@ -12,3 +12,6 @@
 [submodule "setup/submodules/gdbinit"]
 	path = setup/submodules/gdbinit
 	url = https://github.com/gdbinit/Gdbinit.git
+[submodule "setup/submodules/gdb-dashboard"]
+	path = setup/submodules/gdb-dashboard
+	url = https://github.com/cyrus-and/gdb-dashboard.git
