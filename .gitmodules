@@ -9,3 +9,6 @@
 [submodule "setup/submodules/act.vim"]
 	path = setup/submodules/act.vim
 	url = https://github.com/mileszs/ack.vim.git
+[submodule "setup/submodules/gdbinit"]
+	path = setup/submodules/gdbinit
+	url = https://github.com/gdbinit/Gdbinit.git
