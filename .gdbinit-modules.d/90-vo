@@ -1,0 +1,19 @@
+define vo
+python
+import os
+
+sal = gdb.selected_frame().find_sal()
+current_line = sal.line
+if current_line != 0:
+    #theCmd = "vim --remote-silent +\"" + str(current_line) + "G|\" \"" + sal.symtab.fullname() + "\""
+    theCmd = "e " + sal.symtab.fullname() + " | +call cursor(" + str(current_line) + ", 0)"
+
+# Using ~/bin/bscopy
+    os.system(theCmd + " | bscopy")
+    os.system("tmux set-buffer \"" + theCmd + "\"")
+    print(theCmd)
+end
+end
+
+
+# vim: filetype=gdb
