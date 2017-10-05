@@ -1,1 +1,19 @@
 # gdb-dashboard customizations or modules go in this directory
+
+dashboard -style syntax_highlighting 'monokai'
+dashboard assembly -style context 5
+dashboard source -style context 7
+
+define hookpost-up
+dashboard
+end
+
+define hookpost-down
+dashboard
+end
+
+define hookpost-frame
+dashboard
+end
+
+# vim: filetype=gdb
