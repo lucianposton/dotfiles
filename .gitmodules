@@ -15,3 +15,6 @@
 [submodule "setup/submodules/gdb-dashboard"]
 	path = setup/submodules/gdb-dashboard
 	url = https://github.com/cyrus-and/gdb-dashboard.git
+[submodule "setup/submodules/vim-cpp-enhanced-highlight"]
+	path = setup/submodules/vim-cpp-enhanced-highlight
+	url = https://github.com/octol/vim-cpp-enhanced-highlight
