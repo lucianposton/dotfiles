@@ -1,0 +1,1 @@
+../../setup/submodules/minimal_gdb/plugin/minimal_gdb.vim
