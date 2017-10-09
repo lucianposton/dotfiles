@@ -86,6 +86,18 @@ highlight BadWhiteSpace ctermbg=lightblue guibg=lightblue
 au! BufWritePost $MYVIMRC source $MYVIMRC
 au! BufRead,BufNewFile *.mi set filetype=mason
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-cpp-enhanced-highlight
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"let g:cpp_class_scope_highlight = 1 " Doesn't handle templates, so looks inconsistent
+let g:cpp_member_variable_highlight = 1
+"let g:cpp_class_decl_highlight = 1 " Inconsistent class and struct names
+let g:cpp_concepts_highlight = 1
+"let g:cpp_no_function_highlight = 1
+"let g:cpp_experimental_simple_template_highlight = 1 " Slow as fuck
+"let g:cpp_experimental_template_highlight = 1 " Breaks non-template syntax. See github issue
+"let c_no_curly_errors=1 " Disables some curly brace errors. Doesn't work well
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " ack.vim mappings
