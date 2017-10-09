@@ -16,6 +16,10 @@ end
 # enable auto-load universally
 #set auto-load safe-path /
 
+# Makes gdb never pause during output or wrap output
+#set height unlimited
+#set width unlimited
+
 # use intel assembly syntax over att syntax
 set disassembly-flavor intel
 
