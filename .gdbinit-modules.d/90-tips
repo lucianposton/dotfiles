@@ -1,0 +1,202 @@
+define tips
+    printf "Tip Topic Commands:\n"
+    printf "\ttip_basic           : Basic info\n"
+    printf "\ttip_pc              : Process control and execution\n"
+    printf "\ttip_breakpoints     : Common breakpoint commands\n"
+    printf "\ttip_display         : Automatically display values on each break\n"
+    printf "\ttip_patch           : Patching binaries\n"
+    printf "\ttip_strip           : Dealing with stripped binaries\n"
+    printf "\ttip_syntax          : AT&T vs Intel syntax\n"
+    printf "\ttip_assembly        : Assembly and disassembly\n"
+    printf "\n"
+    printf "One-page gdb cheatsheet: "
+    printf "http://darkdust.net/files/GDB%%20Cheat%%20Sheet.pdf\n"
+    printf "\n"
+end
+document tips
+Syntax: tips
+| Provide a list of tips from users on various topics.
+end
+
+
+define tip_basic
+    printf "\n"
+    printf "\tp         : Print a variable or expression\n"
+    printf "\tx         : Print contents of memory\n"
+    printf "\tdashboard : Display and configure GDB Dashboard\n"
+    printf "\targv      : Print argv initially provided to program\n"
+    printf "\tframeinfo : Print info about the frame, args, and locals\n"
+    printf "\tsignals   : Find or print all info about signals\n"
+    printf "\tsignal    : Send signal to program and continue\n"
+    printf "\tlibs      : Print shared libraries\n"
+    printf "\tfunctions : Find or print all function names\n"
+    printf "\tvariables : Find or print all global and static variable names\n"
+    printf "\tsearch    : Search for a pattern between two addresses\n"
+    printf "\tcls       : Clear screen\n"
+end
+document tip_basic
+Syntax: tip_basic
+| Tips on basic commands.
+end
+
+
+define tip_pc
+    printf "\n"
+    printf "\tc             : Continue execution\n"
+    printf "\tfinish        : Execute until current frame returns, finishing function\n"
+    printf "\tn             : Next source line\n"
+    printf "\ts             : Next source line, stepping into functions\n"
+    printf "\tni <num>      : Next instruction\n"
+    printf "\tsi <num>      : Next instruction, step into subroutine\n"
+    printf "\tjumpc         : Jump to next line of code\n"
+    printf "\tjumpi         : Jump to next assembly instruction\n"
+    printf "\tmain          : Restart, and break at main\n"
+    printf "\tsstart        : Restart, and break at __libc_start_main\n"
+    printf "\tstart         : Restart, and break at _start\n"
+    printf "\tinit          : Restart, and break at _init\n"
+    printf "\tentry_point   : Restart, and break at entry point\n"
+end
+document tip_pc
+Syntax: tip_pc
+| Tips on process control commands.
+end
+
+
+define tip_breakpoints
+    printf "\n"
+    printf "\twatch        : Set a watchpoint\n"
+    printf "\tbpl          : List all breakpoints\n"
+    printf "\tbpc          : Clear breakpoint\n"
+    printf "\tbpe          : Enable breakpoint\n"
+    printf "\tbpd          : Disable breakpoint\n"
+    printf "\tbpdel        : Delete breakpoint\n"
+    printf "\tbpt          : Set temporary breakpoint\n"
+    printf "\tbpm          : Break when an expression is true\n"
+    printf "\tbhb          : Set hardware-assisted breakpoint\n"
+    printf "\tbht          : Set hardware-assisted temporary breakpoint\n"
+    printf "\tenablesolib  : Enable breaking when shared library is (un)loaded\n"
+    printf "\tdisablesolib : Disable breaking when shared library is (un)loaded\n"
+end
+document tip_breakpoints
+Syntax: tip_breakpoints
+| Tips on breakpoints commands.
+end
+
+
+define tip_patch
+    printf "\n"
+    printf "                   PATCHING MEMORY\n"
+    printf "Any address can be patched using the 'set' command:\n"
+    printf "\t`set ADDR = VALUE` \te.g. `set *0x8049D6E = 0x90`\n"
+    printf "\n"
+    printf "                 PATCHING BINARY FILES\n"
+    printf "Use `set write` in order to patch the target executable\n"
+    printf "directly, instead of just patching memory\n"
+    printf "\t`set write on` \t`set write off`\n"
+    printf "Note that this means any patches to the code or data segments\n"
+    printf "will be written to the executable file\n"
+    printf "When either of these commands has been issued,\n"
+    printf "the file must be reloaded.\n"
+    printf "\n"
+end
+document tip_patch
+Syntax: tip_patch
+| Tips on patching memory and binary files.
+end
+
+
+define tip_strip
+    printf "\n"
+    printf "             STOPPING BINARIES AT ENTRY POINT\n"
+    printf "Stripped binaries have no symbols, and are therefore tough to\n"
+    printf "start automatically. To debug a stripped binary, use\n"
+    printf "\tinfo file\n"
+    printf "to get the entry point of the file\n"
+    printf "The first few lines of output will look like this:\n"
+    printf "\tSymbols from '/tmp/a.out'\n"
+    printf "\tLocal exec file:\n"
+    printf "\t        `/tmp/a.out', file type elf32-i386.\n"
+    printf "\t        Entry point: 0x80482e0\n"
+    printf "Use this entry point to set an entry point:\n"
+    printf "\t`tbreak *0x80482e0`\n"
+    printf "The breakpoint will delete itself after the program stops as\n"
+    printf "the entry point\n"
+    printf "\n"
+end
+document tip_strip
+Syntax: tip_strip
+| Tips on dealing with stripped binaries.
+end
+
+
+define tip_syntax
+    printf "\n"
+    printf "\t    INTEL SYNTAX                        AT&T SYNTAX\n"
+    printf "\tmnemonic dest, src, imm            mnemonic src, dest, imm\n" 
+    printf "\t[base+index*scale+disp]            disp(base, index, scale)\n"
+    printf "\tregister:      eax                 register:      %%eax\n"
+    printf "\timmediate:     0xFF                immediate:     $0xFF\n"
+    printf "\tdereference:   [addr]              dereference:   addr(,1)\n"
+    printf "\tabsolute addr: addr                absolute addr: *addr\n"
+    printf "\tbyte insn:     mov byte ptr        byte insn:     movb\n"
+    printf "\tword insn:     mov word ptr        word insn:     movw\n"
+    printf "\tdword insn:    mov dword ptr       dword insn:    movd\n"
+    printf "\tfar call:      call far            far call:      lcall\n"
+    printf "\tfar jump:      jmp far             far jump:      ljmp\n"
+    printf "\n"
+    printf "Note that order of operands in reversed, and that AT&T syntax\n"
+    printf "requires that all instructions referencing memory operands \n"
+    printf "use an operand size suffix (b, w, d, q)\n"
+    printf "\n"
+end
+document tip_syntax
+Syntax: tip_syntax
+| Summary of Intel and AT&T syntax differences.
+end
+
+
+define tip_display
+    printf "\n"
+    printf "Any expression can be set to automatically be displayed every time\n"
+    printf "the target stops. The commands for this are:\n"
+    printf "\t`display expr'     : automatically display expression 'expr'\n"
+    printf "\t`display'          : show all displayed expressions\n"
+    printf "\t`undisplay num'    : turn off autodisplay for expression # 'num'\n"
+    printf "Examples:\n"
+    printf "\t`display/x *(int *)$esp`      : print top of stack\n"
+    printf "\t`display/x *(int *)($ebp+8)`  : print first parameter\n"
+    printf "\t`display (char *)$esi`        : print source string\n"
+    printf "\t`display (char *)$edi`        : print destination string\n"
+    printf "\n"
+end
+document tip_display
+Syntax: tip_display
+| Tips on automatically displaying values when a program stops.
+end
+
+
+define tip_assembly
+    printf "\n"
+    printf "\tdisassemble <addr1> <addr2>   : Disassemble memory\n"
+    printf "\tassemble32 <addr>             : Assemble 32bit nasm instructions\n"
+    printf "\tassemble64 <addr>             : Assemble 64bit nasm instructions\n"
+    printf "\tassemble_gas                  : Assemble gas instructions\n"
+    printf "\n"
+    printf "\n"
+    printf "One-page quick x86 reference: "
+    printf "http://www.jegerlehner.ch/intel/IntelCodeTable.pdf\n"
+    printf "x86 reference: "
+    printf "http://ref.x86asm.net/\n"
+    printf "x86 reference with notes and examples: "
+    printf "https://github.com/cirosantilli/x86-assembly-cheat\n"
+    printf "General x86 overview with examples: "
+    printf "https://en.wikibooks.org/wiki/X86_Assembly/NASM_Syntax\n"
+    printf "\n"
+end
+document tip_assembly
+Syntax: tip_assembly
+| Tips on commands for assembly and disassembly.
+end
+
+
+# vim: filetype=gdb

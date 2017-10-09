@@ -1,0 +1,382 @@
+# _____________ breakpoint aliases _____________
+
+define bpl
+    info breakpoints
+end
+document bpl
+Syntax: bpl
+| List all breakpoints.
+end
+
+define bpc
+    clear $arg0
+end
+document bpc
+Syntax: bpc LOCATION
+| Clear breakpoint.
+| LOCATION may be a line number, function name, or "*" and an address.
+end
+
+define bpe
+    enable $arg0
+end
+document bpe
+Syntax: bpe NUM
+| Enable breakpoint with number NUM.
+end
+
+define bpd
+    disable $arg0
+end
+document bpd
+Syntax: bpd NUM
+| Disable breakpoint with number NUM.
+end
+
+define bpdel
+    delete $arg0
+end
+document bpd
+Syntax: bpd NUM
+| Delete breakpoint with number NUM.
+end
+
+define bpt
+    tbreak $arg0
+end
+document bpt
+Syntax: bpt LOCATION
+| Set a temporary breakpoint.
+| This breakpoint will be automatically deleted when hit!.
+| LOCATION may be a line number, function name, or "*" and an address.
+end
+
+define bpm
+    awatch $arg0
+end
+document bpm
+Syntax: bpm EXPRESSION
+| Set a read/write breakpoint on EXPRESSION, e.g. *address.
+end
+
+define bhb
+    hb $arg0
+end
+document bhb
+Syntax: bhb LOCATION
+| Set hardware assisted breakpoint.
+| LOCATION may be a line number, function name, or "*" and an address.
+end
+
+define bht
+    thbreak $arg0
+end
+document bht
+Usage: bht LOCATION
+| Set a temporary hardware breakpoint.
+| This breakpoint will be automatically deleted when hit!
+| LOCATION may be a line number, function name, or "*" and an address.
+end
+
+define enablesolib
+	set stop-on-solib-events 1
+	printf "Stop-on-solib-events is enabled!\n"
+end
+document enablesolib
+Syntax: enablesolib
+| Enable stopping execution when a shared library is loaded or unloaded.
+end
+
+define disablesolib
+	set stop-on-solib-events 0
+	printf "Stop-on-solib-events is disabled!\n"
+end
+document disablesolib
+Syntax: disablesolib
+| Disable stopping execution when a shared library is loaded or unloaded.
+end
+
+
+# _____________ process control _____________
+
+define jumpc
+    tbreak +1
+    jump +1
+end
+document jumpc
+Syntax: jumpc
+| Skip over the current line of code.
+end
+
+define jumpi
+    x/2i $pc
+    set $instruction_size = (int)($_ - $pc)
+    set $pc = $pc + $instruction_size
+    dashboard
+end
+document jumpi
+Syntax: jumpi
+| Skip over the instruction located at EIP/RIP.
+end
+
+define init
+    tbreak _init
+    r
+end
+document init
+Syntax: init
+| Run program and break on _init().
+end
+
+define start
+    tbreak _start
+    r
+end
+document start
+Syntax: start
+| Run program and break on _start().
+end
+
+define sstart
+    tbreak __libc_start_main
+    r
+end
+document sstart
+Syntax: sstart
+| Run program and break on __libc_start_main().
+| Useful for stripped executables.
+end
+
+define main
+    tbreak main
+    r
+end
+document main
+Syntax: main
+| Run program and break on main().
+end
+
+define entry_point
+    set logging redirect on
+    set logging file /tmp/gdb-entry_point
+    set logging on
+
+    info files
+
+    set logging off
+
+    shell entry_point="$(grep 'Entry point:' /tmp/gdb-entry_point | awk '{ print $3 }')"; echo 'break *'"$entry_point" > /tmp/gdb-entry_point
+    source /tmp/gdb-entry_point
+    shell rm -f /tmp/gdb-entry_point
+    r
+end
+document entry_point
+Syntax: entry_point
+| Run program and break on entry point.
+end
+
+
+# ____________________ asm ____________________
+
+define assemble32
+    # dont enter routine again if user hits enter
+    dont-repeat
+    if ($argc)
+        if (*$arg0 = *$arg0)
+        # check if we have a valid address by dereferencing it,
+        # if we havnt, this will cause the routine to exit.
+        end
+        printf "Instructions will be written to %#x.\n", $arg0
+    else
+        printf "Instructions will be written to stdout.\n"
+    end
+    printf "Type instructions, one per line."
+    printf " Do not forget to use NASM assembler syntax!\n"
+    printf "End with a line saying just \"end\".\n"
+
+    if ($argc)
+        # argument specified, assemble instructions into memory at address specified.
+        shell ASMOPCODE="$(while read -ep '>' r && test "$r" != end ; do echo -E "$r"; done)" ; GDBASMFILENAME=$RANDOM; \
+        echo -e "BITS 32\n$ASMOPCODE" >/tmp/$GDBASMFILENAME ; nasm -f bin -o /dev/stdout /tmp/$GDBASMFILENAME | hexdump -ve '1/1 "set *((unsigned char *) $arg0 + %#2_ax) = %#02x\n"' >/tmp/gdbassemble ; rm -f /tmp/$GDBASMFILENAME
+        source /tmp/gdbassemble
+        # all done. clean the temporary file
+        shell rm -f /tmp/gdbassemble
+    else
+        # no argument, assemble instructions to stdout
+        shell ASMOPCODE="$(while read -ep '>' r && test "$r" != end ; do echo -E "$r"; done)" ; GDBASMFILENAME=$RANDOM; \
+        echo -e "BITS 32\n$ASMOPCODE" >/tmp/$GDBASMFILENAME ; nasm -f bin -o /dev/stdout /tmp/$GDBASMFILENAME | ndisasm -i -b32 /dev/stdin ; \
+        rm -f /tmp/$GDBASMFILENAME
+    end
+end
+document assemble32
+Syntax: assemble32 <ADDR>
+| Assemble 32 bits instructions using nasm.
+| Type a line containing "end" to indicate the end.
+| If an address is specified, insert/modify instructions at that address.
+| If no address is specified, assembled instructions are printed to stdout.
+| Use the pseudo instruction "org ADDR" to set the base address.
+end
+
+define assemble64
+    # dont enter routine again if user hits enter
+    dont-repeat
+    if ($argc)
+        if (*$arg0 = *$arg0)
+        # check if we have a valid address by dereferencing it,
+        # if we havnt, this will cause the routine to exit.
+        end
+        printf "Instructions will be written to %#x.\n", $arg0
+    else
+        printf "Instructions will be written to stdout.\n"
+    end
+    printf "Type instructions, one per line."
+    printf " Do not forget to use NASM assembler syntax!\n"
+    printf "End with a line saying just \"end\".\n"
+
+    if ($argc)
+        # argument specified, assemble instructions into memory at address specified.
+        shell ASMOPCODE="$(while read -ep '>' r && test "$r" != end ; do echo -E "$r"; done)" ; GDBASMFILENAME=$RANDOM; \
+        echo -e "BITS 64\n$ASMOPCODE" >/tmp/$GDBASMFILENAME ; nasm -f bin -o /dev/stdout /tmp/$GDBASMFILENAME | hexdump -ve '1/1 "set *((unsigned char *) $arg0 + %#2_ax) = %#02x\n"' >/tmp/gdbassemble ; rm -f /tmp/$GDBASMFILENAME
+        source /tmp/gdbassemble
+        # all done. clean the temporary file
+        shell rm -f /tmp/gdbassemble
+    else
+        # no argument, assemble instructions to stdout
+        shell ASMOPCODE="$(while read -ep '>' r && test "$r" != end ; do echo -E "$r"; done)" ; GDBASMFILENAME=$RANDOM; \
+        echo -e "BITS 64\n$ASMOPCODE" >/tmp/$GDBASMFILENAME ; nasm -f bin -o /dev/stdout /tmp/$GDBASMFILENAME | ndisasm -i -b64 /dev/stdin ; \
+        rm -f /tmp/$GDBASMFILENAME
+    end
+end
+document assemble64
+Syntax: assemble64 <ADDR>
+| Assemble 64 bits instructions using nasm.
+| Type a line containing "end" to indicate the end.
+| If an address is specified, insert/modify instructions at that address.
+| If no address is specified, assembled instructions are printed to stdout.
+| Use the pseudo instruction "org ADDR" to set the base address.
+end
+
+define assemble_gas
+    printf "\nType code to assemble and hit Ctrl-D when finished.\n"
+    printf "You must use GNU assembler (AT&T) syntax.\n"
+
+    shell filename=$(mktemp); \
+          binfilename=$(mktemp); \
+          echo -e "Writing into: ${filename}\n"; \
+          cat > $filename; echo ""; \
+          as -o $binfilename < $filename; \
+          objdump -d -j .text $binfilename; \
+          rm -f $binfilename; \
+          rm -f $filename; \
+          echo -e "temporaly files deleted.\n"
+end
+document assemble_gas
+Syntax: assemble_gas
+| Assemble instructions to binary opcodes. Uses GNU as and objdump.
+end
+
+
+# _____________ misc _____________
+
+define argv
+    show args
+end
+document argv
+Syntax: argv
+| Print program arguments.
+end
+
+define frameinfo
+    info frame
+    info args
+    info locals
+end
+document frameinfo
+Syntax: frameinfo
+| Print info about frame, args, and locals.
+end
+
+define signals
+    if $argc == 0
+        info signals
+    end
+    if $argc == 1
+        info signals $arg0
+    end
+    if $argc > 1
+        help signals
+    end
+end
+document signals
+Syntax: signals <SIGNAL>
+| Print what debugger does when program gets various signals.
+| Specify a SIGNAL as argument to print info on that signal only.
+end
+
+define libs
+    info sharedlibrary
+end
+document libs
+Syntax: libs
+| Print shared libraries linked to target.
+end
+
+define functions
+    if $argc == 0
+        info functions
+    end
+    if $argc == 1
+        info functions $arg0
+    end
+    if $argc > 1
+        help functions
+    end
+end
+document functions
+Syntax: functions <REGEXP>
+| Print all function names in target, or those matching REGEXP.
+end
+
+define variables
+    if $argc == 0
+        info variables
+    end
+    if $argc == 1
+        info variables $arg0
+    end
+    if $argc > 1
+        help variables
+    end
+end
+document variables
+Syntax: variables <REGEXP>
+| Print all global and static variable names (symbols), or those matching REGEXP.
+end
+
+define search
+    set $start = (char *) $arg0
+    set $end = (char *) $arg1
+    set $pattern = (short) $arg2
+    set $p = $start
+    while $p < $end
+        if (*(short *) $p) == $pattern
+            printf "pattern 0x%hx found at 0x%x\n", $pattern, $p
+        end
+        set $p++
+    end
+end
+document search
+Syntax: search <START> <END> <PATTERN>
+| Search for the given pattern between $start and $end address.
+end
+
+define cls
+    shell clear
+end
+document cls
+Syntax: cls
+| Clear screen.
+end
+
+
+# vim: filetype=gdb
