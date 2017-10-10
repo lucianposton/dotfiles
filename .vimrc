@@ -110,8 +110,8 @@ let g:mingdb_gdbinit_path = '~/.gdbinit-modules.d/99-mingdb'
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "let g:ack_default_options=" -s -H --nocolor --nogroup --column"
 
-nmap <leader>a :Ack ""<Left>
-nmap <leader>A :Ack <C-r><C-w><CR>
+nmap <leader>a :Ack! ""<Left>
+nmap <leader>A :Ack! <C-r><C-w><CR>
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
