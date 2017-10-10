@@ -67,15 +67,28 @@ endif
 
 set t_Co=256
 
-highlight Search ctermfg=black guifg=black
+" Should go in .vim/
+au! BufWritePost $MYVIMRC source $MYVIMRC
+au! BufRead,BufNewFile *.mi set filetype=mason
 
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" highlight configuration. To see groups, :so $VIMRUNTIME/syntax/hitest.vim
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+highlight clear SignColumn " Clear white background of :sign colum
+highlight SpellBad cterm=NONE ctermfg=NONE ctermbg=black
+"highlight SpellCap cterm=undercurl ctermfg=NONE ctermbg=black
+"highlight SpellLocal cterm=undercurl ctermfg=NONE ctermbg=black
+highlight SpellRare cterm=NONE ctermfg=NONE ctermbg=NONE
+highlight Search ctermfg=black guifg=black
 highlight Comment ctermfg=grey guifg=grey
+
 "highlight WhiteSpaceEOL ctermbg=darkgreen guibg=lightblue
 "match WhiteSpaceEol /\s\+$/
 "match WhiteSpaceEOL /^\s*\ \s*\|\s\+$/
 "match WhiteSpaceEOL /^\ \+\\|\s\+$\\|\ \+\ze\t\\|\t\zs\ \+/
 
-highlight BadWhiteSpace ctermbg=lightblue guibg=lightblue
+"highlight BadWhiteSpace ctermbg=lightblue guibg=lightblue
 "2match BadWhiteSpace /\t\|\s\+$/
 "2match BadWhiteSpace /\t\|\s\+$\|\%81v.\+/
 "au! BufWinEnter * match BadWhiteSpace /\t\|\s\+$/
@@ -83,8 +96,6 @@ highlight BadWhiteSpace ctermbg=lightblue guibg=lightblue
 "au! InsertLeave * match BadWhiteSpace /\t\|\s\+$/
 "au! BufWinLeave * call clearmatches()
 
-au! BufWritePost $MYVIMRC source $MYVIMRC
-au! BufRead,BufNewFile *.mi set filetype=mason
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-cpp-enhanced-highlight
