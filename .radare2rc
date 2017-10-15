@@ -1,0 +1,24 @@
+# Show comments at right of disassembly if they fit in screen
+e asm.cmtright = true
+e asm.describe = true
+
+#ESIL EMU
+e asm.emu = true
+#e asm.esil = true
+
+# Shows pseudocode in disassembly. Eg mov eax, str.ok = > eax = str.ok
+#e asm.pseudo = true
+
+# Display stack and register values on top of disasembly view (visual mode)
+#e cmd.stack = true
+
+# Sandbox. Limits writes to directory and subdirs
+e cfg.sandbox = false
+e cfg.fortunes = true
+
+# Use UTF-8 to show better arrows
+e scr.utf8 = true
+e scr.utf8.curvy = true
+
+#e scr.pipecolor = true
+#e scr.pager = less -R
