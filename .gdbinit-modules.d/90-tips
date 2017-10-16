@@ -191,6 +191,8 @@ define tip_assembly
     printf "https://github.com/cirosantilli/x86-assembly-cheat\n"
     printf "General x86 overview with examples: "
     printf "https://en.wikibooks.org/wiki/X86_Assembly/NASM_Syntax\n"
+    printf "Brief overview of elf, x86, and radare2: "
+    printf "https://www.youtube.com/watch?v=LAkYW5ixvhg\n"
     printf "\n"
 end
 document tip_assembly
