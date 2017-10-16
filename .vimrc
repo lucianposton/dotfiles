@@ -1,8 +1,5 @@
 set nocompatible
 
-set nomodeline
-let g:secure_modelines_verbose = 1
-
 set backspace=indent,eol,start
 set history=50
 set ruler
@@ -137,6 +134,13 @@ highlight Comment ctermfg=grey guifg=grey
 "au! InsertEnter * match BadWhiteSpace /\t\|\s\+\%#\@<!$/
 "au! InsertLeave * match BadWhiteSpace /\t\|\s\+$/
 "au! BufWinLeave * call clearmatches()
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" securemodelines
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set nomodeline
+let g:secure_modelines_verbose = 1
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
