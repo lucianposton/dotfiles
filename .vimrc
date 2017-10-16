@@ -54,18 +54,43 @@ set number
 set list
 set listchars=tab:├·,trail:␣,nbsp:⍽,extends:►,precedes:◄
 
-cmap w!! w !sudo tee > /dev/null %
-nnoremap <Space>b :ls<CR>:b 
-inoremap jj <Esc>
-inoremap jk <Esc>
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
 
 " Should go in .vim/
 au! BufWritePost $MYVIMRC source $MYVIMRC
 au! BufRead,BufNewFile *.mi set filetype=mason
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" mappings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nnoremap <F1> :nohlsearch<CR>
+inoremap <F1> <C-o>:nohlsearch<CR>
+nnoremap <F3> :setlocal relativenumber!<CR>:set number!<CR>
+inoremap <F3> <C-o>:setlocal relativenumber!<CR><C-o>:set number!<CR>
+nnoremap <F4> :setlocal spell!<CR>
+inoremap <F4> <C-o>:setlocal spell!<CR>
+
+vnoremap . :normal .<CR>
+vnoremap @@ :normal @@<CR>
+cnoremap w!! w !sudo tee > /dev/null %
+
+" navigation
+nnoremap <Space>b :ls<CR>:b 
+inoremap jj <Esc>
+inoremap jk <Esc>
+
+" window management
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+nnoremap <Left> :vertical resize -2<CR>
+nnoremap <Right> :vertical resize +2<CR>
+nnoremap <Up> :resize -2<CR>
+nnoremap <Down> :resize +2<CR>
+
+" search without jumping
+noremap <Space>n  :set hls<CR>:let @/ = '\<' . expand('<cword>') . '\>' <CR>:call histadd('/', @/)<CR>:echo @/<CR>
+noremap <Space>gn :set hls<CR>:let @/ = expand('<cword>') <CR>:call histadd('/', @/)<CR>:echo @/<CR>
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
