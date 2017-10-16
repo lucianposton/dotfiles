@@ -1,4 +1,42 @@
-set nocompatible
+" vim: foldmethod=marker
+" {{{ Notes
+"===================================================================================
+"  (nore) prefix -- non-recursive
+"  (un)   prefix -- Remove a mode-specific map
+"  Commands                        Mode
+"  --------                        ----
+"  map                             Normal, Visual, Select, Operator Pending modes
+"  nmap, nnoremap, nunmap          Normal mode
+"  imap, inoremap, iunmap          Insert and Replace mode
+"  vmap, vnoremap, vunmap          Visual and Select mode
+"  xmap, xnoremap, xunmap          Visual mode
+"  smap, snoremap, sunmap          Select mode
+"  cmap, cnoremap, cunmap          Command-line mode
+"  omap, onoremap, ounmap          Operator pending mode
+"
+" Keys         Notation
+" -----        ---------
+" <C-s>        Ctrl + s
+" <A-s>        Alt + s
+" <M-s>        Meta + s
+" <BS>         Backspace
+" <Tab>        Tab
+" <CR>         Enter
+" <Esc>        Escape
+" <Space>      Space
+" <Up>         Up arrow
+" <Down>       Down arrow
+" <Left>       Left arrow
+" <Right>      Right arrow
+" <F1> - <F12> Function keys 1 to 12
+" <Insert>     Insert
+" <Del>        Delete
+" <Home>       Home
+" <End>        End
+"===================================================================================
+" }}}
+
+set nocompatible " Sets many options, so should go first
 
 set backspace=indent,eol,start
 set history=50
