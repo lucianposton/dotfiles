@@ -20,6 +20,13 @@ filetype plugin on
 set ofu=syntaxcomplete#Complete
 
 filetype indent on
+if !exists("g:syntax_on") && ( &t_Co > 2 || has("gui_running") )
+    syntax enable
+endif
+
+if exists('+colorcolumn')
+    set colorcolumn=80
+endif
 set textwidth=78
 set scrolloff=3          " Lines of context on vertical scroll
 set sidescrolloff=3      " Columns of context on horizontal scroll
@@ -28,6 +35,7 @@ set ls=2
 set expandtab
 set autoindent
 set smartindent
+"set cindent
 set smarttab
 set scrolloff=3          " Lines of context on vertical scroll
 set sidescrolloff=3      " Columns of context on horizontal scroll
@@ -46,8 +54,6 @@ set number
 set list
 set listchars=tab:├·,trail:␣,nbsp:⍽,extends:►,precedes:◄
 
-"cindent
-
 cmap w!! w !sudo tee > /dev/null %
 nnoremap <Space>b :ls<CR>:b 
 inoremap jj <Esc>
@@ -56,16 +62,6 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
-
-if &t_Co > 2 || has("gui_running")
-    syntax on
-endif
-
-if exists('+colorcolumn')
-    set colorcolumn=80
-endif
-
-set t_Co=256
 
 " Should go in .vim/
 au! BufWritePost $MYVIMRC source $MYVIMRC
