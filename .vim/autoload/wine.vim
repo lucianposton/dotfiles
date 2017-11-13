@@ -17,7 +17,7 @@
 " :%s/@SWAPPREFIX@/dll_object/g
 " :%s/@SWAPIFACE@/IDLLObject/g
 "
-" Clean up formatting, fix AddRef, Release return values, etc.
+" Clean up formatting, fix AddRef, Release, return values, etc.
 
 function! wine#stub_interface()
     " Make copy of vtable spec
@@ -48,6 +48,10 @@ function! wine#stub_interface()
     :0/BEGIN_INTERFACE/+1;/END_INTERFACE/-1s/^.*\*/    @SWAPPREFIX@_/
     :0/BEGIN_INTERFACE/+1;/END_INTERFACE/-1s/)(/,/
     :0/BEGIN_INTERFACE/s/\s*BEGIN_INTERFACE/static const struct @SWAPIFACE@Vtbl @SWAPPREFIX@_vtbl =\r{/
-    :0/END_INTERFACE/s/\s*END_INTERFACE/};\r\/\/ :%s\/@SWAPIFACE@\/IDLLObject\/g\r\/\/ :%s\/@SWAPPREFIX@\/dll_object\/g/
+    :0/END_INTERFACE/s/\s*END_INTERFACE/
+                \};\r
+                \\/\/ :%s\/@SWAPIFACE@\/IDLLObject\/g\r
+                \\/\/ :%s\/@SWAPPREFIX@\/dll_object\/g\r
+                \\/\/ Clean up formatting, fix AddRef, Release, return values, etc/
 endfunction
 
