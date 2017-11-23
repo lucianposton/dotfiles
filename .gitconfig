@@ -1,6 +1,7 @@
 [user]
     name = Lucian Poston
     email = lucian.poston@gmail.com
+    signingKey = 3C1A5AD9A4F5AC18
 [sendemail]
     smtpencryption = tls
     smtpserver = smtp.gmail.com
@@ -67,6 +68,9 @@
     log = 100
 [push]
     default = simple
+    gpgSign = if-asked
+[commit]
+    gpgSign = true
 [diff]
     wsErrorHighlight = new,old#,context
 [diff "xxd"]
