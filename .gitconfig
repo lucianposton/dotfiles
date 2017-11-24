@@ -12,6 +12,7 @@
 [alias]
     start = !git init && git commit --allow-empty -m \"Empty initial commit\"
     exec = "!exec "
+    topexec = "!f() { GIT_TOP=\"${GIT_DIR%%/.git/modules/*}\"; [ \".$GIT_TOP\" != \".$GIT_DIR\" ] && cd \"$GIT_TOP\"; exec \"$@\"; }; f"
     s = status
     st = status
     co = checkout
