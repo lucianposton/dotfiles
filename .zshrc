@@ -1,4 +1,4 @@
-# After .zshrc, .zprofile, and /etc/zshrc, this file is sourced by
+# After .zshenv, .zprofile, and /etc/zshrc, this file is sourced by
 # *interactive* shells.
 
 ANSI_BLACK='\033[30m'
@@ -22,6 +22,9 @@ ANSI_RESET='\033[0m'
 HISTFILE=~/.zhistory
 HISTSIZE=101000
 SAVEHIST=100000
+
+# env variables for *interactive* shells
+export GPG_TTY="$(tty)"
 
 # TODO move to common location for use in bash
 alias ls='ls -F --color=auto'
