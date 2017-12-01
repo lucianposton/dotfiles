@@ -107,3 +107,6 @@ git-recursive-deep () { find . -follow -name .git -type d -exec sh -c "(cd {}/..
 
 startx() { command startx "$@" &> /tmp/startx.log }
 xinit() { command xinit "$@" &> /tmp/xinit.log }
+
+md() { mkdir -p "$@" && cd "$@" }
+f() { find . -iname "$1" }
