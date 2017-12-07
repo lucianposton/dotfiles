@@ -449,7 +449,9 @@ update_world() {
     then
         smart-live-rebuild || die "smart-live-rebuild failed"
     fi
+}
 
+clean_world() {
     emerge -c
     emerge -t1v --quiet-build --autounmask-write @preserved-rebuild
     revdep-rebuild -i -- --quiet-build
@@ -459,6 +461,7 @@ parse_options() {
     # http://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
     OPT_SYNC=1
     OPT_MODE=world
+    OPT_CLEAN=1
     OPT_ECLEAN=
     OPT_ECLEAN_KERNEL=
     for i in "$@"
@@ -469,6 +472,7 @@ parse_options() {
                 echo
                 echo "   -w, --world         Update world"
                 echo "       --no-sync       Skip syncing before updating world"
+                echo "       --no-clean      Skip cleaning old packages after updating"
                 echo "       --eclean        Clean distfiles after updating world"
                 echo
                 echo "   -s, --only-sync     Only sync repos and exit"
@@ -492,6 +496,10 @@ parse_options() {
 
             -s|--only-sync)
                 OPT_ONLY_SYNC=1
+                ;;
+
+            --no-clean)
+                OPT_CLEAN=
                 ;;
 
             --eclean)
@@ -547,6 +555,10 @@ main() {
         fi
 
         update_world
+
+        if [ -n "$OPT_CLEAN" ]; then
+            clean_world
+        fi
 
         if [ -n "$OPT_ECLEAN" ]; then
             eclean --deep distfiles
