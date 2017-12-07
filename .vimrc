@@ -302,16 +302,16 @@ let s:quickerfix_hotkeys = {
             \ "gv": "<C-W><CR><C-W>H<C-W>b<C-W>J",
             \ "q": ":cclose<CR>" }
 
-function! Quickerfix() "{{{
+function! Quickerfix()
     execute "botright copen"
     nnoremap <buffer> <silent> ? :call <SID>QuickerfixHelp()<CR>
     for key_map in items(s:quickerfix_hotkeys)
         execute printf("nnoremap <buffer> <silent> %s %s", get(key_map, 0), get(key_map, 1))
     endfor
     redraw!
-endfunction "}}}
+endfunction
 
-function! s:QuickerfixHelp() "{{{
+function! s:QuickerfixHelp()
     execute 'edit' globpath(&rtp, 'doc/quickerfix_quick_help.txt')
 
     silent normal gg
@@ -322,4 +322,24 @@ function! s:QuickerfixHelp() "{{{
     setlocal foldmethod=diff foldlevel=20
 
     nnoremap <buffer> <silent> ? :q!<CR>:call Quickerfix()<CR>
-endfunction "}}}
+endfunction
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" fugitive
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"nnoremap <space>ga :Git add %:p<CR><CR>
+"nnoremap <space>gs :Gstatus<CR>
+"nnoremap <space>gc :Gcommit -v -q<CR>
+"nnoremap <space>gt :Gcommit -v -q %:p<CR>
+"nnoremap <space>gd :Gdiff<CR>
+"nnoremap <space>ge :Gedit<CR>
+"nnoremap <space>gr :Gread<CR>
+"nnoremap <space>gw :Gwrite<CR><CR>
+"nnoremap <space>gl :silent! Glog<CR>:bot copen<CR>
+"nnoremap <space>gp :Ggrep<Space>
+"nnoremap <space>gm :Gmove<Space>
+"nnoremap <space>gb :Git branch<Space>
+"nnoremap <space>go :Git checkout<Space>
+"nnoremap <space>gps :Dispatch! git push<CR>
+"nnoremap <space>gpl :Dispatch! git pull<CR>
