@@ -82,12 +82,20 @@ set ignorecase
 set smartcase
 
 set splitright
+set splitbelow
+set wh=3
+set wmh=3
+set wmw=3
 
 set relativenumber
 set number
 
 set list
 set listchars=tab:├·,trail:␣,nbsp:⍽,extends:►,precedes:◄
+
+set path+=**
+set wildmenu
+
 
 
 " Should go in .vim/
