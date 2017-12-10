@@ -24,15 +24,6 @@ xmonad)
     # https://wiki.haskell.org/Xmonad/Frequently_asked_questions#Problems_with_Java_applications.2C_Applet_java_console
     export _JAVA_AWT_WM_NONREPARENTING=1
 
-    #trayer-srg &
-    #trayer --edge top --align right --expand true --SetDockType true --SetPartialStrut true --tint 0x000000 --alpha 0 --transparent true --height 17 --width 10 --margin 175 &
-    #stalonetray --geometry 1x1+1660+0 -i 16 -bg '#212121' --window-type dock --grow-gravity NE --icon-gravity E &
-    xsetroot -cursor_name left_ptr
-
-    #parcellite &
-
-    #compton -b
-    compton -b --paint-on-overlay
     #xloadimage -onroot -fullscreen image.png
     #nitrogen --restore
     #feh --bg-scale xplanet.png
@@ -42,9 +33,17 @@ xmonad)
     # Intermomentary, Photopile, Piecewise, Rocks, StarWars, TimeTunnel,
     # WhirlWindWarp, Wormhole
 
+    xmobar -x 3 &
+    trayer-srg --edge top --align right --SetDockType true --SetPartialStrut true --transparent true --tint 0xFFFFFF --alpha 255 --widthtype percent --width 15 --heighttype pixel --height 15 --monitor 0 &
+    #stalonetray --geometry 1x1+1660+0 -i 16 -bg '#212121' --window-type dock --grow-gravity NE --icon-gravity E &
+    compton -b --paint-on-overlay --unredir-if-possible --backend glx #--vsync opengl-swc
+
+    xsetroot -cursor_name left_ptr
     start-pulseaudio-x11
 
     #TODO Setup XDG crap, autostart apps, etc. See /etc/xdg/xfce4/xinitrc
+
+    #parcellite &
 
     command=xmonad
 ;;
