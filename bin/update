@@ -433,7 +433,7 @@ update_initramfs() {
 }
 
 update_world() {
-    emerge -tv1u --quiet-build --autounmask-write --with-bdeps=y portage || die "update portage failed"
+    #emerge -tv1u --quiet-build --autounmask-write --with-bdeps=y portage || die "update portage failed"
     emerge -tvuND --quiet-build --backtrack=30 --autounmask-write --with-bdeps=y --complete-graph @world || die "update world failed"
     if ! hash genlop || genlop -l --date yesterday | grep -q haskell
     then
