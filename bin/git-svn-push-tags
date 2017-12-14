@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# http://gitready.com/advanced/2009/02/16/convert-git-svn-tag-branches-to-real-tags.html
+
+if [[ -z "$1" ]]; then
+    echo "usage: git svn-push-tags <repository for upstream svn> <repository to push: defaults to origin>"
+    exit 1
+fi
+
+UPSTREAM_REPO="$1"
+PUSH_REPO="${2:-origin}"
+
+git for-each-ref "refs/remotes/$UPSTREAM_REPO/tags" | cut -d / -f 5- |
+while read ref
+do
+    BODY="$(git log -1 --format=format:%B $ref)"
+    git tag -a "$ref" -m"$BODY" "refs/remotes/$UPSTREAM_REPO/tags/$ref"
+    git push "$PUSH_REPO" ":refs/heads/tags/$ref"
+    git push "$PUSH_REPO" tag "$ref"
+done
