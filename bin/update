@@ -447,7 +447,7 @@ update_world() {
 
     if hash smart-live-rebuild
     then
-        smart-live-rebuild || die "smart-live-rebuild failed"
+        smart-live-rebuild -q || die "smart-live-rebuild failed"
     fi
 }
 
