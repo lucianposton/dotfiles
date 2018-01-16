@@ -116,6 +116,7 @@ xset dpms 3900 3960 4020 # StandbyTime SuspendTime OffTime
 
 urxvtd -f -o
 nice -n 19 redshift &
+workrave &
 
 wait "$WM_PID"
 
