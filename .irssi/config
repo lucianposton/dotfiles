@@ -44,6 +44,8 @@ servers = (
 );
 
 chatnets = {
+  # To delay msg to identify:
+  # autosendcmd = "/^msg nickserv MSG_TEXT; wait 6000";
   bitlbee = {
     type = "IRC";
     max_kicks = "4";
@@ -103,13 +105,18 @@ channels = (
     chatnet = "freenode";
     autojoin = "yes";
   },
-  { name = "#gentoo-wiki"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "#math"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "#xmonad"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "#haskell"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "#bash"; chatnet = "freenode"; autojoin = "yes"; },
+  { 
+    name = "#gentoo-security";
+    chatnet = "freenode";
+    autojoin = "yes";
+  },
+  { name = "#gentoo-wine"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#winehq"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#winehackers"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#haskell"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#xmonad"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#bash"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#math"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#linguistics"; chatnet = "freenode"; autojoin = "no"; },
   { name = "#linode"; chatnet = "freenode"; autojoin = "no"; },
   { name = "##japanese"; chatnet = "freenode"; autojoin = "no"; },
@@ -366,7 +373,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#gentoo-wiki";
+        name = "#gentoo-security";
         tag = "freenode";
       }
     );
@@ -378,7 +385,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#winehq";
+        name = "#gentoo-wine";
         tag = "freenode";
       }
     );
@@ -390,7 +397,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#winehackers";
+        name = "#winehq";
         tag = "freenode";
       }
     );
@@ -402,7 +409,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#xmonad";
+        name = "#winehackers";
         tag = "freenode";
       }
     );
@@ -426,7 +433,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#bash";
+        name = "#xmonad";
         tag = "freenode";
       }
     );
@@ -434,6 +441,18 @@ windows = {
     parent = "1";
   };
   12 = {
+    items = (
+      {
+        type = "CHANNEL";
+        chat_type = "IRC";
+        name = "#bash";
+        tag = "freenode";
+      }
+    );
+    sticky = "yes";
+    parent = "1";
+  };
+  13 = {
     items = (
       {
         type = "CHANNEL";
