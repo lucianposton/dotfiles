@@ -43,4 +43,4 @@ cgcreate -g cpu:"${GROUP_NAME}" && \
         -r cpu.cfs_period_us=${PERIOD} \
         "${GROUP_NAME}" && \
     cgexec -g cpu:"${GROUP_NAME}" -- \
-    sudo -u "#${SUDO_UID}" -g "#${SUDO_GID}" -- "${CMD[@]}"
+    sudo -u "#${SUDO_UID}" -g "#${SUDO_GID}" -i -- "${CMD[@]}"
