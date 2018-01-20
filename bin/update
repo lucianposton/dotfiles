@@ -288,6 +288,7 @@ check_and_cleanup_boot() {
     echo
     echo "/boot filesystem disk space usage:"
     df -h | grep boot | egrep --color '[0-9]{1,2}%'
+    ls -l /boot/
     sleep 1
     umount /boot || echo "/boot umount failed!"
 }
@@ -356,7 +357,8 @@ update_kernel() {
         esac
     done
 
-    make
+    local NJOBS=7
+    nice nice make -j"${NJOBS}" -l"${NJOBS}"
     make modules
     make modules_install
     make install
