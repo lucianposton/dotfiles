@@ -1,0 +1,46 @@
+#!/bin/bash
+
+command -v sudo >/dev/null 2>&1 || { echo >&2 'sudo is not in $PATH. Aborting.'; exit 1; }
+command -v cgcreate >/dev/null 2>&1 || { echo >&2 'cgcreate is not in $PATH. Aborting.'; exit 1; }
+command -v cgset >/dev/null 2>&1 || { echo >&2 'cgset is not in $PATH. Aborting.'; exit 1; }
+command -v cgexec >/dev/null 2>&1 || { echo >&2 'cgexec is not in $PATH. Aborting.'; exit 1; }
+
+for ((i=0; i < "$#"; ++i)); do
+    if [ "--" = "${!i}" ]; then
+        SPLIT="$i"
+        break
+    fi
+done
+if [ -z "$SPLIT" ]; then
+    echo "usage: $(basename "$0") NUM -- CMD"
+    echo "       NUM must be an integer from 1 to 100."
+    exit 1
+fi
+PARAMS=("${@:1:$SPLIT-1}")
+CMD=("${@:$SPLIT+1}")
+
+[ "$(id -u)" == "0" ] || exec sudo -- "$0" "$@"
+
+if [ -z "${SUDO_USER}" ]; then
+    echo "SUDO_USER not set"
+    exit 1
+fi
+
+if ! [[ "${PARAMS[0]}" =~ ^[0-9]+$ ]] || [ "${PARAMS[0]}" -lt 1 -o "${PARAMS[0]}" -gt 100 ]; then
+    echo "usage: $(basename "$0") NUM -- CMD"
+    echo "       NUM must be an integer from 1 to 100."
+    exit 1
+fi
+
+QUOTA_SHARE=10000
+QUOTA=$((${QUOTA_SHARE}*${PARAMS[0]}))
+PERIOD=$((${QUOTA_SHARE}*100))
+GROUP_NAME="$(basename "$0")-group"
+
+cgcreate -g cpu:"${GROUP_NAME}" && \
+    cgset \
+        -r cpu.cfs_quota_us=${QUOTA} \
+        -r cpu.cfs_period_us=${PERIOD} \
+        "${GROUP_NAME}" && \
+    cgexec -g cpu:"${GROUP_NAME}" -- \
+    sudo -u "#${SUDO_UID}" -g "#${SUDO_GID}" -- "${CMD[@]}"
