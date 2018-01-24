@@ -73,6 +73,7 @@
 [commit]
     gpgSign = true
 [diff]
+    algorithm = histogram
     wsErrorHighlight = new,old#,context
 [diff "xxd"]
     textconv = xxd  # then *.sav diff=xxd in .gitattributes
