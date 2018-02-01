@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+
+if [ "$1" != "--onto" ] || [ "$#" -lt 3 ]; then
+    echo "Usage: $(basename $0) --onto <newbase> <branch1> [<branch2>...]"
+    exit 1
+fi
+
+onto="$2"
+
+for branch in "${@:3}"; do
+    git rebase $onto $branch
+done
