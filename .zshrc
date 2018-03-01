@@ -45,6 +45,7 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
+alias rcp="rsync -a --human-readable --progress --verbose"
 
 setopt autocd
 setopt extendedglob
