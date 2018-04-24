@@ -23,9 +23,6 @@ HISTFILE=~/.zhistory
 HISTSIZE=101000
 SAVEHIST=100000
 
-# env variables for *interactive* shells
-export GPG_TTY="$(tty)"
-
 # TODO move to common location for use in bash
 alias ls='ls -F --color=auto'
 alias la='ls -A'
