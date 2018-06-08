@@ -1,12 +1,13 @@
 [user]
     name = Lucian Poston
-    email = lucian.poston@gmail.com
+    email = lucianposton@pm.me
     signingKey = 3C1A5AD9A4F5AC18
 [sendemail]
     smtpencryption = tls
-    smtpserver = smtp.gmail.com
-    smtpuser = lucian.poston@gmail.com
-    smtpserverport = 587
+    smtpserver = 127.0.0.1
+    smtpuser = lucianposton@pm.me
+    smtpserverport = 52056
+    smtpsslcertpath = "~/.mutt_certificates"
 [color]
     ui = auto
 [alias]
