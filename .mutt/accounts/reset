@@ -1,0 +1,11 @@
+reset smtp_authenticators smtp_url smtp_pass
+reset imap_authenticators imap_user imap_pass
+reset imap_check_subscribed imap_passive imap_keepalive
+reset folder spoolfile trash mbox move record copy postponed postpone
+reset from realname
+reset mail_check
+reset ssl_starttls ssl_force_tls
+unmailboxes '*'
+unalternates '*'
+
+# vim: ft=muttrc

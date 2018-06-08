@@ -1,0 +1,31 @@
+source ~/.mutt/accounts/reset
+
+# my_user, my_pass, realname, alternates, etc
+source "gpg -d ~/.mutt/accounts/personal-pm-imap-secrets.gpg |"
+
+set from="$my_user"
+
+set ssl_starttls=yes
+set ssl_force_tls=yes
+
+set smtp_url="smtp://$my_user@127.0.0.1:52056"
+set smtp_pass="$my_pass"
+
+set folder="~/.mail.mbsync/"
+
+
+set spoolfile="+INBOX"
+set trash="+Trash"
+set record="+Sent"
+set copy=no
+set postponed="+Drafts"
+set postpone=ask-yes
+set mbox="+Received"
+set move=no
+set mbox_type=Maildir
+set mail_check=20 # seconds
+
+mailboxes `find ~/.mail.mbsync/ -name cur -print0 | xargs -0 -n1 dirname | awk '/ key (start|stop) / {next} {printf("\"%s\" ", $0)} end {print ""}'`
+#mailboxes `find ~/.mail.mbsync/ -type d -name cur -printf '"%h" '`
+
+# vim: ft=muttrc

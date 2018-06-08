@@ -1,0 +1,31 @@
+source ~/.mutt/accounts/reset
+
+# my_user, my_pass, realname, alternates, etc
+source "gpg -d ~/.mutt/accounts/personal-gmail-imap-secrets.gpg |"
+
+set from="$my_user"
+
+set smtp_authenticators="login"
+set ssl_force_tls=yes
+
+set smtp_url="smtp://$my_user@smtp.gmail.com:587"
+set smtp_pass="$my_pass"
+
+set folder="imaps://imap.gmail.com/"
+set imap_user="$my_user"
+set imap_pass="$my_pass"
+set spoolfile="+INBOX"
+set trash="+[Gmail]/Trash"
+set record="+[Gmail]/Sent Mail"
+set copy=no
+set postponed="+[Gmail]/Drafts"
+set postpone=ask-yes
+set mbox="+Received"
+set move=no
+set mbox_type=Maildir
+set mail_check=20 # seconds
+
+set imap_check_subscribed=yes
+unset imap_passive
+
+# vim: ft=muttrc

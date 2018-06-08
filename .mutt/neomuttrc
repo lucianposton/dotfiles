@@ -1,0 +1,160 @@
+#color normal default default
+
+color sidebar_divider brightcyan default
+color sidebar_new yellow default
+
+color indicator brightwhite black
+color tree white default
+
+color index white default '.'
+color index_subject white default '.'
+color index_author blue default '.'
+color index_date cyan default
+color index_collapsed green default
+color index_flags white default '.'
+color index_number white default
+color index_subject default default     '~p'             # to me
+color index_flags brightyellow default  '~U'             # unread
+color index_flags brightyellow default  '~v ~(~U)'       # unread in thread
+color index_subject yellow default      '~U ~p'          # unread
+color index_subject yellow default      '~v ~(~U ~p)'    # unread in thread
+color index_author yellow default       '~N ~p'          # new messages
+color index_author yellow default       '~v ~(~N ~p)'    # new messages in thread
+color index_author brightblue default   '~r <7d'         # recent messages
+color index_author brightblue default   '~v ~(~r <7d)'   # recent messages in thread
+color index_author brightyellow red     '~D'             # to-be-deleted
+color index_subject brightyellow red    '~D'             # to-be-deleted
+color index_flags brightred default     '~F'             # flagged messages
+
+color hdrdefault white default
+color header default default '^From: '
+color header default default '^Subject: '
+
+color body brightyellow default '^Good signature'
+mono body bold '^Good signature'
+color body brightwhite red '^Bad signature from.*'
+mono body bold '^Bad signature from.*'
+
+color body brightyellow default '^diff -.*'
+#color body white default '^index [a-f0-9].*'
+color body green default '^\+.*'
+color body red default '^-.*'
+color body white default '^-{3} .*'
+color body white default '^\+{3} .*'
+color body brightblue default '^@@ .*'
+#color body brightwhite default '^[[:space:]].*'
+color body brightwhite default '^Signed-off-by: .*'
+#color body brightwhite default '^Cc'
+
+color attachment blue default
+color quoted white default
+color signature white default
+color tilde white default
+
+color progress brightwhite black
+color status brightcyan default
+mono status bold
+color message brightgreen default
+mono message bold
+color error red default
+mono error bold
+
+color markers brightcyan default
+color search black yellow
+#color underline green default
+
+
+bind index,pager g          noop
+
+bind index,pager <down>     sidebar-next
+bind index,pager <up>       sidebar-prev
+bind index,pager <right>    sidebar-open
+bind index,pager \CP        sidebar-prev
+bind index,pager \CN        sidebar-next
+bind index,pager \CO        sidebar-open
+bind index,pager A          imap-fetch-mail
+
+bind index <space>          collapse-thread
+bind index -                collapse-thread
+bind index _                collapse-all
+bind index K                half-up
+bind index J                half-down
+bind index \Ck              previous-entry
+bind index \Cj              next-entry
+bind index gg               first-entry
+bind index G                last-entry
+bind index r                group-reply
+bind index R                reply
+bind index f                flag-message
+bind index F                forward-message
+bind index B                bounce-message
+macro index b '<enter-command>toggle sidebar_visible<enter><refresh>'
+macro pager b '<enter-command>toggle sidebar_visible<enter><redraw-screen>'
+
+bind pager k                previous-line
+bind pager j                next-line
+bind pager K                half-up
+bind pager J                half-down
+bind pager \Ck              previous-entry
+bind pager \Cj              next-entry
+bind pager [                half-up
+bind pager ]                half-down
+bind pager gg               top
+bind pager G                bottom
+bind pager r                group-reply
+bind pager R                reply
+bind pager f                flag-message
+bind pager F                forward-message
+
+alternative_order text/plain text/enriched text/html
+auto_view text/html
+#set allow_ansi
+
+set editor="vim -c 'set spell spelllang=en'"
+set display_filter="scrape-mutt-alias.sh"
+set tmpdir="/tmp/mutt"
+set timeout=293 # seconds
+set wait_key=no
+set sleep_time=0
+set header_cache="~/.mutt/cache/header"
+#set message_cachedir="~/.mutt/cache/message"
+#set message_cache_clean=yes
+
+set index_format="%4C [%Z] %{%m/%d} %-20.20L %-2.1M%s"
+set mail_check_stats=yes
+set sidebar_format="%B%?F? [%F]?%* %?N?%N/?%S"
+set sidebar_visible=yes
+set sidebar_width=30
+#set sidebar_short_path=yes
+
+set sort=threads
+set sort_aux=reverse-last-date-received
+set strict_threads=no
+set collapse_all=yes
+set pager_index_lines=10
+set pager_context=3
+set pager_stop=yes
+set menu_scroll=yes
+
+set reverse_name=yes
+set markers=no
+set metoo=yes
+set fast_reply=yes
+set forward_format="Fwd: %s"
+set quote_regex='^([ \t]*[>:])+'
+
+source ~/.mutt/aliases
+#macro compose v "<edit-from>^Uidentity\_<tab>" "Select from"
+#alias identity_1         Chuck Norris                   <chuck@example.COM>
+#alias identity_2         Harry Callahan                 <harry@example.ORG>
+# https://lukespear.co.uk/mutt-multiple-accounts-mbsync-notmuch-gpg-and-sub-minute-updates
+
+macro index <f2> '<sync-mailbox><enter-command>source ~/.mutt/accounts/personal-pm-imap<enter><change-folder>!<enter>'
+macro index <f3> '<sync-mailbox><enter-command>source ~/.mutt/accounts/personal-gmail-imap<enter><change-folder>!<enter>'
+
+#macro index 1 "<change-folder> =../pm-personal/inbox/<enter>"
+#macro index G "!mbsync -a^M" "Update through mbsync"
+
+source ~/.mutt/accounts/personal-pm-imap
+
+# vim: ft=neomuttrc

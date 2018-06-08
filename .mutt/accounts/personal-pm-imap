@@ -1,0 +1,33 @@
+source ~/.mutt/accounts/reset
+
+# my_user, my_pass, realname, alternates, etc
+source "gpg -d ~/.mutt/accounts/personal-pm-imap-secrets.gpg |"
+
+set from="$my_user"
+
+set ssl_starttls=yes
+
+
+set smtp_url="smtp://$my_user@127.0.0.1:52056"
+set smtp_pass="$my_pass"
+
+set folder="imap://127.0.0.1:51509/"
+set imap_user="$my_user"
+set imap_pass="$my_pass"
+set spoolfile="+INBOX"
+set trash="+Trash"
+set record="+Sent"
+set copy=no
+set postponed="+Drafts"
+set postpone=ask-yes
+set mbox="+Received"
+set move=no
+set mbox_type=Maildir
+set mail_check=20 # seconds
+
+set imap_check_subscribed=yes
+unset imap_passive
+
+set imap_authenticators=login # workaround mutt sasl-ir bug #1212
+
+# vim: ft=muttrc
