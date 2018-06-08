@@ -1,0 +1,54 @@
+# Global Channel Settings
+Create Both
+Expunge Both
+SyncState *
+
+
+IMAPAccount personal-pm
+Host 127.0.0.1
+Port 51509
+User over@there.com
+Pass pw
+#PassCmd
+SSLType STARTTLS
+CertificateFile ~/.mutt_certificates
+
+IMAPStore personal-pm-remote
+Account personal-pm
+
+MaildirStore personal-pm-local
+Path ~/.mail.mbsync/
+Inbox ~/.mail.mbsync/INBOX
+SubFolders Verbatim
+
+Channel personal-pm-inbox
+Master :personal-pm-remote:
+Slave :personal-pm-local:
+Patterns *
+#Patterns "INBOX"
+
+#Channel personal-pm-sent
+#Master :personal-pm-remote:"Sent"
+#Slave :personal-pm-local:Sent
+#
+#Channel personal-pm-trash
+#Master :personal-pm-remote:"Trash"
+#Slave :personal-pm-local:Trash
+#
+#Group personal-pm
+#Channel personal-pm-inbox
+#Channel personal-pm-sent
+#Channel personal-pm-trash
+
+
+# IMAPAccount personal-gmail
+# ...
+
+# Gmail mailboxes:
+# "All Mail"
+# "Drafts"
+# "Important"
+# "Sent Mail"
+# "Spam"
+# "Starred"
+# "Trash"
