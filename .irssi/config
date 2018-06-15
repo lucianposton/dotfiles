@@ -282,6 +282,7 @@ settings = {
     show_nickmode_empty = "no";
     hilight_nick_matches = "no";
     beep_msg_level = "MSGS HILIGHT DCCMSGS";
+    autolog_level = "all -crap -clientcrap -ctcps -joins -parts -quits";
   };
   "perl/core/scripts" = {
     screen_away_message = "detached";
