@@ -21,3 +21,6 @@
 [submodule "setup/submodules/minimal_gdb"]
 	path = setup/submodules/minimal_gdb
 	url = https://github.com/mechatroner/minimal_gdb.git
+[submodule "setup/submodules/dotfiles_private"]
+	path = setup/submodules/dotfiles_private
+	url = git@gitlab.com:lucianposton/dotfiles_private.git
