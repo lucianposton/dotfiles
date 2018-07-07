@@ -51,6 +51,8 @@ OLDDOTFILESDIR="$HOME/dotfiles_old"
 
 cd "$DOTFILESDIR"
 
+ln -fs setup/submodules/dotfiles_private/hostnames/"$(hostname)" dotfiles_local
+
 # Changes globbing so that * matches include .* files but exclude . and ..
 GLOBIGNORE=".:.."
 
