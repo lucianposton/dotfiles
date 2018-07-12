@@ -56,8 +56,24 @@
     h = !git l -1
     hp = "!. ~/bin/.git-helpers && show_git_head"
     lol = "!. ~/bin/.git-helpers && pretty_git_log"
-
     dag = log --graph --format='format:%C(yellow)%h%C(reset) %C(blue)\"%an\" <%ae>%C(reset) %C(magenta)%cr%C(reset)%C(auto)%d%C(reset)%n%s' --date-order
+
+    wipe = "!git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard"
+    fetch-pr = "!f() { \
+        [ -z \"$1\" ] && { echo Usage: git fetch-pr PULL_REQUEST_ID [REMOTE_NAME] [NEW_BRANCH_NAME]; exit 1; }; \
+        remote=${2:-origin}; \
+        branch=${3:-pr-$1}; \
+        git fetch $remote \"pull/$1/head:$branch\"; \
+        }; f"
+    pr = "!f() { \
+        branch=${3:-pr-$1}; \
+        git fetch-pr \"$@\" && \
+        git checkout $branch; \
+        }; f"
+    bclean = "!f() { \
+        git checkout ${1-master} && \
+        git branch --merged ${1-master} | grep -v \"${1-master}$\" | xargs git branch -d; \
+        }; f"
 [core]
     excludesfile = ~/.gitignore_global
     editor = vim
