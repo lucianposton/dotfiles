@@ -110,4 +110,4 @@ startx() { command startx "$@" &> /tmp/startx.log }
 xinit() { command xinit "$@" &> /tmp/xinit.log }
 
 md() { mkdir -p "$@" && cd "$@" }
-f() { find . -iname "$1" }
+f() { find . -iname "$@" }
