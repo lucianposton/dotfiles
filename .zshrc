@@ -111,3 +111,8 @@ xinit() { command xinit "$@" &> /tmp/xinit.log }
 
 md() { mkdir -p "$@" && cd "$@" }
 f() { find . -iname "$@" }
+
+# Hook Functions
+precmd () {
+  echo -n -e "\a"
+}
