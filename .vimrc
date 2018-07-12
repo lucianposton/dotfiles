@@ -60,7 +60,7 @@ if !exists("g:syntax_on") && ( &t_Co > 2 || has("gui_running") )
 endif
 
 if exists('+colorcolumn')
-    set colorcolumn=80
+    set colorcolumn=+1
 endif
 set textwidth=78
 set scrolloff=3          " Lines of context on vertical scroll
