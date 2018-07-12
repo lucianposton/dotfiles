@@ -183,12 +183,13 @@ autocmd BufReadPost * call GuessTabsOrSpaces()
 " highlight configuration. To see groups, :so $VIMRUNTIME/syntax/hitest.vim
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 highlight clear SignColumn " Clear white background of :sign colum
-highlight SpellBad cterm=NONE ctermfg=NONE ctermbg=black
-"highlight SpellCap cterm=undercurl ctermfg=NONE ctermbg=black
+highlight SpellBad cterm=undercurl ctermfg=NONE ctermbg=black
+highlight SpellCap cterm=undercurl ctermfg=NONE ctermbg=black
 "highlight SpellLocal cterm=undercurl ctermfg=NONE ctermbg=black
 highlight SpellRare cterm=NONE ctermfg=NONE ctermbg=NONE
 highlight Search ctermfg=black guifg=black
 highlight Comment ctermfg=grey guifg=grey
+highlight ColorColumn term=reverse ctermbg=0 guibg=LightRed
 
 "highlight WhiteSpaceEOL ctermbg=darkgreen guibg=lightblue
 "match WhiteSpaceEol /\s\+$/
