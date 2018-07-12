@@ -22,7 +22,7 @@ start_file_mode() {
     tatt -j "$OPT_JOB_NAME" -f "$1"
     sudo "./${OPT_JOB_NAME}-useflags.sh" || echo "Failed to run/find ./${OPT_JOB_NAME}-useflags.sh"
     sudo "./${OPT_JOB_NAME}-rdeps.sh" || echo "Failed to run/find ./${OPT_JOB_NAME}-rdeps.sh"
-    sudo "./${OPT_JOB_NAME}-cleanup.sh" || echo "Failed to run/find ./${OPT_JOB_NAME}-cleanup"
+    sudo "./${OPT_JOB_NAME}-cleanup.sh" || echo "Failed to run/find ./${OPT_JOB_NAME}-cleanup.sh"
 }
 
 parse_options() {
