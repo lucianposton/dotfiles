@@ -118,8 +118,8 @@ inoremap <expr> ] strpart(getline('.'), col('.')-1, 1) == "]" ? "\<Right>" : "]"
 " swap commands
 nnoremap gQ J
 xnoremap gQ J
-nnoremap <C-M> K
-vnoremap <C-M> K
+nnoremap <expr> <C-m> &buftype ==# 'quickfix' ? "\<CR>" : 'K'
+vnoremap <C-m> K
 
 " state toggle
 nnoremap <F1> :nohlsearch<CR>
