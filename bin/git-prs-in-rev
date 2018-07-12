@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+
+# Add option to print pr # not as url?
+
+remote="origin"
+if [[ "$1" == "-u" ]]; then
+    shift
+    if [[ -z "$1" ]]; then
+        echo "bad parameter to -u option"
+        exit 2
+    fi
+    remote="$1"
+    shift
+fi
+
+# TODO add options to not query for titles?
+query_for_titles=1
+
+if [[ -z "$1" ]]; then
+    echo "usage: git prs-in-rev [<options>] <revision range>" 1>&2
+    echo "usage: " 1>&2
+    echo "usage: OPTIONS" 1>&2
+    echo "usage:    -u <upstream remote>" 1>&2
+    exit 1
+fi
+
+
+url="$(git config --get remote.$remote.url)"
+if [ $? != 0 ]; then
+    echo "No url for upstream remote, $remote" 1>&2
+    exit 3
+fi
+
+#set -e
+
+# rfc3986
+path_regex="[:/]([0-9a-zA-Z@:._~!$^')(*+,;=%-]+/[0-9a-zA-Z@:._~!$^')(*+,;=%-]+)\.git$"
+if [[ $url =~ $path_regex ]]; then
+    pr_prefix="https://github.com/${BASH_REMATCH[1]}/pull/"
+else
+    echo "$url doesn't appear to be a github url" 1>&2
+    pr_prefix="PR#"
+fi
+
+
+if [[ "query_for_titles" ]]; then
+
+    prs="$(git log --merges --format=oneline $@ \
+        | egrep -o '(pull request #|/pr/)[0-9]+' \
+        | egrep -o '[0-9]+')"
+    if [[ -z "$prs" ]]; then
+        exit 0
+    fi
+
+    while read -r pr; do
+        title="$(wget --quiet -O - "${pr_prefix}${pr}" \
+            | sed -n -e 's!.*<title>\(.*\)</title>.*!\1!p' \
+            | python -c 'import html, sys; [print(html.unescape(l), end="") for l in sys.stdin]')"
+        title="${title% by *}"
+        echo "$title"
+        echo "${pr_prefix}${pr}"
+        echo
+    done <<< "$prs"
+
+else
+
+    shas="$(git log --no-patch --merges --format=oneline $@ \
+        | egrep '(pull request #|/pr/)[0-9]+' \
+        | cut -d ' ' -f1)"
+    if [[ -z "$shas" ]]; then
+        exit 0
+    fi
+
+    while read -r sha; do
+        commit_message="$(git show --no-patch --format=format:'%s%n%b' "$sha")"
+        subject="$(echo "$commit_message" | head -n1)"
+        body_first_line="$(echo "$commit_message" | head -n2 | tail -n1 \
+            | egrep -v '^\* .*:$')" # Filter out manual merges
+        prs_in_sha="$(echo "$subject" \
+            | egrep -o '(pull request #|/pr/)[0-9]+' \
+            | egrep -o '[0-9]+')"
+
+        if [[ -z "$body_first_line" ]]; then
+            echo "-Missing PR title, manual merge-"
+        else
+            echo "$body_first_line"
+        fi
+
+        while read -r pr; do
+            # TODO could query title if commit missing title
+            #title="$(wget --quiet -O - "${pr_prefix}${pr}" \
+                #    | sed -n -e 's!.*<title>\(.*\)</title>.*!\1!p' \
+                #    | python -c 'import html, sys; [print(html.unescape(l), end="") for l in sys.stdin]')"
+            #title="${title% by *}"
+            #echo "$title"
+            echo "${pr_prefix}${pr}"
+        done <<< "$prs_in_sha"
+        echo
+    done <<< "$shas"
+
+fi
