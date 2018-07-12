@@ -105,6 +105,23 @@ au! BufRead,BufNewFile *.mi set filetype=mason
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " mappings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nnoremap Q <nop>
+
+" aliases
+inoremap jj <Esc>
+inoremap jk <Esc>
+inoremap {<CR> {<CR>}<Esc>O
+inoremap <expr> ) strpart(getline('.'), col('.')-1, 1) == ")" ? "\<Right>" : ")"
+inoremap <expr> } strpart(getline('.'), col('.')-1, 1) == "}" ? "\<Right>" : "}"
+inoremap <expr> ] strpart(getline('.'), col('.')-1, 1) == "]" ? "\<Right>" : "]"
+
+" swap commands
+nnoremap gQ J
+xnoremap gQ J
+nnoremap <C-M> K
+vnoremap <C-M> K
+
+" state toggle
 nnoremap <F1> :nohlsearch<CR>
 inoremap <F1> <C-o>:nohlsearch<CR>
 nnoremap <F3> :setlocal relativenumber!<CR>:set number!<CR>
@@ -112,14 +129,14 @@ inoremap <F3> <C-o>:setlocal relativenumber!<CR><C-o>:set number!<CR>
 nnoremap <F4> :setlocal spell!<CR>
 inoremap <F4> <C-o>:setlocal spell!<CR>
 
-vnoremap . :normal .<CR>
-vnoremap @@ :normal @@<CR>
-cnoremap w!! w !sudo tee > /dev/null %
-
 " navigation
+nnoremap K <C-U>
+xnoremap K <C-U>
+nnoremap J <C-D>
+xnoremap J <C-D>
+
+" file navigation
 nnoremap <Space>b :ls<CR>:b 
-inoremap jj <Esc>
-inoremap jk <Esc>
 
 " window management
 nnoremap <C-h> <C-w>h
@@ -134,6 +151,11 @@ nnoremap <Down> :resize +2<CR>
 " search without jumping
 noremap <Space>n  :set hls<CR>:let @/ = '\<' . expand('<cword>') . '\>' <CR>:call histadd('/', @/)<CR>:echo @/<CR>
 noremap <Space>gn :set hls<CR>:let @/ = expand('<cword>') <CR>:call histadd('/', @/)<CR>:echo @/<CR>
+
+" misc commands
+vnoremap . :normal .<CR>
+vnoremap @@ :normal @@<CR>
+cnoremap w!! w !sudo tee > /dev/null %
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
