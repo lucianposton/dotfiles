@@ -171,6 +171,7 @@ cryptsetup_device_by_uuidlabel() {
                 if [ "$type" = "LABEL" ] || [ "$type" = "UUID" ] ; then
                     uuid=$(echo $cmd | cut -d= -f3)
                     # --allow-discards to allow TRIM, but sec issues
+                    # http://asalor.blogspot.co.uk/2011/08/trim-dm-crypt-problems.html
                     cryptsetup --key-file=/dev/mapper/lukskey --header /etc/luks/luks.header open --type luks $(findfs "$type"="$uuid") luksdevice
                 else
                     cryptsetup --key-file=/dev/mapper/lukskey --header /etc/luks/luks.header open --type luks $(echo $cmd | cut -d= -f2) luksdevice
@@ -444,7 +445,7 @@ update_world() {
 
     if ! hash genlop || genlop -l --date yesterday | grep -q x11-base/xorg-server
     then
-        emerge -t1v --quiet-build @x11-module-rebuild
+        emerge -t1v --quiet-build @x11-module-rebuild || die
     fi
 
     if hash smart-live-rebuild
@@ -550,7 +551,7 @@ main() {
 
     if [ "$OPT_MODE" == "world" ]; then
         if [ -n "$OPT_SYNC" ]; then
-            eix-sync
+            eix-sync || die
             if [ -n "$OPT_ONLY_SYNC" ]; then
                 exit
             fi
