@@ -14,7 +14,7 @@ create_job_dir() {
 # $1 is overlay name in overlays directory
 list_overlay_atoms() {
     pushd ~ > /dev/null
-    find overlays/"$1" -name "*.ebuild" | sed -e 's:\.ebuild$::' | cut -d '/' -f 3,5
+    find ebuild-repos/"$1" -name "*.ebuild" | sed -e 's:\.ebuild$::' | cut -d '/' -f 3,5
     popd > /dev/null
 }
 
