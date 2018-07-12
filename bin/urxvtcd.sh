@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+#set -e
 
 urxvtc "$@"
 if [ $? -eq 2 ]; then
