@@ -51,7 +51,15 @@ OLDDOTFILESDIR="$HOME/dotfiles_old"
 
 cd "$DOTFILESDIR"
 
-ln -fs setup/submodules/dotfiles_private/hostnames/"$(hostname)" dotfiles_local
+read -n 1 -ep "Update submodules? (y/n) "
+[[ "$REPLY" =~ ^[Yy]$ ]] && cd "$DOTFILESDIR" && git submodule update --recursive --init
+
+git config --local --replace-all include.path '../setup/gitconfig_secret_filters' gitconfig_secret_filters
+
+if [ ! -d setup/submodules/dotfiles_private/hostnames/"$(hostname)" ]; then
+    mkdir setup/submodules/dotfiles_private/hostnames/"$(hostname)"
+fi
+ln -fsT setup/submodules/dotfiles_private/hostnames/"$(hostname)" dotfiles_local
 
 # Changes globbing so that * matches include .* files but exclude . and ..
 GLOBIGNORE=".:.."
@@ -64,11 +72,6 @@ do
     should_ignore "$i" && continue
     install_as_symlink "$DOTFILESDIR/$i" "$HOME/$i"
 done
-
-read -n 1 -ep "Update submodules? (y/n) "
-[[ "$REPLY" =~ ^[Yy]$ ]] && cd "$DOTFILESDIR" && git submodule update --recursive --init
-
-git config --local --replace-all include.path '../setup/gitconfig_secret_filters' gitconfig_secret_filters
 
 if [[ `uname` == 'Darwin' ]]; then
     # OSX uses a different font directory
