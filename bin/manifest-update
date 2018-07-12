@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+grep DIST Manifest | awk '{print $2}' | xargs printf -- '/usr/portage/distfiles/%s\0' | xargs -0 rm
+rm Manifest
+repoman manifest
