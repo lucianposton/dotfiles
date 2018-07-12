@@ -38,6 +38,7 @@ alias caps-off="python -c 'from ctypes import *; X11 = cdll.LoadLibrary(\"libX11
 alias wanip='dig +short myip.opendns.com @resolver1.opendns.com'
 alias trim="ex +'bufdo!%s/\s\+$//e' -scxa"
 alias retab="ex +'set ts=4' +'bufdo retab' -scxa"
+alias bell='echo -n -e "\a"'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....="cd ../../.."
