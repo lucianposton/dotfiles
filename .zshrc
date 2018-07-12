@@ -101,6 +101,8 @@ mailpath=$HOME/.maildir/new
 
 source $HOME/dotfiles/setup/submodules/powerline/powerline/bindings/zsh/powerline.zsh
 
+unicode_lookup () { grep "^0*$(printf '%X' "$((0x$1))");" <(curl -s http://www.unicode.org/Public/UCD/latest/ucd/UnicodeData.txt) | awk 'BEGIN {FS=";"} {print $2}'; }
+
 git-recursive () { find . -maxdepth 2 -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $*)" \; }
 git-recursive-deep () { find . -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $*)" \; }
 
