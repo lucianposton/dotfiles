@@ -24,3 +24,6 @@
 [submodule "setup/submodules/dotfiles_private"]
 	path = setup/submodules/dotfiles_private
 	url = git@gitlab.com:lucianposton/dotfiles_private.git
+[submodule "setup/submodules/retroarch_systems"]
+	path = setup/submodules/retroarch_systems
+	url = git@gitlab.com:lucianposton/retroarch_systems.git
