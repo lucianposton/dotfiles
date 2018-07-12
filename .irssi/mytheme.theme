@@ -66,11 +66,11 @@ abstracts = {
   comment = "$*";
 
   # reason for something is printed (part, quit, kick, ..)
-  reason = "{comment $*}";
+  reason = "{comment %N$*}";
 
   # highlighted nick/host is printed (joins)
-  channick_hilight = "%W$*%w";
-  chanhost_hilight = "{nickhost %c$*%w}";
+  channick_hilight = "%N$*%n";
+  chanhost_hilight = "{nickhost %w$*%n}";
 
   # nick/host is printed (parts, quits, etc.)
   channick = "%w$*%w";
@@ -123,7 +123,7 @@ abstracts = {
   dccquerynick = "%G$*%w";
   dccaction = "%W (*dcc*) $*%w %|";
 
-  msgnick = "%n$0$1-%m:%n %|";
+  msgnick = "%n$0$1-%K:%n %|";
   ##
   ## statusbar
   ##
@@ -194,10 +194,10 @@ formats = {
   "fe-common/core" = {
     servertag = "%B[%n$0%B]%n ";
     line_start_irssi = "";
-    join = "%w-%c-%C>%n {channick_hilight $0} {chanhost_hilight $1} has joined %c{channel $2}";
-    part = "%w<%c-%C-%n {channick_hilight $0} {chanhost_hilight $1} has left %c{channel $_$2$_} %K(%n{reason  $3}%K)";
-    kick = "%w<%c-%C-%n {nick $2} has kicked {channick_hilight $0} %nfrom %c{channel $_$1$_} %K(%n{reason $3}%K)";
-    quit = "%w<%c-%C-%n {channick_hilight $0} %K[%c$1%K] %nhas quit %K(%n{reason $2}%K)";
+    join = "%w-%c-%C>%w {channick_hilight $0} {chanhost_hilight $1} joined {channel $2}";
+    part = "%w<%c-%C-%w {channick_hilight $0} {chanhost_hilight $1} left {channel $2} %K({reason $3}%K)";
+    kick = "%w<%c-%C-%N {nick $2} kicked {channick_hilight $0} from {channel $1} %K({reason $3}%K)";
+    quit = "%w<%c-%C-%w {channick_hilight $0} {chanhost_hilight $1} quit %K({reason $2}%K)";
     names = "%w-%c-%C-%C Users on $0:";
     names_prefix = "%w-%c-%C- ";
     names_nick_op = "%K[%C$0%n$1-%K] ";
@@ -205,7 +205,7 @@ formats = {
     names_nick_voice = "%K[%c$0%n$1-%K] ";
     names_nick = "%K[%n$0$1%K] ";
     endofnames = "%w-%c-%C- %nUsers %c$1 %nnicks %K[%c$2 %nops, %c$3 %nhalfops, %c$4 %nvoices, %c$5 %nnormal%K]";
-    quit_once = "{channel $3} {channick $0} {chanhost $1} %K(%n{reason $2}%K)%n {channel $_$2$_}";
+    quit_once = "{channel $3} {channick $0} {chanhost $1} %K({reason $2}%K)%n {channel $_$2$_}";
     nick_changed = "%w-%c-%C- %W$0 %nis now known as %C$1";
     chanmode_change = "%w-%c-%C- %W{nickhilight $2} %nsets modes %K[%n{$channelhilight $0} {mode $1}%K]";
     channel_mode = "%w-%c-%C- %W{nickhilight $2} %nsets modes %K[%n{$channelhilight $0} {mode $1}%K]";
