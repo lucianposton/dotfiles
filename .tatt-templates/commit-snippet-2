@@ -1,0 +1,8 @@
+# Code for checking consistency of @@EBUILD@@
+cd @@CP@@
+
+repoman -d full || exit 1
+repoman -m "marked @@NEWKEYWORD@@ per bug @@BUG@@" commit || exit 1
+
+cd ../..
+## @@CP@@ done

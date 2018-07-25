@@ -1,0 +1,5 @@
+#!/bin/bash
+# CVS Stabeling for @@JOB@@
+
+# This is the place to move to the right location:
+cd @@REPODIR@@

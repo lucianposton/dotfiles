@@ -1,0 +1,4 @@
+#!/bin/bash
+#USE-Flag build tests for job @@JOB@@
+
+trap "echo 'signal captured, exiting the entire script...'; exit" SIGHUP SIGINT SIGTERM

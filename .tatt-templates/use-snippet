@@ -1,0 +1,54 @@
+FEATURES_TAG=@@FEATURES@@
+USE_TAG=@@USE@@
+USE_FLAGS=$(echo "${USE_TAG}" | sed -e 's:USE=::' -e 's:["'"'"']::g')
+
+echo
+echo
+printf "    \033[0;35;40m¸♫·¯·♪¸¸ USE flag ¸¸♬·¯·♩¸¸ \033[01m@@CPV@@\033[0;35;40m ¸¸♪·¯·♫¸\033[0m\n"
+
+TMP_PACKAGE_USEFILE="$(mktemp /etc/portage/package.use/tmp.XXXXXXXXXX)"
+echo "@@CPV@@ $USE_FLAGS" > "$TMP_PACKAGE_USEFILE"
+
+echo
+printf "\033[40;36m${USE_TAG}\033[0m\n"
+printf "\033[01;36;40memerge -1 --autounmask-only @@EMERGEOPTS@@ @@CPV@@\033[0m\n"
+echo
+emerge -1 --autounmask-only @@EMERGEOPTS@@ @@CPV@@
+
+echo
+printf "\033[40;36m${USE_TAG}\033[0m\n"
+printf "\033[01;36;40memerge -1 --onlydeps @@EMERGEOPTS@@ @@CPV@@\033[0m\n"
+echo
+emerge -1 --onlydeps @@EMERGEOPTS@@ @@CPV@@
+
+echo
+echo -e "\033[32;01mREMOVE ME\033[0m"
+printf "\033[40;36m${USE_TAG}\033[0m\n"
+printf "\033[01;36;40memerge -1 --onlydeps @@EMERGEOPTS@@ @@CPV@@\033[0m\n"
+echo
+emerge -1 --onlydeps @@EMERGEOPTS@@ @@CPV@@
+
+echo
+printf "\033[40;36m${FEATURES_TAG}\033[0m\n"
+printf "\033[40;36m${USE_TAG}\033[0m\n"
+printf "\033[01;36;40memerge -1 @@EMERGEOPTS@@ @@CPV@@\033[0m\n"
+echo
+exec {TMP_FD}>&1
+eout=$( @@FEATURES@@ emerge -1 @@EMERGEOPTS@@ @@CPV@@ 2>&1 >&$TMP_FD )
+EMERGE_SUCCESS=$?
+exec {TMP_FD}>&-
+
+rm "$TMP_PACKAGE_USEFILE"
+
+if [[ $EMERGE_SUCCESS == 0 ]] ; then
+  echo "Success for @@CPV@@ : ${FEATURES_TAG} ${USE_TAG}" >> @@REPORTFILE@@;
+elif [[ "${eout}" =~ REQUIRED_USE ]] ; then
+  echo "${eout}";
+  echo "FAILED @@CPV@@ : ${FEATURES_TAG} ${USE_TAG} : REQUIRED_USE not satisfied (probably)" >> @@REPORTFILE@@;
+elif [[ "${eout}" =~ USE_CHANGES ]] ; then
+  echo "${eout}";
+  echo "FAILED @@CPV@@ : ${FEATURES_TAG} ${USE_TAG} : USE dependencies not satisfied (probably)" >> @@REPORTFILE@@;
+else
+  echo "${eout}";
+  echo "FAILED @@CPV@@ : ${FEATURES_TAG} ${USE_TAG}" >> @@REPORTFILE@@;
+fi;
