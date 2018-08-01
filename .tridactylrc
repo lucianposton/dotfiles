@@ -1,0 +1,47 @@
+" Install the native messenger (:installnative in Tridactyl). Run :source or
+" restart in the browser.
+
+set theme dark
+set searchengine google
+set yankto both
+
+"guiset gui none
+"guiset navbar none
+guiset hoverlink right
+"guiset tabs always
+
+set hintfiltermode simple
+set hintchars asdfjkl;
+unset hintuppercase
+
+" Comment toggler for Reddit and Hacker News
+bind ;c hint -c [class*="expand"],[class="togg"]
+
+" GitHub pull request checkout command to clipboard (only works if you're a collaborator or above)
+bind yp composite js document.getElementById("clone-help-step-1").textContent.replace("git checkout -b", "git checkout -B").replace("git pull ", "git fetch ") + "git reset --hard " + document.getElementById("clone-help-step-1").textContent.split(" ")[3].replace("-","/") | yank
+
+"
+" Misc settings
+"
+
+" set editorcmd to suckless terminal, or use the defaults on other platforms
+js tri.browserBg.runtime.getPlatformInfo().then(os=>{const editorcmd = os.os=="linux" ? "st vim" : "auto"; tri.config.set("editorcmd", editorcmd)})
+
+" set profile dir on Windows
+"jsb browser.runtime.getPlatformInfo().then(os=>{const profiledir = os.os=="win" ? "C:\\Users\\olie\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\gwm76nmk.default" : "auto"; tri.config.set("profiledir", profiledir)})
+
+" Make Tridactyl work on more sites at the expense of some security
+"set csp clobber
+"fixamo_quiet
+
+" Make quickmarks for the sane Tridactyl issue view
+quickmark y https://www.youtube.com/feed/subscriptions
+
+"
+" URL redirects
+"
+
+" New reddit is bad
+autocmd DocStart www.reddit.com js tri.excmds.urlmodify("-t www old")
+
+" vim: set filetype=vim:
