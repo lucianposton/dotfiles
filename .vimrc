@@ -39,7 +39,8 @@
 set nocompatible " Sets many options, so should go first
 
 set backspace=indent,eol,start
-set history=50
+set history=200
+set viminfo='20,\"500
 set ruler
 set showcmd
 set incsearch
@@ -54,7 +55,12 @@ set directory=~/.vim/tmp
 set tabstop=4
 set shiftwidth=4
 filetype plugin on
-set ofu=syntaxcomplete#Complete
+if exists("+omnifunc")
+   autocmd Filetype *
+               \	if &omnifunc == "" |
+               \		setlocal omnifunc=syntaxcomplete#Complete |
+               \	endif
+endif
 
 filetype indent on
 if !exists("g:syntax_on") && ( &t_Co > 2 || has("gui_running") )
@@ -74,8 +80,6 @@ set autoindent
 set smartindent
 "set cindent
 set smarttab
-set scrolloff=3          " Lines of context on vertical scroll
-set sidescrolloff=3      " Columns of context on horizontal scroll
 
 set laststatus=2 " Always display the statusline in all windows
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
@@ -94,15 +98,17 @@ set number
 
 set list
 set listchars=tab:├·,trail:␣,nbsp:⍽,extends:►,precedes:◄
+set display=uhex,truncate
 
 set path+=**
 set wildmenu
+set suffixes+=.info,.aux,.log,.dvi,.bbl,.out,.o,.lo
 
 
 
 " Should go in .vim/
-au! BufWritePost $MYVIMRC source $MYVIMRC
-au! BufRead,BufNewFile *.mi set filetype=mason
+autocmd! BufWritePost $MYVIMRC source $MYVIMRC
+autocmd! BufRead,BufNewFile *.mi set filetype=mason
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " mappings
