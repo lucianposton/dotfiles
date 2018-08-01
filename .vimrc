@@ -45,6 +45,8 @@ set showcmd
 set incsearch
 set hlsearch
 
+set undofile
+set undodir=~/.vim/undo
 set backup
 set backupdir=~/.vim/backup
 set directory=~/.vim/tmp
