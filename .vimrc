@@ -110,10 +110,11 @@ nnoremap Q <nop>
 " aliases
 inoremap jj <Esc>
 inoremap jk <Esc>
-inoremap {<CR> {<CR>}<Esc>O
+inoremap {<CR> {<CR>}<C-G>u<Esc>O
 inoremap <expr> ) strpart(getline('.'), col('.')-1, 1) == ")" ? "\<Right>" : ")"
 inoremap <expr> } strpart(getline('.'), col('.')-1, 1) == "}" ? "\<Right>" : "}"
 inoremap <expr> ] strpart(getline('.'), col('.')-1, 1) == "]" ? "\<Right>" : "]"
+inoremap <CR> <C-G>u<CR>
 
 " swap commands
 nnoremap gQ J
