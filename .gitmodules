@@ -27,3 +27,6 @@
 [submodule "setup/submodules/retroarch_systems"]
 	path = setup/submodules/retroarch_systems
 	url = git@gitlab.com:lucianposton/retroarch_systems.git
+[submodule "setup/submodules/grep"]
+	path = setup/submodules/grep
+	url = https://github.com/yegappan/grep.git
