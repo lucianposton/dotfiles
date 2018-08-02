@@ -106,6 +106,10 @@ unicode_lookup () { grep "^0*$(printf '%X' "$((0x$1))");" <(curl -s http://www.u
 git-recursive () { find . -maxdepth 2 -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $*)" \; }
 git-recursive-deep () { find . -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $*)" \; }
 
+fancy-for() { local i s="$1"; shift; for i; do eval "$s"; done; }
+for-wine-flavors() { fancy-for 'local flavor=$i; eval '"$1"';' vanilla staging d3d9 any }
+for-wine-dirs() { for-wine-flavors 'local dir="wine-$flavor"; (cd "$dir" || exit; '"$1"')' }
+
 startx() { command startx "$@" &> /tmp/startx.log }
 xinit() { command xinit "$@" &> /tmp/xinit.log }
 
