@@ -1,2 +1,8 @@
+prompt-history
+build
+notbuild
+*.o
+*.hi
+*.state
 xmonad*
 !xmonad.hs
