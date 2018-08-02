@@ -1,14 +1,17 @@
 Xcursor.theme:gentoo-silver
 
 URxvt*.perl-ext-common: default,matcher,keyboard-select,selection-to-clipboard
-URxvt*.keysym.M-Escape: perl:keyboard-select:search
-!why isn't this overwriting?
-!https://github.com/muennich/urxvt-perls
-URxvt*.keysym.M-s: perl:keyboard-select:search
 
+URxvt*.keysym.Control-l: perl:matcher:last
+URxvt*.keysym.Control-u: perl:matcher:list
 URxvt*.url-launcher: xdg-open
 URxvt*.matcher.button:1
+URxvt*.matcher.pattern.0:(?:https?://|ftp://|news://|mailto:|file://)[-\\N{U+2013}\\w@;\\/?:&=%$.+!*\\x27,~#]+(?:\\([-\\N{U+2013}\\w@;\\/?:&=%$.+!*\\x27,~#]*\\)|[-\\N{U+2013}\\w@;\\/:&=%$+*~#])+
 URxvt*.matcher.rend.0:Uline fg5
+
+URxvt*.keysym.M-Escape: perl:keyboard-select:activate
+URxvt*.keysym.M-s: perl:keyboard-select:search
+
 URxvt*.geometry: 120x35
 URxvt*.depth: 32
 URxvt*.background:  [80]#000000
@@ -17,6 +20,7 @@ URxvt*.cursorColor: green
 URxvt*.saveLines:10000
 URxvt*.scrollBar:true
 URxvt*.scrollstyle:plain
+URxvt*.thickness:8
 URxvt*.scrollBar_right:true
 URxvt*.scrollTtyOutput:false
 URxvt*.scrollWithBuffer:true
