@@ -126,7 +126,7 @@ run_jobs() {
 initialize_vm() {
     VBoxManage snapshot "$OPT_VM_NAME" restorecurrent
     VBoxManage startvm "$OPT_VM_NAME" --type headless
-    sleep 5
+    sleep "$OPT_VM_INIT_DELAY"
 }
 
 poweroff_vm() {
@@ -267,8 +267,8 @@ parse_options() {
     fi
     set -e
 
-    local SHORT="o:m:f:r:n:v:bxj:u:h?"
-    local LONG="overlay:,match:,file:,reports-dir:,vm-name:,vm-hostname:,batch,xauth,no-update,job-name:,use:,help"
+    local SHORT="o:m:f:r:n:d:bxj:u:h?"
+    local LONG="overlay:,match:,file:,reports-dir:,vm-name:,vm-hostname:,vm-delay:,batch,xauth,no-update,job-name:,use:,help"
     local NORMALIZED
     NORMALIZED=$(getopt --options $SHORT --longoptions $LONG --name "$( basename $0)" -- "$@")
     if [ $? != 0 ]; then
@@ -277,6 +277,7 @@ parse_options() {
     eval set -- "$NORMALIZED"
 
     OPT_VM_NAME=gentoo-x86
+    OPT_VM_INIT_DELAY=15
     OPT_MODE=overlay
     OPT_OVERLAY=didactic-duck
     OPT_TATT_JOB_NAME=tatters
@@ -297,6 +298,8 @@ parse_options() {
                 echo
                 echo "   -n, --vm-name [ARG]     Name of VM"
                 echo "       --vm-hostname [ARG] Hostname of VM, if different than name"
+                echo "   -d, --vm-delay [ARG]    Delay (sec) when booting VM"
+                echo
                 echo "   -b, --batch             Emerge everything in single vm session"
                 echo "   -x, --xauth             Setup X11 forwarding on VM"
                 echo "       --no-update         Skip syncing and updating system"
@@ -326,6 +329,10 @@ parse_options() {
                 ;;
             -n|--vm-name)
                 OPT_VM_NAME=$2
+                shift 2
+                ;;
+            -d|--vm-delay)
+                OPT_VM_INIT_DELAY=$2
                 shift 2
                 ;;
             --vm-hostname)
