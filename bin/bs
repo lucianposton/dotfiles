@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+if [ "$1" == "-o" ]; then
+    shift
+    bspaste "$@"
+    exit $?
+fi
+
+if [ "$1" == "-i" ]; then
+    shift
+    bscopy "$@"
+    exit $?
+fi
+
+# Default to -i
+bscopy "$@"
