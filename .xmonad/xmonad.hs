@@ -1,3 +1,7 @@
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FlexibleInstances #-}
 --
 -- xmonad example config file.
 --
@@ -7,21 +11,28 @@
 -- Normally, you'd only override those defaults you care about.
 --
 
-import XMonad
-import qualified Data.Map as M
 import Data.Monoid
+import Graphics.X11.ExtraTypes.XF86
 import System.Exit
+import qualified Data.Map as M
 
-import qualified XMonad.StackSet as W
-import qualified XMonad.Layout.NoBorders as NB
+import XMonad
+import XMonad.Actions.GridSelect
+import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops as EWMH
 import XMonad.Hooks.ManageDocks
-import XMonad.Layout.Fullscreen as FS
-import XMonad.Actions.GridSelect
 import XMonad.Hooks.SetWMName
-import XMonad.Hooks.DynamicLog
+import XMonad.Layout.Decoration
+import XMonad.Layout.Fullscreen as FS
+import XMonad.Layout.LayoutModifier
+import XMonad.Layout.MultiToggle
+import XMonad.Layout.Simplest
+import qualified XMonad.Layout.NoBorders as NB
+import qualified XMonad.StackSet as W
 
-import Graphics.X11.ExtraTypes.XF86
+-- Custom from ~/.xmonad/lib
+import XMonad.Layout.MultiToggle.MyTabBar
+import XMonad.Layout.NubModifier
 
 
 -- The preferred terminal program, which is used in a binding below and by
@@ -105,6 +116,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- close focused window
     , ((modm .|. myAltMask, xK_c     ), kill)
+
+    -- Toggle TabBarDecoration
+    , ((modm,               xK_x     ), sendMessage $ Toggle MYTABBAR)
 
      -- Rotate through the available layout algorithms
     , ((modm,               xK_space ), sendMessage NextLayout)
@@ -236,7 +250,10 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- which denotes layout choice.
 --
 -- TODO http://hackage.haskell.org/package/xmonad-contrib-0.13/docs/XMonad-Layout-PerScreen.html
-myLayoutHook = avoidStruts (tiled ||| Mirror tiled ||| NB.noBorders Full)
+myLayoutHook = nubModifier $ avoidStruts $ mkToggle (single MYTABBAR)
+        (tiled |||
+        Mirror tiled |||
+        NB.noBorders Simplest)
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
