@@ -1,1 +1,0 @@
-../../setup/submodules/act.vim/ftplugin/qf.vim
