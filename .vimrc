@@ -241,15 +241,6 @@ let g:mingdb_gdbinit_path = '~/.gdbinit-modules.d/99-mingdb'
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" ack.vim mappings
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"let g:ack_default_options=" -s -H --nocolor --nogroup --column"
-
-nmap <leader>a :Ack! ""<Left>
-nmap <leader>A :Ack! <C-r><C-w><CR>
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Selecta Mappings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Run a given vim command on the results of fuzzy selecting from a given shell
