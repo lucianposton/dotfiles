@@ -241,16 +241,13 @@ let g:mingdb_gdbinit_path = '~/.gdbinit-modules.d/99-mingdb'
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" grep mappings
+" ack.vim mappings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"let g:Ack_Options=" -s -H --nocolor --nogroup --column"
+"let g:ack_default_options=" -s -H --nocolor --nogroup --column"
 
-command! -nargs=* -complete=file MyAck
-            \ call grep#runGrep('Ack', 'ack', 'set', <f-args>) <bar>
-            \ call Quickerfix()
+nmap <leader>a :Ack! ""<Left>
+nmap <leader>A :Ack! <C-r><C-w><CR>
 
-nmap <leader>a :MyAck 
-nmap <leader>A :MyAck <C-r><C-w><CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Selecta Mappings
