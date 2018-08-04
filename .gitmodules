@@ -27,3 +27,6 @@
 [submodule "setup/submodules/asyncrun.vim"]
 	path = setup/submodules/asyncrun.vim
 	url = https://github.com/skywind3000/asyncrun.vim.git
+[submodule "setup/submodules/undotree"]
+	path = setup/submodules/undotree
+	url = https://github.com/mbbill/undotree.git
