@@ -40,9 +40,6 @@
 --ignore-file=is:LICENSE
 --ignore-file=is:LICENSE.md
 --ignore-file=is:LICENSE.txt
---ignore-file=is:README
---ignore-file=is:README.md
---ignore-file=is:README.txt
 
 # binaries
 --ignore-file=ext:a
