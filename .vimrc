@@ -362,6 +362,19 @@ let g:netrw_liststyle=3
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" undotree
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:undotree_WindowLayout=4
+let g:undotree_SetFocusWhenToggle=1
+let g:undotree_ShortIndicators=1
+"let g:undotree_DiffCommand="diff -u"
+"let g:undotree_SplitWidth=40
+" syntax : DiffAdd and DiffChange
+
+nnoremap <Leader>u :UndotreeToggle<CR>
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Quickerfix
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:quickerfix_hotkeys = {
