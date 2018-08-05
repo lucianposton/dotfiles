@@ -31,6 +31,7 @@ export PYTHONPATH="${PYTHONPATH:+"$PYTHONPATH:"}$HOME/dotfiles/setup/submodules/
 export EDITOR="vim"
 
 export LESS="-R -M --shift 5"
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 
 export PROMPT=$'
 %{\e[0;31m%}[ %{\e[0;36m%}%M %{\e[0;31m%}: %{\e[0;32m%}%d%{\e[0;31m%} ]
