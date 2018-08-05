@@ -2,8 +2,8 @@ Xcursor.theme:gentoo-silver
 
 URxvt*.perl-ext-common: default,matcher,keyboard-select,selection-to-clipboard
 
-URxvt*.keysym.Control-l: perl:matcher:last
-URxvt*.keysym.Control-u: perl:matcher:list
+URxvt*.keysym.M-l: perl:matcher:last
+URxvt*.keysym.M-u: perl:matcher:list
 URxvt*.url-launcher: xdg-open
 URxvt*.matcher.button:1
 URxvt*.matcher.pattern.0:(?:https?://|ftp://|news://|mailto:|file://)[-\\N{U+2013}\\w@;\\/?:&=%$.+!*\\x27,~#]+(?:\\([-\\N{U+2013}\\w@;\\/?:&=%$.+!*\\x27,~#]*\\)|[-\\N{U+2013}\\w@;\\/:&=%$+*~#])+
