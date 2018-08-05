@@ -24,6 +24,8 @@ HISTSIZE=101000
 SAVEHIST=100000
 
 # TODO move to common location for use in bash
+alias x='exit'
+alias cls='printf "\033c"'
 alias ls='ls -F --color=auto'
 alias la='ls -A'
 alias l='ls -lA'
