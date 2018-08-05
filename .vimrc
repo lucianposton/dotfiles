@@ -338,7 +338,7 @@ nnoremap <Leader>s :AsyncStop<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " cscope. See also .vim/plugin/cscope_maps.vim
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nmap <C-\>r :!gen-src-index.sh<CR>:cs reset<CR><CR>
+nnoremap <C-\>r :!gen-src-index.sh<CR>:cs reset<CR><CR>
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
