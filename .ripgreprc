@@ -1,0 +1,51 @@
+# See RIPGREP_CONFIG_PATH in man rg
+
+# Always show line numbers, even in non-iteractive terminal
+--line-number
+
+# Always sort the files. Disables parallelism!
+#--sort-files
+
+
+### Files to ignore
+
+# git # Hidden are handled by default
+#--glob=!.gitignore
+#--glob=!.gitattributes
+#--glob=!.gitconfig
+
+# misc files
+-Treadme
+-Tlicense
+--glob=!COMPILING*
+--glob=!CONTRIBUTING*
+
+# cscope
+--glob=!cscope.out
+--glob=!cscope.in.out
+--glob=!cscope.po.out
+--glob=!cscope.files
+
+# ctags
+--glob=!tags
+
+# translation files
+#--type-add=po:*.po
+#--type-add=po:*.pot
+#--type-add=po:*.mo
+#-Tpo
+
+
+### Directories to ignore
+
+# misc directories
+--glob=!doc
+--glob=!doxygen_doc
+
+# translation file directories
+--glob=!po
+--glob=!mo
+
+# binaries
+--glob=!obj
+--glob=!build
