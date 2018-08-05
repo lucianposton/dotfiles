@@ -234,6 +234,10 @@ highlight SpellRare cterm=NONE ctermfg=NONE ctermbg=NONE
 highlight Search ctermfg=black guifg=black
 highlight Comment ctermfg=grey guifg=grey
 highlight ColorColumn term=reverse ctermbg=0 guibg=LightRed
+highlight DiffAdd ctermfg=cyan ctermbg=black guibg=LightBlue
+highlight DiffChange ctermfg=NONE ctermbg=black guibg=LightMagenta
+highlight DiffDelete ctermfg=magenta ctermbg=black gui=bold guifg=Blue guibg=LightCyan
+highlight DiffText term=reverse cterm=bold ctermbg=red gui=bold guibg=Red
 
 "highlight WhiteSpaceEOL ctermbg=darkgreen guibg=lightblue
 "match WhiteSpaceEol /\s\+$/
