@@ -324,6 +324,18 @@ nnoremap <c-g> :call SelectaIdentifier()<cr>
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" AsyncRun
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:asyncrun_bell=1
+let g:asyncrun_open=10
+
+nnoremap <Leader>a :AsyncRun! rg ""<Left>
+nnoremap <Leader>A :AsyncRun! rg <C-r><C-w><CR>
+nnoremap <Leader>m :AsyncRun -save=2 -program=make<CR>
+nnoremap <Leader>s :AsyncStop<CR>
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " cscope. See also .vim/plugin/cscope_maps.vim
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 nmap <C-\>r :!gen-src-index.sh<CR>:cs reset<CR><CR>
