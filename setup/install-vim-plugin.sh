@@ -57,6 +57,6 @@ if [[ "$(realpath "$plugin_name")" != "$plugin_path" ]]; then
     die "Invalid symlink in $(pwd). $(realpath "$plugin_name") != $plugin_path"
 fi
 
-echo "${green}${bold} ✓${reset}  Installed $plugin_name to $vim_pack_dir/$plugin_name${reset}"
-ls -l -F --color=auto "$vim_pack_dir/$plugin_name"
 git add "$plugin_name"
+ls -l -F --color=auto "$vim_pack_dir/$plugin_name"
+echo "${green}${bold} ✓${reset}  Installed $plugin_name to $vim_pack_dir/$plugin_name${reset} and added to git"
