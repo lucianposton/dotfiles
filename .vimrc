@@ -14,6 +14,7 @@
 "  cmap, cnoremap, cunmap          Command-line mode
 "  omap, onoremap, ounmap          Operator pending mode
 "
+" :h key-notation
 " Keys         Notation
 " -----        ---------
 " <C-s>        Ctrl + s
@@ -42,6 +43,7 @@ set backspace=indent,eol,start
 set history=200
 set viminfo='20,\"500
 set ruler
+set lazyredraw
 set showcmd
 set incsearch
 set hlsearch
@@ -73,7 +75,6 @@ endif
 set textwidth=78
 set scrolloff=3          " Lines of context on vertical scroll
 set sidescrolloff=3      " Columns of context on horizontal scroll
-set ls=2
 
 set expandtab
 set autoindent
@@ -98,6 +99,9 @@ set number
 
 set list
 set listchars=tab:├·,trail:␣,nbsp:⍽,extends:►,precedes:◄
+let &showbreak='↳ '
+set breakindent
+set breakindentopt=min:60,shift:2
 set display=uhex,truncate
 
 set path+=**
@@ -123,31 +127,46 @@ inoremap <expr> ) strpart(getline('.'), col('.')-1, 1) == ")" ? "\<Right>" : ")"
 inoremap <expr> } strpart(getline('.'), col('.')-1, 1) == "}" ? "\<Right>" : "}"
 inoremap <expr> ] strpart(getline('.'), col('.')-1, 1) == "]" ? "\<Right>" : "]"
 inoremap <CR> <C-G>u<CR>
+nnoremap Y y$
+nnoremap <Leader>y :syntax sync fromstart<CR>
 
 " swap commands
 nnoremap gQ J
 xnoremap gQ J
-nnoremap <expr> <C-m> &buftype ==# 'quickfix' ? "\<CR>" : 'K'
+nnoremap <expr> <C-m> &buftype ==# 'quickfix' \|\| getcmdwintype() != '' ? "\<CR>" : 'K'
 vnoremap <C-m> K
 
 " state toggle
-nnoremap <F1> :nohlsearch<CR>
-inoremap <F1> <C-o>:nohlsearch<CR>
-nnoremap <F3> :setlocal relativenumber!<CR>:set number!<CR>
-inoremap <F3> <C-o>:setlocal relativenumber!<CR><C-o>:set number!<CR>
-nnoremap <F4> :setlocal spell!<CR>
-inoremap <F4> <C-o>:setlocal spell!<CR>
+nnoremap <F1> :setlocal spell!<CR>
+inoremap <F2> <C-o>:setlocal spell!<CR>
+nnoremap <F2> :setlocal relativenumber!<CR>:set number!<CR>
+inoremap <F2> <C-o>:setlocal relativenumber!<CR><C-o>:set number!<CR>
+nnoremap <F3> :nohlsearch<CR>
+inoremap <F3> <C-o>:nohlsearch<CR>
 
 " navigation
 nnoremap K <C-U>
 xnoremap K <C-U>
 nnoremap J <C-D>
 xnoremap J <C-D>
+nnoremap <expr> j (v:count > 5 ? "m'" . v:count : '') . 'j'
+nnoremap <expr> k (v:count > 5 ? "m'" . v:count : '') . 'k'
 
 " file navigation
 nnoremap <Space>b :ls<CR>:b 
+nnoremap <Space><Space> <C-^>
+nnoremap <silent> <Space>- :silent edit <C-R>=empty(expand('%')) ? '.' : expand('%:p:h')<CR><CR>
+nnoremap <Space>e :edit <C-R>=expand('%:p:h') . '/'<CR>
+
+" file modification
+nnoremap <Space>s :write<CR>
+nnoremap <Space>x :xit<CR>
+nnoremap <Space>q :quit!<CR>
+nnoremap <Space>qq :wqall<CR>
+nnoremap <Space>qqq :qall!<CR>
 
 " window management
+nnoremap <Space>o :only<CR>
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
@@ -157,14 +176,30 @@ nnoremap <Right> :vertical resize +2<CR>
 nnoremap <Up> :resize -2<CR>
 nnoremap <Down> :resize +2<CR>
 
+" quickfix navigation https://noahfrederick.com/log/a-list-of-vims-lists
+nnoremap <Home> :cprevious<CR>
+nnoremap <End> :cnext<CR>
+nnoremap <S-Home> :cpfile<CR>
+nnoremap <S-End> :cnfile<CR>
+nnoremap <Insert> :lprevious<CR>
+nnoremap <Del> :lnext<CR>
+nnoremap <PageUp> :lpfile<CR>
+nnoremap <PageDown> :lnfile<CR>
+
 " search without jumping
 noremap <Space>n  :set hls<CR>:let @/ = '\<' . expand('<cword>') . '\>' <CR>:call histadd('/', @/)<CR>:echo @/<CR>
 noremap <Space>gn :set hls<CR>:let @/ = expand('<cword>') <CR>:call histadd('/', @/)<CR>:echo @/<CR>
 
+" tab while incsearching. Uses 'wildcharm'
+set wildcharm=<C-@>
+cnoremap <expr> <Tab> getcmdtype() == '/' \|\| getcmdtype() == '?' ? '<CR>/<C-r>/' : '<C-@>'
+cnoremap <expr> <S-Tab> getcmdtype() == '/' \|\| getcmdtype() == '?' ? '<CR>?<C-r>/' : '<S-Tab>'
+
 " misc commands
 vnoremap . :normal .<CR>
 vnoremap @@ :normal @@<CR>
-cnoremap w!! w !sudo tee > /dev/null %
+cnoremap w!! execute 'w !sudo tee % >/dev/null' \| if v:shell_error \|
+            \ echoe "Write Error" \| else \| :edit! \| endif
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
