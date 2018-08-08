@@ -471,3 +471,12 @@ mainwindows = {
   99 = { first_line = "0"; lines = "6"; };
 };
 ignores = ( { level = "CTCPS DCC"; } );
+keyboard = (
+  { key = "meta-h"; id = "backward_word"; data = ""; },
+  { key = "meta-l"; id = "forward_word"; data = ""; },
+  { key = "^H"; id = "previous_window"; data = ""; },
+  { key = "^L"; id = "next_window"; data = ""; },
+  { key = "meta-j"; id = "scroll_forward"; data = ""; },
+  { key = "meta-k"; id = "scroll_backward"; data = ""; },
+  { key = "meta-p"; id = "change_window"; data = "20"; }
+);
