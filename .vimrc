@@ -321,12 +321,16 @@ highlight SpellCap cterm=undercurl ctermfg=NONE ctermbg=black
 "highlight SpellLocal cterm=undercurl ctermfg=NONE ctermbg=black
 highlight SpellRare cterm=NONE ctermfg=NONE ctermbg=NONE
 highlight Search ctermfg=black guifg=black
+highlight LineNr ctermfg=black guifg=Brown
+highlight CursorLineNr ctermfg=black gui=bold guifg=Brown
 highlight Comment ctermfg=grey guifg=grey
-highlight ColorColumn term=reverse ctermbg=0 guibg=LightRed
+highlight ColorColumn ctermbg=black guibg=LightRed
 highlight DiffAdd ctermfg=cyan ctermbg=black guibg=LightBlue
 highlight DiffChange ctermfg=NONE ctermbg=black guibg=LightMagenta
 highlight DiffDelete ctermfg=magenta ctermbg=black gui=bold guifg=Blue guibg=LightCyan
 highlight DiffText term=reverse cterm=bold ctermbg=red gui=bold guibg=Red
+highlight Folded term=standout ctermfg=4 ctermbg=248 guifg=DarkBlue guibg=LightGrey
+highlight FoldColumn term=standout ctermfg=4 ctermbg=248 guifg=DarkBlue guibg=Grey
 
 "highlight WhiteSpaceEOL ctermbg=darkgreen guibg=lightblue
 "match WhiteSpaceEol /\s\+$/
