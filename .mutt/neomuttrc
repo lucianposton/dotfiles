@@ -73,6 +73,12 @@ bind index,pager \CP        sidebar-prev
 bind index,pager \CN        sidebar-next
 bind index,pager \CO        sidebar-open
 bind index,pager A          imap-fetch-mail
+bind index,pager d          delete-thread
+bind index,pager D          delete-message
+bind index       \CD        delete-pattern
+bind index,pager u          undelete-thread
+bind index,pager U          undelete-message
+bind index       \CU        undelete-pattern
 
 bind index <space>          collapse-thread
 bind index -                collapse-thread
