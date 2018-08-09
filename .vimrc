@@ -39,9 +39,21 @@
 
 set nocompatible " Sets many options, so should go first
 
+set formatoptions+=j
+set formatoptions+=1
+set formatoptions+=n
+if executable("par-format")
+    set formatprg=par-format\ -rqe
+endif
+set nojoinspaces
+set autoread
 set backspace=indent,eol,start
-set history=200
-set viminfo='20,\"500
+set history=1000
+set tabpagemax=50
+set viminfo^=!
+set viminfo-=h
+set sessionoptions-=options
+set sessionoptions+=localoptions
 set ruler
 set lazyredraw
 set showcmd
@@ -54,6 +66,10 @@ set backup
 set backupdir=~/.vim/backup
 set directory=~/.vim/tmp
 
+if has("x11") && has("unnamedplus")
+    set clipboard=autoselect,autoselectplus,unnamed,unnamedplus,exclude:cons\|linux
+endif
+
 set tabstop=4
 set shiftwidth=4
 filetype plugin on
@@ -65,6 +81,7 @@ if exists("+omnifunc")
 endif
 
 filetype indent on
+set synmaxcol=400
 if !exists("g:syntax_on") && ( &t_Co > 2 || has("gui_running") )
     syntax enable
 endif
@@ -108,11 +125,16 @@ set path+=**
 set wildmenu
 set suffixes+=.info,.aux,.log,.dvi,.bbl,.out,.o,.lo
 
+set timeout
+set timeoutlen=1000
+set ttimeout
+set ttimeoutlen=25
 
 
 " Should go in .vim/
 autocmd! BufWritePost $MYVIMRC source $MYVIMRC
 autocmd! BufRead,BufNewFile *.mi set filetype=mason
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " mappings
