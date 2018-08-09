@@ -30,3 +30,6 @@
 [submodule "setup/submodules/undotree"]
 	path = setup/submodules/undotree
 	url = https://github.com/mbbill/undotree.git
+[submodule "setup/submodules/vim-quickerfix"]
+	path = setup/submodules/vim-quickerfix
+	url = git@github.com:lucianposton/vim-quickerfix.git
