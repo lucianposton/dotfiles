@@ -393,7 +393,11 @@ update_kernel() {
 }
 
 update_initramfs() {
-    # TODO: lvm2 no longer static
+    # TODO: lvm2 no longer static. or gpg not static
+    # get recursive so dep from gen_initramfs.sh or dracut
+
+    # TODO: cryptsetup-1.6.2 seems like last version to be able to open
+    # devices
     exit 90
 
     check_and_initialize_boot
