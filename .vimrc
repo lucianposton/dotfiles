@@ -140,17 +140,55 @@ autocmd! BufRead,BufNewFile *.mi set filetype=mason
 " mappings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 nnoremap Q <nop>
+"nnoremap X <nop>
+nnoremap <C-Left> <nop>
+nnoremap <C-Right> <nop>
+nnoremap <C-Up> <nop>
+nnoremap <C-Down> <nop>
+nnoremap <M-Left> <nop>
+nnoremap <M-Right> <nop>
+nnoremap <M-Up> <nop>
+nnoremap <M-Down> <nop>
+nnoremap <Home> <nop>
+nnoremap <End> <nop>
+nnoremap <S-Home> <nop>
+nnoremap <S-End> <nop>
+nnoremap <Insert> <nop>
+nnoremap <Del> <nop>
+nnoremap <PageUp> <nop>
+nnoremap <PageDown> <nop>
 
 " aliases
-inoremap jj <Esc>
-inoremap jk <Esc>
-inoremap {<CR> {<CR>}<C-G>u<Esc>O
+"inoremap jj <C-\><C-N>
+inoremap jk <C-\><C-N>:update<CR>
+inoremap {<CR> {<CR>}<C-G>u<C-\><C-N>O
 inoremap <expr> ) strpart(getline('.'), col('.')-1, 1) == ")" ? "\<Right>" : ")"
 inoremap <expr> } strpart(getline('.'), col('.')-1, 1) == "}" ? "\<Right>" : "}"
 inoremap <expr> ] strpart(getline('.'), col('.')-1, 1) == "]" ? "\<Right>" : "]"
 inoremap <CR> <C-G>u<CR>
 nnoremap Y y$
-nnoremap <Leader>y :syntax sync fromstart<CR>
+nnoremap <Leader>U :syntax sync fromstart<CR>:redraw!<CR>
+nnoremap q; q:
+nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+nnoremap <Leader>vp '[v']
+nnoremap <Space>. /<C-r>"<CR>cgn<C-r>.<Esc>
+inoremap <C-K><C-K> <C-\><C-N>:help digraph-table<CR>
+nnoremap <Leader>eg :vsplit ~/.gitconfig<cr>
+nnoremap <Leader>em :vsplit ~/.mutt/neomuttrc<cr>
+nnoremap <Leader>et :vsplit ~/.tmux.conf<cr>
+nnoremap <Leader>ev :vsplit $MYVIMRC<cr>
+
+" readline-ish aliases
+noremap <M-k> :<Up>
+noremap <M-j> q:
+noremap! <M-k> <Up>
+noremap! <M-j> <Down>
+noremap! <M-h> <S-Left>
+noremap! <M-l> <S-Right>
+inoremap <M-d> <C-O>de
+cnoremap <expr> <M-d> readline_helper#delete_word()
+noremap! <M-BS> <C-W>
+inoremap <C-U> <C-G>u<C-U>
 
 " swap commands
 nnoremap gQ J
@@ -181,32 +219,28 @@ nnoremap <silent> <Space>- :silent edit <C-R>=empty(expand('%')) ? '.' : expand(
 nnoremap <Space>e :edit <C-R>=expand('%:p:h') . '/'<CR>
 
 " file modification
-nnoremap <Space>s :write<CR>
+nnoremap <Space>s :update<CR>
 nnoremap <Space>x :xit<CR>
 nnoremap <Space>q :quit!<CR>
 nnoremap <Space>qq :wqall<CR>
 nnoremap <Space>qqq :qall!<CR>
 
 " window management
-nnoremap <Space>o :only<CR>
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-nnoremap <Left> :vertical resize -2<CR>
-nnoremap <Right> :vertical resize +2<CR>
-nnoremap <Up> :resize -2<CR>
-nnoremap <Down> :resize +2<CR>
+nnoremap s <C-W>
+nnoremap s<Left> :vertical resize -2<CR>
+nnoremap s<Right> :vertical resize +2<CR>
+nnoremap s<Up> :resize -2<CR>
+nnoremap s<Down> :resize +2<CR>
 
 " quickfix navigation https://noahfrederick.com/log/a-list-of-vims-lists
-nnoremap <Home> :cprevious<CR>
-nnoremap <End> :cnext<CR>
-nnoremap <S-Home> :cpfile<CR>
-nnoremap <S-End> :cnfile<CR>
-nnoremap <Insert> :lprevious<CR>
-nnoremap <Del> :lnext<CR>
-nnoremap <PageUp> :lpfile<CR>
-nnoremap <PageDown> :lnfile<CR>
+nnoremap <Up> :cprevious<CR>
+nnoremap <Down> :cnext<CR>
+nnoremap <Left> :cpfile<CR>
+nnoremap <Right> :cnfile<CR>
+nnoremap <S-Up> :lprevious<CR>
+nnoremap <S-Down> :lnext<CR>
+nnoremap <S-Left> :lpfile<CR>
+nnoremap <S-Right> :lnfile<CR>
 
 " search without jumping
 noremap <Space>n  :set hls<CR>:let @/ = '\<' . expand('<cword>') . '\>' <CR>:call histadd('/', @/)<CR>:echo @/<CR>
