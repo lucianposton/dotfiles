@@ -57,8 +57,18 @@ setopt share_history
 bindkey -v
 bindkey -M viins 'jj' vi-cmd-mode
 bindkey -M viins 'jk' vi-cmd-mode
-bindkey '^[k' history-beginning-search-backward
-bindkey '^[j' history-beginning-search-forward
+autoload -Uz history-search-end;
+zle -N history-beginning-search-backward-end history-search-end;
+zle -N history-beginning-search-forward-end history-search-end;
+bindkey '^[k' history-beginning-search-backward-end
+bindkey '^[j' history-beginning-search-forward-end
+bindkey '^[h' vi-backward-word
+bindkey '^[l' vi-forward-word
+bindkey '^[d' delete-word
+bindkey '^[^H' backward-delete-word
+bindkey '^[^?' backward-delete-word
+bindkey '^[b' backward-word
+bindkey '^[f' forward-word
 bindkey '^[[A' up-line-or-search
 bindkey '^[[B' down-line-or-search
 bindkey -M vicmd '/' history-incremental-search-backward
