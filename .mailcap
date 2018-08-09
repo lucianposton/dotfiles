@@ -3,3 +3,5 @@ text/html; w3m -I %{charset} -T text/html '%s' ; needsterminal
 text/html; w3m -I %{charset} -T text/html -dump '%s' ; copiousoutput
 
 text/*; view -Mf '%s' ; edit=vim -f '%s'; compose=vim -f '%s'; needsterminal
+
+*/*; xdg-open '%s'; test=expr "$DISPLAY" : :
