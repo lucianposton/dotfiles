@@ -259,6 +259,37 @@ cnoremap w!! execute 'w !sudo tee % >/dev/null' \| if v:shell_error \|
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" keycode mappings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if !has("gui_running") && !has('nvim')
+    " Mapping terminal keycodes to vim keycodes introduces timeout issues in
+    " all vim modes. As mitigation, can use autocmd to limit severity, or can
+    " set ttimeoutlen low e.g. <100.
+    " https://github.com/tpope/vim-rsi/blob/master/plugin/rsi.vim
+    " http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
+    if &term == "rxvt-unicode-256color" || &term == "screen-256color"
+        silent! execute "set <M-j>=\<Esc>j"
+        silent! execute "set <M-k>=\<Esc>k"
+        silent! execute "set <M-h>=\<Esc>h"
+        silent! execute "set <M-l>=\<Esc>l"
+        silent! execute "set <M-d>=\<Esc>d"
+        silent! exe "set <S-Up>=\<Esc>[a"
+        silent! exe "set <S-Down>=\<Esc>[b"
+        silent! execute "set <F34>=\<Esc>\<C-?>"
+        silent! execute "set <F35>=\<Esc>\<C-H>"
+        map! <F34> <M-BS>
+        map! <F35> <M-BS>
+        map <F34> <M-BS>
+        map <F35> <M-BS>
+    elseif &term == "xterm"
+        set <F34>=
+        map! <F34> <M-BS>
+        map <F34> <M-BS>
+    endif
+endif
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Guess whether to toggle 'expandtab' in current buffer
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! GuessTabsOrSpaces()
