@@ -375,44 +375,6 @@ nnoremap <Leader>u :UndotreeToggle<CR>
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Quickerfix
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let s:quickerfix_hotkeys = {
-            \ "t": "<C-W><CR><C-W>T",
-            \ "T": "<C-W><CR><C-W>TgT<C-W>j",
-            \ "o": "<CR>",
-            \ "O": "<CR><C-W>p<C-W>c",
-            \ "go": "<CR><C-W>p",
-            \ "h": "<C-W><CR><C-W>K",
-            \ "H": "<C-W><CR><C-W>K<C-W>b",
-            \ "v": "<C-W><CR><C-W>H<C-W>b<C-W>J<C-W>t",
-            \ "gv": "<C-W><CR><C-W>H<C-W>b<C-W>J",
-            \ "q": ":cclose<CR>" }
-
-function! Quickerfix()
-    execute "botright copen"
-    nnoremap <buffer> <silent> ? :call <SID>QuickerfixHelp()<CR>
-    for key_map in items(s:quickerfix_hotkeys)
-        execute printf("nnoremap <buffer> <silent> %s %s", get(key_map, 0), get(key_map, 1))
-    endfor
-    redraw!
-endfunction
-
-function! s:QuickerfixHelp()
-    execute 'edit' globpath(&rtp, 'doc/quickerfix_quick_help.txt')
-
-    silent normal gg
-    setlocal buftype=nofile bufhidden=hide nobuflisted
-    setlocal nomodifiable noswapfile
-    setlocal filetype=help
-    setlocal nonumber norelativenumber nowrap
-    setlocal foldmethod=diff foldlevel=20
-
-    nnoremap <buffer> <silent> ? :q!<CR>:call Quickerfix()<CR>
-endfunction
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " fugitive
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "nnoremap <space>ga :Git add %:p<CR><CR>
