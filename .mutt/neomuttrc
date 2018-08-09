@@ -2,6 +2,9 @@
 
 color sidebar_divider brightcyan default
 color sidebar_new yellow default
+color sidebar_flagged red default
+#color sidebar_highlight cyan default
+#color sidebar_indicator default black
 
 color indicator brightwhite black
 color tree white default
