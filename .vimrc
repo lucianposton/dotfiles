@@ -330,8 +330,8 @@ highlight DiffAdd ctermfg=cyan ctermbg=black guibg=LightBlue
 highlight DiffChange ctermfg=NONE ctermbg=black guibg=LightMagenta
 highlight DiffDelete ctermfg=magenta ctermbg=black gui=bold guifg=Blue guibg=LightCyan
 highlight DiffText term=reverse cterm=bold ctermbg=red gui=bold guibg=Red
-highlight Folded term=standout ctermfg=4 ctermbg=248 guifg=DarkBlue guibg=LightGrey
-highlight FoldColumn term=standout ctermfg=4 ctermbg=248 guifg=DarkBlue guibg=Grey
+highlight Folded ctermfg=darkcyan ctermbg=NONE guifg=DarkBlue guibg=LightGrey
+highlight FoldColumn ctermfg=darkcyan ctermbg=NONE guifg=DarkBlue guibg=Grey
 
 "highlight WhiteSpaceEOL ctermbg=darkgreen guibg=lightblue
 "match WhiteSpaceEol /\s\+$/
