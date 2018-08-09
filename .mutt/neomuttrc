@@ -128,7 +128,7 @@ set header_cache="~/.mutt/cache/header"
 
 set index_format="%4C [%Z] %{%m/%d} %-20.20L %-2.1M%s"
 set mail_check_stats=yes
-set sidebar_format="%B%?F? [%F]?%* %?N?%N/?%S"
+set sidebar_format="%B %!%* %?N?%N?"
 set sidebar_visible=yes
 set sidebar_width=30
 #set sidebar_short_path=yes
