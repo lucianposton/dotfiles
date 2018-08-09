@@ -285,12 +285,14 @@ check_and_initialize_boot() {
     fi
 }
 
-check_and_cleanup_boot() {
+print_boot_usage() {
     echo
     echo "/boot filesystem disk space usage:"
     df -h | grep boot | egrep --color '[0-9]{1,2}%'
     ls -l /boot/
-    sleep 1
+}
+
+umount_boot() {
     umount /boot || echo "/boot umount failed!"
 }
 
@@ -364,13 +366,16 @@ update_kernel() {
     make modules_install
     make install
 
-    echo 'Update backup symlink to point to current?'
+    print_boot_usage
+    echo
+    echo 'Update kernel backup symlink to point to current?'
     select yn in "Yes" "No";
     do
         case $yn in
             Yes )
                 ln -sfT "$(readlink /boot/current)" /boot/backup
                 ln -sfT "vmlinuz-${NEW_KERNEL_RELEASE}" /boot/current
+                print_boot_usage
                 break;;
             No )
                 ln -sfT "vmlinuz-${NEW_KERNEL_RELEASE}" /boot/current
@@ -378,7 +383,7 @@ update_kernel() {
         esac
     done
 
-    check_and_cleanup_boot
+    umount_boot
 
     emerge --noreplace --quiet-build "=sys-kernel/${NEW_KERNEL_FLAVOR}-sources-${NEW_KERNEL_PORTAGE_VERSION}"
 
@@ -418,13 +423,16 @@ update_initramfs() {
     # version doesn't change
     mv -i --backup=numbered /tmp/initramfs "/boot/$CURRENT_INITRAMFS_FILENAME"
 
-    echo 'Update backup symlink to point to current?'
+    print_boot_usage
+    echo
+    echo 'Update initramfs backup symlink to point to current?'
     select yn in "Yes" "No";
     do
         case $yn in
             Yes )
                 ln -sfT "$(readlink /boot/initramfs)" /boot/initramfs.bak
                 ln -sfT "$CURRENT_INITRAMFS_FILENAME" /boot/initramfs
+                print_boot_usage
                 break;;
             No )
                 ln -sfT "$CURRENT_INITRAMFS_FILENAME" /boot/initramfs
@@ -432,7 +440,7 @@ update_initramfs() {
         esac
     done
 
-    check_and_cleanup_boot
+    umount_boot
 }
 
 update_world() {
