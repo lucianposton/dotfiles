@@ -107,9 +107,9 @@ set smartcase
 
 set splitright
 set splitbelow
-set wh=3
-set wmh=3
-set wmw=3
+set winheight=3
+set winminheight=3
+set winminwidth=3
 
 set relativenumber
 set number
@@ -119,6 +119,7 @@ set listchars=tab:├·,trail:␣,nbsp:⍽,extends:►,precedes:◄
 let &showbreak='↳ '
 set breakindent
 set breakindentopt=min:60,shift:2
+set fillchars=vert:\|,fold:·
 set display=uhex,truncate
 
 set path+=**
