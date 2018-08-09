@@ -494,3 +494,64 @@ nnoremap <Leader>u :UndotreeToggle<CR>
 "nnoremap <space>go :Git checkout<Space>
 "nnoremap <space>gps :Dispatch! git push<CR>
 "nnoremap <space>gpl :Dispatch! git pull<CR>
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" fancy foldtext
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! GetWinPadding() abort
+  let lpadding = &foldcolumn
+  if &signcolumn ==# 'auto'
+    redir => signs
+    execute 'silent sign place buffer=' . bufnr('%')
+    redir End
+    let lpadding += signs =~# 'id=' ? 2 : 0
+  else
+    let lpadding += &signcolumn ==# 'yes' ? 2 : 0
+  endif
+  if &number
+    let lpadding += max([&numberwidth, strlen(line('$')) + 1])
+  elseif exists('+relativenumber') && &relativenumber
+    let lpadding += max([&numberwidth, strlen(winheight('.')) + 1])
+  endif
+  return lpadding
+endfunction
+
+function! FoldPretty() abort
+  let lpadding = GetWinPadding()
+
+  " Expand tabs
+  let start = substitute(getline(v:foldstart), '\t', repeat(' ', &tabstop), 'g')
+  let end = substitute(getline(v:foldend), '\t', repeat(' ', &tabstop), 'g')
+
+  " Remove fold markers
+  let marker = strpart(&foldmarker, 0, stridx(&foldmarker, ','))
+  let start = substitute(start, marker, '', '')
+  let marker = strpart(&foldmarker, stridx(&foldmarker, ',') + 1)
+  let end = substitute(end, marker, '', '')
+
+  " Remove comments
+  let comment = strpart(&commentstring, 0, stridx(&commentstring, '%s'))
+  let start = substitute(start, comment, repeat(' ', strlen(comment)), '')
+  let end = substitute(end, comment, '', '')
+
+  " Replace start leading and trailing whitespace with ·
+  let start = substitute(start, '^\( \+\)', '\=repeat("·", len(submatch(0)))', '')
+  let start = substitute(start, '\( \+\)$', '\=repeat("·", len(submatch(0)))', '')
+
+  " Trim end whitespace
+  let end = substitute(end, '^\s*', '', 'g')
+
+  let info = '(' . (v:foldend - v:foldstart) . ')'
+  let infolen = strlen(substitute(info, '.', 'x', 'g'))
+  let width = winwidth(0) - lpadding - infolen
+
+  let separator = strlen(substitute(end, ' ', '', 'g')) > 0 ? ' … ' : ''
+  let separatorlen = strlen(substitute(separator, '.', 'x', 'g'))
+  let start = strpart(start, 0, width - strlen(substitute(end, '.', 'x', 'g')) - separatorlen)
+  let text = start . separator . end
+
+  return text . repeat('·', width - strlen(substitute(text, '.', 'x', 'g'))) . info
+endfunction
+
+set foldtext=FoldPretty()
