@@ -455,6 +455,7 @@ let g:netrw_banner=0
 "let g:netrw_browse_split=4 " https://github.com/vim/vim/issues/3276
 let g:netrw_altv=1
 let g:netrw_liststyle=3
+"let g:netrw_special_syntax=1
 "let g:netrw_list_hide=netrw_gitignore#Hide()
 "let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'
 
