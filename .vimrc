@@ -303,6 +303,8 @@ function! GuessTabsOrSpaces()
 
     if numTabs > numSpaces
         setlocal noexpandtab
+    else
+        setlocal expandtab
     endif
 endfunction
 
