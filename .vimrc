@@ -314,7 +314,7 @@ autocmd BufReadPost * call GuessTabsOrSpaces()
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" highlight configuration. To see groups, :so $VIMRUNTIME/syntax/hitest.vim
+" highlight configuration. To see groups, :hi or :so $VIMRUNTIME/syntax/hitest.vim
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 highlight clear SignColumn " Clear white background of :sign colum
 highlight SpellBad cterm=undercurl ctermfg=NONE ctermbg=black
