@@ -33,3 +33,6 @@
 [submodule "setup/submodules/vim-quickerfix"]
 	path = setup/submodules/vim-quickerfix
 	url = git@github.com:lucianposton/vim-quickerfix.git
+[submodule "setup/submodules/ale"]
+	path = setup/submodules/ale
+	url = https://github.com/w0rp/ale.git
