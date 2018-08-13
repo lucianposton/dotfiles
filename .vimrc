@@ -333,6 +333,17 @@ highlight DiffText term=reverse cterm=bold ctermbg=red gui=bold guibg=Red
 highlight Folded ctermfg=darkcyan ctermbg=NONE guifg=DarkBlue guibg=LightGrey
 highlight FoldColumn ctermfg=darkcyan ctermbg=NONE guifg=DarkBlue guibg=Grey
 
+highlight ALEErrorSign cterm=bold ctermfg=red guifg=Red gui=bold
+highlight link ALEWarningSign ALEErrorSign
+highlight ALEStyleErrorSign ctermfg=red guifg=Red
+highlight ALEStyleWarningSign ctermfg=white
+highlight link ALEInfoSign ALEStyleWarningSign
+highlight ALEError cterm=undercurl ctermfg=NONE ctermbg=52
+highlight link ALEWarning ALEError
+highlight ALEStyleError cterm=undercurl ctermfg=NONE ctermbg=black
+highlight link ALEStyleWarning ALEStyleError
+highlight link ALEInfo ALEStyleWarning
+
 "highlight WhiteSpaceEOL ctermbg=darkgreen guibg=lightblue
 "match WhiteSpaceEol /\s\+$/
 "match WhiteSpaceEOL /^\s*\ \s*\|\s\+$/
@@ -447,6 +458,34 @@ nnoremap <C-\>r :!gen-src-index.sh<CR>:cs reset<CR><CR>
 " Powerline
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set rtp+=~/dotfiles/setup/submodules/powerline/powerline/bindings/vim
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Ale
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"let g:ale_lint_delay = 500 " Delay (in ms) after which the linters run
+"let g:ale_set_highlights = 0 " Don't highlight lines (can be slow)
+let g:ale_sign_error = '✘'
+let g:ale_sign_warning = '•'
+let g:ale_sign_style_error = '·'
+let g:ale_sign_style_warning = '·'
+let g:ale_sign_info = 'ℹ'
+
+"let g:ale_cpp_clang_options = '-std=c++1z -Wall'
+"let g:ale_cpp_clangcheck_options = '-std=c++1z -Wall'
+"let g:ale_cpp_clangtidy_options = '-std=c++1z -Wall'
+"let g:ale_cpp_gcc_options = '-std=c++1z -Wall'
+
+let g:ale_linters = {
+            \ 'cs': ['OmniSharp']
+\}
+let g:ale_fix_on_save = 0
+let g:ale_fixers = {
+            \ 'python': ['autopep8']
+\}
+"let g:ale_type_map = {
+"            \ 'tslint': {'E': 'ES', 'W': 'WS'}
+"\}
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
