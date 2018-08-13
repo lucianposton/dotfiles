@@ -67,7 +67,7 @@ set backupdir=~/.vim/backup
 set directory=~/.vim/tmp
 
 if has("x11") && has("unnamedplus")
-    set clipboard=autoselect,autoselectplus,unnamed,unnamedplus,exclude:cons\|linux
+    set clipboard=unnamed,unnamedplus,exclude:cons\|linux
 endif
 
 set tabstop=4
