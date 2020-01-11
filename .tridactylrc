@@ -12,7 +12,10 @@ guiset hoverlink right
 
 set hintfiltermode simple
 set hintchars asdfjkl;
-unset hintuppercase
+set hintuppercase false
+
+bind h tabprev
+bind l tabnext
 
 " Comment toggler for Reddit and Hacker News
 bind ;c hint -c [class*="expand"],[class="togg"]
