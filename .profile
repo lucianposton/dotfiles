@@ -21,6 +21,7 @@ export PATH="/usr/local/bin${PATH:+":$PATH"}"
 #export EPREFIX="$HOME/gentoo-prefix"
 #export PATH="$EPREFIX/bin:$PATH"
 export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/bin/games:$PATH"
 
 # Powerline scripts dir path placed before ~/bin, so that the compiled
 # powerline is before the python symlink in ~/bin
