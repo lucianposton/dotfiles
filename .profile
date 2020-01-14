@@ -27,6 +27,10 @@ export PATH="$HOME/bin/games:$PATH"
 # powerline is before the python symlink in ~/bin
 export PATH="$HOME/dotfiles/setup/submodules/powerline/scripts:$PATH"
 export PYTHONPATH="${PYTHONPATH:+"$PYTHONPATH:"}$HOME/dotfiles/setup/submodules/powerline"
+
+# https://powerline.readthedocs.io/en/master/configuration/local.html#local-configuration-overrides
+# TODO Move .config/powerline configs here
+export POWERLINE_THEME_OVERRIDES="default.segment_data.user.args.hide_user=$USER"
 (powerline-daemon -q --replace &)
 
 export EDITOR="vim"
