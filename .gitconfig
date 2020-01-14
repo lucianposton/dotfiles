@@ -98,6 +98,8 @@
     gpgSign = if-asked
 [commit]
     gpgSign = true
+[blame]
+    coloring = highlightRecent
 [diff]
     algorithm = histogram
     wsErrorHighlight = new,old#,context
