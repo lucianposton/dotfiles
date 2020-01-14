@@ -78,6 +78,15 @@
     excludesfile = ~/.gitignore_global
     editor = vim
     pager = less -FXRMui --tabs=4
+[pager]
+    diff = diff-highlight | less -FXRMui --tabs=4 #--pattern '^diff'
+    show = diff-highlight | less -FXRMui --tabs=4 #--pattern '^diff'
+    log = diff-highlight | less -FXRMui --tabs=4
+[color "diff-highlight"]
+    oldNormal = red
+    oldHighlight = bold red 52
+    newNormal = green
+    newHighlight = bold green 22
 [rerere]
     enabled = true
 [merge]
