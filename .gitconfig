@@ -77,7 +77,7 @@
 [core]
     excludesfile = ~/.gitignore_global
     editor = vim
-    pager = less -RFX
+    pager = less -FXRMui --tabs=4
 [rerere]
     enabled = true
 [merge]
