@@ -35,7 +35,7 @@ export POWERLINE_THEME_OVERRIDES="default.segment_data.user.args.hide_user=$USER
 
 export EDITOR="vim"
 
-export LESS="-R -M --shift 5"
+export LESS="-RMui --tabs=4 --shift 5"
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 
 export PROMPT=$'
