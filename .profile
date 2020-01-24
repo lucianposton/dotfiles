@@ -34,6 +34,7 @@ export POWERLINE_THEME_OVERRIDES="default.segment_data.user.args.hide_user=$USER
 (powerline-daemon -q --replace &)
 
 export EDITOR="vim"
+export TERMINAL="urxvtcd.sh -e" # for File-MimeInfo
 
 export LESS="-RMui --tabs=4 --shift 5"
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
