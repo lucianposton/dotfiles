@@ -84,7 +84,7 @@
     log = diff-highlight | less -FXRMui --tabs=4
 [color "diff-highlight"]
     oldNormal = red
-    oldHighlight = bold red 52
+    oldHighlight = bold 202 52
     newNormal = green
     newHighlight = bold green 22
 [rerere]
