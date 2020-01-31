@@ -49,14 +49,11 @@ color body brightblue default '^@@ .*'
 color body brightwhite default '^Signed-off-by: .*'
 #color body brightwhite default '^Cc'
 
-# Color if the attachment is autoviewed
-color attach_headers brightgreen default "Autoview"
-# Color only the brackets around the headers
-color attach_headers brightyellow default "^\\[--"
-color attach_headers brightyellow default "--]$"
-# Color the mime type and the size
+color attach_headers yellow default '^\[-- Attachment .+ --]$'
+color attach_headers green default "Autoview"
 color attach_headers green default "Type: [a-z]+/[a-z0-9\-]+"
 color attach_headers green default "Size: [0-9\.]+[KM]"
+
 # Color GPGME signature checks
 color attach_headers brightgreen default "Good signature from.*"
 color attach_headers brightred default "Bad signature from.*"
