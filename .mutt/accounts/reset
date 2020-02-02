@@ -4,7 +4,7 @@ reset imap_check_subscribed imap_passive imap_keepalive
 reset folder spoolfile trash mbox move record copy postponed postpone
 reset from realname
 reset hostname
-reset mail_check
+reset mbox_type mail_check
 reset ssl_starttls ssl_force_tls
 unmailboxes '*'
 unalternates '*'
