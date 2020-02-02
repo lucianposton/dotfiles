@@ -547,7 +547,7 @@ parse_options() {
 main() {
     parse_options "$@"
 
-    [ "$(id -u)" == "0" ] || exec sudo -i -- "$(cd "$(dirname "$0")" && pwd)/$(basename $0)" "$@"
+    [ "$(id -u)" -eq 0 ] || exec sudo -i -- "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)/$(basename -- $0)" "$@"
 
     if [ "$OPT_MODE" == "kernel" ]; then
         update_kernel
