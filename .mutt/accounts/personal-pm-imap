@@ -23,7 +23,7 @@ set postpone=ask-yes
 set mbox="+Received"
 set move=no
 set mbox_type=Maildir
-set mail_check=20 # seconds
+set mail_check=101 # seconds
 
 set imap_check_subscribed=yes
 unset imap_passive
