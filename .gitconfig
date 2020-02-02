@@ -15,14 +15,12 @@
     exec = "!exec "
     topexec = "!f() { GIT_TOP=\"${GIT_DIR%%/.git/modules/*}\"; [ \".$GIT_TOP\" != \".$GIT_DIR\" ] && cd \"$GIT_TOP\"; exec \"$@\"; }; f"
     s = status
-    st = status
     co = checkout
-    c = commit
-    b = branch
-    br = branch
+    c = commit -s
+    b = branch -v
     a = add
     aa = add --all
-    amend = commit --amend
+    amend = commit --amend -s
     d = diff
     dc = diff --cached
     ds = diff --stat
@@ -89,6 +87,8 @@
     newHighlight = bold green 22
 [rerere]
     enabled = true
+[format]
+    signOff = true
 [merge]
     conflictstyle = diff3
     tool = vimdiff
