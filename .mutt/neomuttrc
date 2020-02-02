@@ -21,10 +21,10 @@ color index_flags brightyellow default  '~U'             # unread
 color index_flags brightyellow default  '~v ~(~U)'       # unread in thread
 color index_subject yellow default      '~U ~p'          # unread
 color index_subject yellow default      '~v ~(~U ~p)'    # unread in thread
-color index_author yellow default       '~N ~p'          # new messages
-color index_author yellow default       '~v ~(~N ~p)'    # new messages in thread
 color index_author brightblue default   '~r <7d'         # recent messages
 color index_author brightblue default   '~v ~(~r <7d)'   # recent messages in thread
+color index_author yellow default       '~N ~p'          # new messages
+color index_author yellow default       '~v ~(~N ~p)'    # new messages in thread
 color index_author brightyellow red     '~D'             # to-be-deleted
 color index_subject brightyellow red    '~D'             # to-be-deleted
 color index_flags brightred default     '~F'             # flagged messages
