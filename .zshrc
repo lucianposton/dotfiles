@@ -110,7 +110,7 @@ prompt gentoo
 autoload -U colors
 #colors
 
-mailpath=$HOME/.maildir/new
+mailpath=(~/.maildir/new /var/mail/$USER /var/spool/mail/$USER)
 
 source $HOME/dotfiles/setup/submodules/powerline/powerline/bindings/zsh/powerline.zsh
 
