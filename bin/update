@@ -142,7 +142,7 @@ check_filesystem() {
                         echo "Filesystem repaired, but reboot needed"
                         reboot -f
                 else
-                        rescue_shell "Filesystem still have errors; manual fsck required"
+                        rescue_shell "Filesystem still have errors; manual fsck required. Use /sbin/fsck"
                 fi;;
         4)      if [ "$RC_UNAME" = Linux ]; then
                         rescue_shell "Fileystem errors left uncorrected, aborting"
