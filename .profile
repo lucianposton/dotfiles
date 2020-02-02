@@ -50,9 +50,6 @@ export LS_COLORS
 # TODO: test on bsd, set LSCOLORS
 export CLICOLOR="true"
 
-export REPORTTIME=10
-#export TIMEFMT=" Elapsed: %*E User: %U Kernel: %*S"
-
 # Create predictable $SSH_AUTH_SOCK to enable reattached tmux/screen sessions
 # to continue to use ssh-agent.
 #
