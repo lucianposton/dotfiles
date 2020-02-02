@@ -1,0 +1,36 @@
+source ~/.mutt/accounts/reset
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+set mbox_type=Maildir
+
+
+
+
+
+
+
+mailboxes ~/.maildir
+
+# vim: ft=muttrc
