@@ -1,0 +1,49 @@
+# https://gist.github.com/bnagy/8914f712f689cc01c267
+# https://gist.github.com/flatcap/c0d567ea97ef1b68ecf3df698210f9a5
+# /usr/share/doc/neomutt-<version #>/samples/gpg.rc.bz2
+
+#message-hook '!~g !~G ~b "^-----BEGIN PGP (SIGNED )?MESSAGE"' 'exec check-traditional-pgp'
+
+set pgp_sign_as=0xA4F5AC18
+set crypt_autosign=no # Don't autosign!
+
+set pgp_default_key=0xCC5E9B25
+set pgp_self_encrypt=yes
+
+set crypt_verify_sig=yes
+#set pgp_auto_decode=yes
+#set pgp_long_ids=no
+#set pgp_retainable_sigs=yes
+#set pgp_show_unusable=no
+#set pgp_sort_keys=trust
+#set pgp_timeout=1800
+set pgp_use_gpg_agent=yes
+
+# gpgme settings
+#set crypt_use_gpgme=yes
+
+# pgp_classic settings
+set pgp_decode_command="gpg --status-fd=2 %?p?--passphrase-fd 0? --no-verbose --quiet --batch --output - %f"
+#set pgp_verify_command="false"
+set pgp_verify_command="gpg --status-fd=2 --no-verbose --quiet --batch --output - --verify %s %f"
+set pgp_decrypt_command="gpg --status-fd=2 %?p?--passphrase-fd 0? --no-verbose --quiet --batch --output - --decrypt %f"
+
+set pgp_sign_command="gpg --comment '' --no-verbose --batch --output - %?p?--passphrase-fd 0? --armor --detach-sign --textmode %?a?-u %a? %f"
+set pgp_clearsign_command="gpg --comment '' --no-verbose --batch --output - %?p?--passphrase-fd 0? --armor --textmode --clearsign %?a?-u %a? %f"
+set pgp_encrypt_only_command="/usr/libexec/neomutt/pgpewrap gpg -v --batch --output - --encrypt --textmode --armor --always-trust -- -r %r -- %f"
+set pgp_encrypt_sign_command="/usr/libexec/neomutt/pgpewrap gpg %?p?--passphrase-fd 0? -v --batch --output - --encrypt --sign %?a?-u %a? --armor --always-trust -- -r %r -- %f"
+
+set pgp_import_command="gpg --no-verbose --import %f"
+set pgp_export_command="gpg --no-verbose --armor --export %r"
+set pgp_verify_key_command="gpg --verbose --batch --fingerprint --check-sigs %r"
+set pgp_list_pubring_command="gpg --no-verbose --batch --quiet --with-colons --with-fingerprint --with-fingerprint --list-keys %r"
+set pgp_list_secring_command="gpg --no-verbose --batch --quiet --with-colons --with-fingerprint --with-fingerprint --list-secret-keys %r"
+# set pgp_getkeys_command="pkspxycwrap %r"
+
+set pgp_good_sign="^gpgv?: Good signature from"
+# Output pattern to indicate a valid signature using --status-fd messages
+#set pgp_good_sign="^\\[GNUPG:\\] GOODSIG"
+
+set pgp_check_gpg_decrypt_status_fd=yes
+
+# vim: ft=neomuttrc
