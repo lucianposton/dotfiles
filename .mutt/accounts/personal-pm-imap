@@ -29,6 +29,6 @@ set imap_keepalive=200
 set imap_check_subscribed=yes
 unset imap_passive
 
-set imap_authenticators=login # workaround mutt sasl-ir bug #1212
+
 
 # vim: ft=muttrc
