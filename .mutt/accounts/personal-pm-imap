@@ -25,6 +25,7 @@ set move=no
 set mbox_type=Maildir
 set mail_check=101 # seconds
 
+set imap_keepalive=200
 set imap_check_subscribed=yes
 unset imap_passive
 
