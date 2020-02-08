@@ -39,10 +39,10 @@ export TERMINAL="urxvtcd.sh -e" # for File-MimeInfo
 export LESS="-RMi --tabs=4 --shift 5 -j5" # -u causes manpager discoloration
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 export SHELLCHECK_OPTS="--source-path=$HOME/bin"
-export SHELLCHECK_OPTS="$SHELLCHECK_OPTS:$HOME/lib/msg/src"
-export SHELLCHECK_OPTS="$SHELLCHECK_OPTS:$HOME/lib/terminfo/src"
-export SHELLCHECK_OPTS="$SHELLCHECK_OPTS:$HOME/lib/wine/src"
-export SHELLCHECK_OPTS="$SHELLCHECK_OPTS:$HOME/lib/utils/src"
+export SHELLCHECK_OPTS="$SHELLCHECK_OPTS:$HOME/bin/lib/msg/src"
+export SHELLCHECK_OPTS="$SHELLCHECK_OPTS:$HOME/bin/lib/terminfo/src"
+export SHELLCHECK_OPTS="$SHELLCHECK_OPTS:$HOME/bin/lib/wine/src"
+export SHELLCHECK_OPTS="$SHELLCHECK_OPTS:$HOME/bin/lib/utils/src"
 
 export PROMPT=$'
 %{\e[0;31m%}[ %{\e[0;36m%}%M %{\e[0;31m%}: %{\e[0;32m%}%d%{\e[0;31m%} ]
