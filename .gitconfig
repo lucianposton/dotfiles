@@ -75,11 +75,13 @@
 [core]
     excludesfile = ~/.gitignore_global
     editor = vim
-    pager = less -FXRMui --tabs=4
+    pager = less -FXRMi --tabs=4 -j1
 [pager]
-    diff = diff-highlight | less -FXRMui --tabs=4 #--pattern '^diff'
-    show = diff-highlight | less -FXRMui --tabs=4 #--pattern '^diff'
-    log = diff-highlight | less -FXRMui --tabs=4
+    diff = diff-highlight | less -FXRMi --tabs=4 -j1 #--pattern '^diff'
+    show = diff-highlight | less -FXRMi --tabs=4 -j1 #--pattern '^diff'
+    log = diff-highlight | less -FXRMi --tabs=4 -j1
+[interactive]
+    diffFilter = diff-highlight
 [color "diff-highlight"]
     oldNormal = red
     oldHighlight = bold 202 52
