@@ -146,7 +146,12 @@ set header_cache="~/.mutt/cache/header"
 #set message_cachedir="~/.mutt/cache/message"
 #set message_cache_clean=yes
 
-set index_format="%4C [%Z] %{%m/%d} %-20.20L %-2.1M%s"
+index-format-hook  reldate  "%d<1d"  "%[%k:%M]"
+index-format-hook  reldate  "%d<3m"  "%[%_m/%d]" # %_m is non-posix glibc extension
+index-format-hook  reldate  "%d<1y"  "%[  %b]"
+index-format-hook  reldate  "~A"     "%[ %Y]"
+
+set index_format="%4C [%Z] %@reldate@ %-20.20L %-2.1M%s"
 set mail_check_stats=yes
 set sidebar_format="%B %!%* %?N?%N?"
 set sidebar_visible=yes
