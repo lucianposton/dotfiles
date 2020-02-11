@@ -139,7 +139,7 @@ auto_view text/html
 set editor="vim -c 'set nobackup noswapfile nowritebackup'"
 set display_filter="scrape-mutt-alias.sh"
 set tmpdir="/tmp/mutt"
-set timeout=293 # seconds
+set timeout=607 # seconds
 set wait_key=no
 set sleep_time=0
 set header_cache="~/.mutt/cache/header"
