@@ -160,7 +160,7 @@ set sidebar_width=30
 
 set sort=threads
 set sort_aux=reverse-last-date-received
-set strict_threads=no
+set strict_threads=yes
 set collapse_all=yes
 set pager_index_lines=10
 set pager_context=3
