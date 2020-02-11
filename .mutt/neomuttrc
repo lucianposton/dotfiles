@@ -151,7 +151,7 @@ index-format-hook  reldate  "%d<3m"  "%[%_m/%d]" # %_m is non-posix glibc extens
 index-format-hook  reldate  "%d<1y"  "%[  %b]"
 index-format-hook  reldate  "~A"     "%[ %Y]"
 
-set index_format="%4C [%Z] %@reldate@ %-20.20L %-2.1M%s"
+set index_format="%4C [%Z] %@reldate@ %-20.20F %-2.1M%s"
 set mail_check_stats=yes
 set sidebar_format="%B %!%* %?N?%N?"
 set sidebar_visible=yes
