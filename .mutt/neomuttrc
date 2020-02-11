@@ -136,7 +136,7 @@ alternative_order text/plain text/enriched text/html
 auto_view text/html
 #set allow_ansi
 
-set editor="vim -c 'set spell spelllang=en'"
+set editor="vim -c 'set nobackup noswapfile nowritebackup'"
 set display_filter="scrape-mutt-alias.sh"
 set tmpdir="/tmp/mutt"
 set timeout=293 # seconds
