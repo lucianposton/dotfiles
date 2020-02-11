@@ -133,7 +133,7 @@ bind pager f                flag-message
 bind pager F                forward-message
 
 alternative_order text/plain text/enriched text/html
-auto_view text/html
+set implicit_autoview=yes
 #set allow_ansi
 
 set editor="vim -c 'set nobackup noswapfile nowritebackup'"
