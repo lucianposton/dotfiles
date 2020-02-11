@@ -173,6 +173,9 @@ set metoo=yes
 set fast_reply=yes
 set forward_format="Fwd: %s"
 set quote_regex='^([ \t]*[>:])+'
+set abort_noattach=ask-yes
+set abort_nosubject=no
+set abort_unmodified=ask-no
 
 source ~/.mutt/aliases
 #macro compose v "<edit-from>^Uidentity\_<tab>" "Select from"
