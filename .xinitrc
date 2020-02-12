@@ -109,7 +109,7 @@ xset s 3600 # BlankTime aka screensaver
 xset dpms 3900 3960 4020 # StandbyTime SuspendTime OffTime
 
 urxvtd -f -o
-nice -n 19 redshift &
+nice -n 19 redshift-gtk &
 workrave &
 
 wait "$WM_PID"
