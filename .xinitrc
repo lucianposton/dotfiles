@@ -29,9 +29,7 @@ xmonad)
     #feh --bg-scale xplanet.png
     nice -n 19 xwinwrap -ni -o 1 -ov -fs -s -st -sp -b -nf -- /usr/lib64/misc/xscreensaver/cubicgrid -root -window-id WID -delay 60000 -speed 0.25 -tick 25 -bigdots &
     #nice -n 19 xwinwrap -ni -o 0.5 -ov -fs -s -st -sp -b -nf -- /usr/lib64/misc/xscreensaver/cubicgrid -root -window-id WID -delay 60000 -speed 0.25 -tick 25 -bigdots &
-    #BinaryRing, BlockTube, CloudLife, Drift, Euler2D, Flurry, GLSlideshow,
-    # Intermomentary, Photopile, Piecewise, Rocks, StarWars, TimeTunnel,
-    # WhirlWindWarp, Wormhole
+    # blocktube, cubicgrid, deepstars, dymaxionmap, euler2d, glplanet, intermomentary, rocks, whirlwindwarp, wormhole, starwars
 
     xmobar -x 3 &
     trayer-srg --edge top --align right --SetDockType true --SetPartialStrut true --transparent true --tint 0xFFFFFF --alpha 255 --widthtype percent --width 15 --heighttype pixel --height 15 --monitor 0 &
