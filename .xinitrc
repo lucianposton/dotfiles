@@ -98,9 +98,6 @@ xinput --set-prop 'pointer:Razer Razer Naga' 'Device Accel Constant Deceleration
 xinput --set-prop 'pointer:ROCCAT ROCCAT Nyth Mouse' 'Device Accel Constant Deceleration' 2 || echo "ROCCAT ROCCAT Nyth Mouse device not found"
 xinput --set-prop 'pointer:Logitech K400 Plus' 'Evdev Scrolling Distance' -2, -2, 1 || echo "Logitech K400 Plus device not found"
 
-# TODO
-#PYTHONPATH=/usr/lib/python3.4/site-packages powerline-daemon -q
-
 if command -v ssh-agent >/dev/null ; then
     command="ssh-agent -- $command"
 fi
