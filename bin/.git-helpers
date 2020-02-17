@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# The log format uses } characters between each field to later tabulate on
-# them. A } in the commit subject or any other field will break this.
+# The log format uses the following character between each field to
+# later tabulate on them. If the commit subject or any other field
+# contains this character tabulation will break.
+delimiter=$'\024' # ASCII char DC4
 
 HASH="%C(red)%h%Creset"
 COLON="%C(bold black):%Creset"
@@ -23,9 +25,9 @@ DATE_WIDTH="%<(32)"
 SUBJECT_WIDTH="%<|(150,trunc)"
 
 FORMAT_DATE="$HASH$COLON $DATE_WIDTH$AUTHOR_DATE $AUTHOR_WIDTH$AUTHOR $DATE_WIDTH$COMMITTER_DATE $AUTHOR_WIDTH$COMMITTER%n        $REFS $SUBJECT%n"
-FORMAT_TABULATED="$HASH}$RELATIVE_AUTHOR_DATE_DELIMITED}$AUTHOR_WIDTH$AUTHOR}$REFS $SUBJECT"
+FORMAT_TABULATED="$HASH$delimiter$RELATIVE_AUTHOR_DATE_DELIMITED$delimiter$AUTHOR_WIDTH$AUTHOR$delimiter$REFS $SUBJECT"
 FORMAT="$HASH $RELATIVE_AUTHOR_DATE $AUTHOR_DELIMITED$REFS $SUBJECT"
-#FORMAT="${FORMAT_TABULATED//\}/ }"
+#FORMAT="${FORMAT_TABULATED//$delimiter/ }"
 
 ANSI_BLACK='\033[30m'
 ANSI_BLACK_BOLD='\033[0;30;1m'
@@ -71,9 +73,9 @@ common_formatting() {
     # Color merge commits
     gnused -Ee "s/(Merge ((remote(-tracking)? )?branch(es)?|pull request) .+)/$(printf $ANSI_BLUE)\1$(printf $ANSI_RESET)/" |
 
-    # Line columns up based on } delimiter
-    #column -s '}' -t |
-    awk -F '}' '
+    # Line columns up based on $delimiter
+    #column -s "$delimiter" -t |
+    awk -F "$delimiter" '
     {
         nf[NR]=NF
         for (i = 1; i <= NF; i++) {
