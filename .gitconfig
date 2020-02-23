@@ -117,6 +117,8 @@
     textconv = unzip -v
 [diff "pdf"]
     textconv = pdfinfo
+[rebase]
+    autoSquash = true
 [github]
     user = lucianposton
 [amazon]
