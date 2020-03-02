@@ -1,6 +1,11 @@
 Xcursor.theme:gentoo-silver
 
-URxvt*.perl-ext-common: default,matcher,keyboard-select,selection-to-clipboard
+URxvt*.perl-ext-common: default,matcher,keyboard-select,selection-to-clipboard,autocomplete-ALL-the-things
+
+! autocomplete-ALL-the-things
+URxvt*.keysym.M-C-slash:   perl:aAtt:word-complete
+URxvt*.keysym.M-question:  perl:aAtt:fuzzy-complete
+URxvt*.keysym.M-quotedbl:  perl:aAtt:undo
 
 URxvt*.keysym.Control-q: perl:matcher:last
 URxvt*.keysym.Control-w: perl:matcher:list
