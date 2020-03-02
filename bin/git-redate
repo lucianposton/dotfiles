@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export FILTER_BRANCH_SQUELCH_WARNING=1
+
 is_git_repo() {
     git rev-parse --show-toplevel > /dev/null 2>&1
     result=$?
@@ -169,7 +171,7 @@ END
     COLLECTION[$COLITER]=${COLLECTION[COLITER]}"$COMMIT_ENV"
     if [ "${DEBUG}" -eq 1 ]
     then
-        echo "Commit $ITER/$COUNTCOMMITS Collected"
+        echo "Commit $ITER/$COUNTCOMMITS Collected as $COLITER"
     fi
 
 done < $tmpfile
@@ -180,22 +182,26 @@ do
 
     ((ITERATOR++))
 
+    if [ "${DEBUG}" -eq 1 ]; then
+        echo "$each"
+    fi
+
     if [ "${ALL}" -eq 1 ];
     then
         if [ "${DEBUG}" -eq 1 ];
         then
-            echo "Chunk $ITERATOR/"${#COLLECTION[@]}" Started"
+            echo "Chunk $ITERATOR/${#COLLECTION[@]} Started"
             git filter-branch -f --env-filter "$each" -- --all
-            echo "Chunk $ITERATOR/"${#COLLECTION[@]}" Finished"
+            echo "Chunk $ITERATOR/${#COLLECTION[@]} Finished"
         else
             git filter-branch -f --env-filter "$each" -- --all >/dev/null
         fi
     else
         if [ "${DEBUG}" -eq 1 ];
         then
-            echo "Chunk $ITERATOR/"${#COLLECTION[@]}" Started"
+            echo "Chunk $ITERATOR/${#COLLECTION[@]} Started"
             git filter-branch -f --env-filter "$each" HEAD~${COMMITS}..HEAD
-            echo "Chunk $ITERATOR/"${#COLLECTION[@]}" Finished"
+            echo "Chunk $ITERATOR/${#COLLECTION[@]} Finished"
         else
             git filter-branch -f --env-filter "$each" HEAD~${COMMITS}..HEAD >/dev/null
         fi
