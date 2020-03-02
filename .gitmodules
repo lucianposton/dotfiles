@@ -36,3 +36,6 @@
 [submodule "setup/submodules/ale"]
 	path = setup/submodules/ale
 	url = https://github.com/w0rp/ale.git
+[submodule "setup/submodules/autocomplete-ALL-the-things"]
+	path = setup/submodules/autocomplete-ALL-the-things
+	url = https://github.com/Vifon/autocomplete-ALL-the-things.git
