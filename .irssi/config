@@ -470,7 +470,10 @@ mainwindows = {
   1 = { first_line = "6"; lines = "42"; };
   99 = { first_line = "0"; lines = "6"; };
 };
-ignores = ( { level = "CTCPS DCC"; } );
+ignores = (
+  { level = "CTCPS DCC"; },
+  { mask = "someannoyingperson"; level = "ALL"; }
+);
 keyboard = (
   { key = "meta-h"; id = "backward_word"; data = ""; },
   { key = "meta-l"; id = "forward_word"; data = ""; },
