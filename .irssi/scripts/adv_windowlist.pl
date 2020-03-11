@@ -767,18 +767,39 @@ sub remake () {
 			my @nameList = map { ref $_ ? $_->get_active_name : '' } @wins;
 			for (my $i = 0; $i < @nameList - 1; ++$i) {
 				my ($x, $y) = ($nameList[$i], $nameList[$i + 1]);
-				for ($x, $y) { s/^[+#!=]// }
-				my $res = Algorithm::LCSS::LCSS($x, $y);
-				if (defined $res) {
-					#Irssi::print("common pattern $x $y : $res");
-					#Irssi::print("found at $nameList[$i] ".index($nameList[$i],
-					#		$res));
-					$abbrevList{$nameList[$i]} = int (index($nameList[$i], $res) +
-						(length($res) / 2));
-					#Irssi::print("found at ".$nameList[$i+1]." ".index($nameList[$i+1],
-					#		$res));
-					$abbrevList{$nameList[$i+1]} = int (index($nameList[$i+1], $res) +
-						(length($res) / 2));
+				if (Irssi::settings_get_str('fancy_abbrev') =~ /^fancier/i) {
+					my $xor = "$x" ^ "$y";
+					$xor =~ /^\0*/;
+					my $common_prefix_length = $+[0];
+					my $candidate = $common_prefix_length;
+					if ($candidate > 1) {
+						my $dash_index = rindex(substr($x, 0, $common_prefix_length), '-');
+						if ($dash_index != -1) {
+							$candidate = $dash_index + 1;
+						} else {
+							$candidate = 0;
+						}
+					}
+					if (!exists $abbrevList{$x} || $abbrevList{$x} < $candidate) {
+						$abbrevList{$x} = $candidate;
+					}
+					if (!exists $abbrevList{$y} || $abbrevList{$y} < $candidate) {
+						$abbrevList{$y} = $candidate;
+					}
+				} else {
+					for ($x, $y) { s/^[+#!=]// }
+					my $res = Algorithm::LCSS::LCSS($x, $y);
+					if (defined $res) {
+						#Irssi::print("common pattern $x $y : $res");
+						#Irssi::print("found at $nameList[$i] ".index($nameList[$i],
+						#		$res));
+						$abbrevList{$nameList[$i]} = int (index($nameList[$i], $res) +
+							(length($res) / 2));
+						#Irssi::print("found at ".$nameList[$i+1]." ".index($nameList[$i+1],
+						#		$res));
+						$abbrevList{$nameList[$i+1]} = int (index($nameList[$i+1], $res) +
+							(length($res) / 2));
+					}
 				}
 			}
 		}
@@ -871,6 +892,8 @@ sub remake () {
 						$cut = length($name) - abs($diff) - 1 if $cut > (length($name) -
 							abs($diff) - 1);
 						$name = substr($name, 0, $cut + 1);
+					} elsif (Irssi::settings_get_str('fancy_abbrev') =~ /^fancier/i) {
+						$name = substr($name, $abbrevList{$name}, length($name) - abs($diff));
 					} else {
 
 						my $cut = int($middle - (abs($diff) / 2) + .55); 
