@@ -468,4 +468,4 @@ mainwindows = {
   1 = { first_line = "6"; lines = "42"; };
   99 = { first_line = "0"; lines = "6"; };
 };
-ignores = ( { level = "JOINS PARTS QUITS"; } );
+ignores = ( { level = "CTCPS JOINS PARTS QUITS DCC"; } );
