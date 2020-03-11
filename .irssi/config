@@ -304,8 +304,6 @@ settings = {
     growl_net_pass = "{PASSWORD_GROWL_TOKEN}";
     growl_net_server = "rapture";
   };
-  "irc/core" = { part_message = "\\o"; };
-  "irc/flood" = { flood_max_msgs = "20"; };
 };
 conversions = { "#nihongo" = "ISO-2022-JP"; "#gentoo-ja" = "ISO-2022-JP"; };
 logs = { };
