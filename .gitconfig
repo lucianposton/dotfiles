@@ -16,11 +16,11 @@
     topexec = "!f() { GIT_TOP=\"${GIT_DIR%%/.git/modules/*}\"; [ \".$GIT_TOP\" != \".$GIT_DIR\" ] && cd \"$GIT_TOP\"; exec \"$@\"; }; f"
     s = status
     co = checkout
-    c = commit -s
+    c = commit
     b = branch -v
     a = add
     aa = add --all
-    amend = commit --amend -s
+    amend = commit --amend
     d = diff
     dc = diff --cached
     ds = diff --stat
