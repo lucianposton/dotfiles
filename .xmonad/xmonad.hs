@@ -101,6 +101,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- launch arbitrary script
     --, ((modm,               xK_f     ), spawn "~/doit.sh")
+    , ((modm,               xK_o     ), spawn "ss=/tmp/img-$(date --utc +%FT%T.%3NZ).png; maim -B -i $(xdotool getactivewindow) $ss; imgurbash2 $ss")
+    , ((modm .|. myAltMask, xK_o     ), spawn "ss=/tmp/img-$(date --utc +%FT%T.%3NZ).png; maim -B -s $ss; imgurbash2 $ss")
 
     -- launch dmenu
     , ((modm,               xK_p     ), spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
