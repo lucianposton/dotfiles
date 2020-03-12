@@ -42,3 +42,6 @@
 [submodule "setup/submodules/vim-AnsiEsc"]
 	path = setup/submodules/vim-AnsiEsc
 	url = git@github.com:lucianposton/vim-AnsiEsc.git
+[submodule "setup/submodules/vim-hilinks"]
+	path = setup/submodules/vim-hilinks
+	url = git@github.com:lucianposton/vim-hilinks.git
