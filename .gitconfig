@@ -70,7 +70,7 @@
         }; f"
     bclean = "!f() { \
         git checkout ${1-master} && \
-        git branch --merged ${1-master} | grep -v \"${1-master}$\" | xargs git branch -d; \
+        git branch --merged ${1-master} | grep -v -E \"^(\\*|\\+)\" | grep -v \"\\<${1-master}$\" | xargs git branch -d; \
         }; f"
 [core]
     excludesfile = ~/.gitignore_global
