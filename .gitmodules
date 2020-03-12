@@ -39,3 +39,6 @@
 [submodule "setup/submodules/autocomplete-ALL-the-things"]
 	path = setup/submodules/autocomplete-ALL-the-things
 	url = https://github.com/Vifon/autocomplete-ALL-the-things.git
+[submodule "setup/submodules/vim-AnsiEsc"]
+	path = setup/submodules/vim-AnsiEsc
+	url = git@github.com:lucianposton/vim-AnsiEsc.git
