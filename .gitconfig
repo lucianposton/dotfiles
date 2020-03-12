@@ -72,6 +72,14 @@
         git checkout ${1-master} && \
         git branch --merged ${1-master} | grep -v -E \"^(\\*|\\+)\" | grep -v \"\\<${1-master}$\" | xargs git branch -d; \
         }; f"
+    rb = "!f() { \
+        tmpdir=/tmp/workdirs/$(basename $(git remote get-url origin))/$(date +%s.%N) && \
+        b=$(git rev-parse --abbrev-ref HEAD) && \
+        git worktree add $tmpdir -b $b-rebase && \
+        pushd $tmpdir && \
+        git rebase \"$@\" && \
+        popd; \
+        }; f"
 [core]
     excludesfile = ~/.gitignore_global
     editor = vim
