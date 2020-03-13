@@ -1,0 +1,9 @@
+#!/bin/sh
+
+program=$1
+pid=$(pgrep -o "$program")
+while [ "$pid" = "" ]; do
+    pid=$(pgrep -o "$program")
+done
+gdb -p "$pid"
+#gdb -ex continue -p "$pid"
