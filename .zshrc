@@ -123,8 +123,9 @@ for-each-git () { while IFS= read -r -d '' d; do; echo && pushd "$d"/.. && "$@" 
 for-each-git-deep () { while IFS= read -r -d '' d; do; echo && pushd "$d"/.. && "$@" < /dev/tty; popd -q || continue; done < <(find . -follow -name .git -type d -print0) }
 
 fancy-for() { local i s="$1"; shift; for i; do eval "$s"; done; }
-for-wine-flavors() { fancy-for 'local flavor=$i; eval '"$1"';' vanilla staging d3d9 any }
+for-wine-flavors() { fancy-for 'local flavor=$i; eval '"$1"';' vanilla staging }
 for-wine-dirs() { for-wine-flavors 'local dir="wine-$flavor"; (cd "$dir" || exit; '"$1"')' }
+for-wine-dirs-bump() { for-wine-dirs 'cp wine-$flavor-9999.ebuild wine-$flavor-'"$1"'.ebuild && g a . && repoman manifest && repoman commit -m "app-emulation/wine-$flavor: bump to '"$1"'"' }
 
 startx() { command startx "$@" &> /tmp/startx.log }
 xinit() { command xinit "$@" &> /tmp/xinit.log }
