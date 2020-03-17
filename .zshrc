@@ -118,8 +118,9 @@ source $HOME/dotfiles/setup/submodules/powerline/powerline/bindings/zsh/powerlin
 
 unicode_lookup () { grep "^0*$(printf '%X' "$((0x$1))");" <(curl -s http://www.unicode.org/Public/UCD/latest/ucd/UnicodeData.txt) | awk 'BEGIN {FS=";"} {print $2}'; }
 
-git-recursive () { find . -maxdepth 2 -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $*)" \; }
-git-recursive-deep () { find . -follow -name .git -type d -exec sh -c "(cd {}/.. && echo && pwd && git $*)" \; }
+function g () { git "$@" }
+for-each-git () { while IFS= read -r -d '' d; do; echo && pushd "$d"/.. && "$@" < /dev/tty; popd -q || continue; done < <(find . -maxdepth 2 -follow -name .git -type d -print0) }
+for-each-git-deep () { while IFS= read -r -d '' d; do; echo && pushd "$d"/.. && "$@" < /dev/tty; popd -q || continue; done < <(find . -follow -name .git -type d -print0) }
 
 fancy-for() { local i s="$1"; shift; for i; do eval "$s"; done; }
 for-wine-flavors() { fancy-for 'local flavor=$i; eval '"$1"';' vanilla staging d3d9 any }
