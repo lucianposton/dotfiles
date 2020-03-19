@@ -310,13 +310,7 @@ settings = {
 conversions = { "#nihongo" = "ISO-2022-JP"; "#gentoo-ja" = "ISO-2022-JP"; };
 logs = { };
 hilights = (
-  { text = "lucianp"; nick = "yes"; word = "yes"; },
-  {
-    text = "[lL][uU][cC][iI][aA][nN]";
-    nick = "yes";
-    word = "yes";
-    regexp = "yes";
-  }
+  { text = "lucianp"; nick = "yes"; word = "yes"; }
 );
 windows = {
   1 = { immortal = "yes"; name = "S"; level = "ALL"; sticky = "yes"; };
