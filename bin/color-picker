@@ -1,0 +1,23 @@
+#!/bin/bash
+
+geometry="$(slop -t 0)"
+original_geometry="$geometry"
+geometry="${geometry/#0x/1x}"
+geometry="${geometry/x0+/x1+}"
+
+img="$(maim -ug "$geometry" | base64)"
+friendly="$(echo "$img" | base64 -d | convert - -format '%[pixel:p{0,0}]' info:-)"
+hex="$(echo "$img" | base64 -d | convert - txt:- | grep '^0,0:' | grep -E -o '#[0-9A-F]+' | tr A-F a-f)"
+echo "${geometry#*\+} is $hex $friendly"
+bscopy <<< "$hex"
+
+if [[ ! "$original_geometry" =~ ^[0-1]x[0-1]\+ ]]; then
+    img="$(maim -ug "$original_geometry" | base64)"
+    friendly="$(echo "$img" | base64 -d | convert - -resize 1x1\! -format '%[pixel:p{0,0}]' info:-)"
+    hex="$(echo "$img" | base64 -d | convert - -resize 1x1\! txt:- | grep '^0,0:' | grep -E -o '#[0-9A-F]+' | tr A-F a-f)"
+    echo "Average of $original_geometry is $hex $friendly"
+    #echo "$img" | base64 -d | convert - txt:-
+fi
+
+# NOTE: Alternative output
+#-format "%[fx:floor(255*u.r)],%[fx:floor(255*u.g)],%[fx:floor(255*u.b)]" info:-
