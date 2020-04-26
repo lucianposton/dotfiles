@@ -1,0 +1,1249 @@
+#nop vim: tw=0 cindent cinkeys-=0# indentkeys-=0# ;
+
+#nop https://github.com/Inix3K/TinTin/blob/master/3k/mapper.tin ;
+
+#if {!&{ttdir}} {#showme {Error: config.tin not loaded.};#zap;};
+
+#config {MOUSE TRACKING} {ON};
+
+#highlight {{\b(fe)?male\b}} {<118>};
+#highlight {^You leave %1 behind.$} {<118>};
+#highlight {^You fall off %1!$} {<118>};
+#highlight { approaches you and prepares to engage you in combat!$} {<118>};
+#highlight {^You cough and choke as you tire and gulp water!$} {<118>};
+#highlight {^Your armor hinders your attempt at swim.$} {<018>};
+
+#var room_title_prefix_vt_off {\e[1;37;40m};
+#var room_title_prefix_vt_on  {\e[%+1..dH\e[0;37;40m\e[1;37;40m};
+#var map_run_delay 1.8;
+#math vt100enabled 1;
+#nop TODO initial switch on is broke;
+#action {^VT interface switched on.$} {#math vt100enabled 1};
+#action {^The VT interface is already switched on.$} {#math vt100enabled 1};
+#action {^VT interface switched off.$} {#math vt100enabled 0};
+#action {^The VT interface is already switched off.$} {#math vt100enabled 0};
+
+#nop #split 4 1;
+#nop #split 0 0 0 100;
+
+#event {SESSION CONNECTED} {
+    #var {session[name]} {%0};
+    #var {session[dir]} {$ttdir/$session[name]};
+    #var {session[logdir]} {$session[dir]/logs};
+    #var {session[mapdir]} {$session[dir]/maps};
+    #var {session[tmpdir]} {/tmp/$session[name]};
+    #system {mkdir -p $session[dir] $session[logdir] $session[mapdir] $session[tmpdir]};
+    #action {Enter your ACCOUNT name} {
+        #unaction {Enter your ACCOUNT name};
+        #script {cat $session[dir]/$session[name].username};
+    };
+    #action {Password:} {
+        #unaction {Password:};
+        #script {cat $session[dir]/$session[name].password};
+    };
+    #log append {$session[logdir]/@timestamp{}.log};
+    #map read {$session[mapdir]/map.map};
+    #map write {$session[tmpdir]/session-connect-backup-@timestamp{}.map};
+    #delay 0 {reset_mouse_map_state;};
+    #delay 0 {#map return;initialize_map;};
+    #event {SESSION DISCONNECTED} {
+        #map write {$session[mapdir]/map.map};
+    };
+};
+#session {fk} {forgottenkingdoms.org} {4000};
+
+
+#event {SEND OUTPUT} {
+    #nop #line ignore #showme {SEND OUTPUT: "%0" #%1};
+    #format last_send_output {%p} {%0};
+    #switch {"$last_send_output"} {
+        #case {"{l(ook)? (\w+)}"} {
+            #var blocked_movement_message_check look;
+            #regex {$last_send_output} {%!{l(?:ook)? (\w+)}} {
+                #var blocked_movement_message_check_dir {&1};
+            };
+        };
+        #case {"{(n|s|e|w|u|d|ne|nw|se|sw)}"} {
+            #var blocked_movement_message_check move;
+            #var blocked_movement_message_check_dir {$last_send_output};
+        };
+        #case {"{flee}"} {
+            #var blocked_movement_message_check flee;
+            #unvar blocked_movement_message_check_dir;
+        };
+        #case {"{(recall|sleep|mount|dismount|order)}"} {
+            #unvar blocked_movement_message_check;
+            #unvar blocked_movement_message_check_dir;
+        };
+        #nop There are several instances of bogus newlines sent, ignoring;
+        #nop #default {};
+    };
+};
+#event {RECEIVED INPUT} {
+    #format last_received_input {%p} {%0};
+    #switch {"$last_received_input"} {#case {"recall"} {#delay 1 findhere};};
+    #math unafk_attempts 0;
+};
+#action {^Your AFK flag has been set automatically.$} {#delay @rnd{3;29} {
+    #if {$unafk_attempts < 5} { #send worth; };
+    #math unafk_attempts $unafk_attempts+1;
+};};
+
+#action {You have chosen to play {\w+}.$} {
+    #unaction {You have chosen to play {\w+}.$};
+    #unaction {~%!{\[1H(\w+)\s+Speaking:}};
+    setup_character %1;
+} {6};
+#alias setup_character {
+    #nop #delay 0.1 #line ignore #showme Loading %1 settings.;
+    #switch {"%1"} {
+        #case {"Dainn"} {
+            #var c[container] rucksack;
+            #var c[coin_container] cloak;
+            #var c[arrow_container] quiver;
+            #var c[must_hold_arrow_container] 1;
+            #var c[last_item] nothing;
+            #var c[last_item_count] {};
+            #var c[last_food_item] stew;
+            #var c[last_drink_item] {'water skin'};
+            #var c[melee_weapon] greataxe;
+            #var c[ranged_weapon] bow;
+        };
+        #case {"Kimble"} {
+            #var c[container] pack;
+            #var c[coin_container] pack;
+            #var c[last_item] nothing;
+            #var c[last_item_count] {};
+            #var c[last_food_item] stew;
+            #var c[last_drink_item] waterskin;
+            #var c[melee_weapon] dagger;
+        };
+        #default {
+            #var c[container] pack;
+            #var c[coin_container] pack;
+            #var c[last_item] nothing;
+            #var c[last_item_count] {};
+            #var c[last_food_item] stew;
+            #var c[last_drink_item] skin;
+            #var c[melee_weapon] dagger;
+            #line ignore #showme {<118>Unknown character <028>%1<118>. No default items defined.};
+        };
+    };
+};
+
+#alias lo {
+    #local n 0;
+    #if {%1} {#var {n} {%1};} {#var {n} {1};};
+    #loop 1 $n loop {
+        sto;
+        #send look in $loop\.corpse;
+        #send fill $c[container] $loop\.corpse;
+        #send get all $loop\.corpse;
+        #send drop all.arrow;
+    };
+    stow_impl all.coin;
+    sto;
+    #if {"$c[arrow_container]" != ""} {
+        #if {$c[must_hold_arrow_container]} {
+            g_impl {$c[arrow_container]};
+        };
+        #send fill $c[arrow_container];
+    };
+};
+#alias lol {
+    #local n 0;
+    #if {%1} {#var {n} {%1};} {#var {n} {1};};
+    #loop 1 $n loop {#send look in $loop\.corpse;};
+};
+#alias stow_impl {
+    #local count {%2};
+    #local destination $c[container];
+    #switch {{%1}} {
+        #case {{all}} {
+            stow_impl all.coin;
+            stow_impl all.arrow;
+            #send put %1 $c[container];
+            #return;
+        };
+        #case {{{(all\.)?(coins?|copp|silv|ele|gold|plat)\w*}}} {
+            #local destination $c[coin_container];
+        };
+        #case {{{(all\.)?}arrow}} {
+            #if {"$c[arrow_container]" != ""} {
+                #local destination $c[arrow_container];
+            };
+        };
+    };
+    #send put $count %1 $destination;
+};
+#alias stow {
+    #if {{%1} == {}} {
+        stow_impl {$c[last_item]} {$c[last_item_count]};
+    } {
+        #list args create %0;
+        #var partial_item_name {};
+        #local count {};
+        #foreach {$args[%*]} {arg} {
+            #if {{$arg} == {{^'.*}} || "$partial_item_name" != ""} {
+                #var partial_item_name {$partial_item_name $arg};
+                #if {{$arg} != {{.*'$}}} {#continue;};
+                #var arg {$partial_item_name};
+            };
+            #if {{$arg} == {{\d+}}} {
+                #var count {$arg};
+                #continue;
+            };
+            #var c[last_item] {$arg};
+            #var c[last_item_count] {$count};
+            stow_impl {$arg} {$count};
+            #var partial_item_name {};
+            #local count {};
+        };
+    };
+};
+#alias sto {
+    stow_impl all;
+};
+#alias g_impl {
+    #local count {%2};
+    #local destination $c[container];
+    #switch {{%1}} {
+        #case {{all}} {
+            g_impl all.coin;
+            g_impl all.arrow;
+            #send get %1 $c[container];
+            #return;
+        };
+        #case {{{(all\.)?(coins?|copp|silv|ele|gold|plat)\w*}}} {
+            #local destination $c[coin_container];
+        };
+        #case {{{(all\.)?}arrow}} {
+            #if {"$c[arrow_container]" != ""} {
+                #local destination $c[arrow_container];
+            };
+        };
+    };
+    #send get $count %1 $destination;
+};
+#alias g {
+    #if {{%1} == {}} {
+        g_impl {$c[last_item]} {$c[last_item_count]};
+    } {
+        #list args create %0;
+        #local partial_item_name {};
+        #local count {};
+        #foreach {$args[%*]} {arg} {
+            #if {{$arg} == {{^'.*}} || "$partial_item_name" != ""} {
+                #var partial_item_name {$partial_item_name $arg};
+                #if {{$arg} != {{.*'$}}} {#continue;};
+                #var arg {$partial_item_name};
+            };
+            #if {{$arg} == {{\d+}}} {
+                #var count {$arg};
+                #continue;
+            };
+            #var c[last_item] {$arg};
+            #var c[last_item_count] {$count};
+            g_impl {$arg} {$count};
+            #var partial_item_name {};
+            #var count {};
+        };
+    };
+};
+#alias get {
+    #var c[last_item] {%1};
+    #send get %0;
+};
+#alias put {
+    #var c[last_item] {%1};
+    #send put %0;
+};
+#alias eat {
+    #if {{%1} != {}} {
+        #var c[last_food_item] %1;
+    };
+    #send eat $c[last_food_item] $c[container];
+};
+#alias drink {
+    #if {{%1} != {}} {
+        #var c[last_drink_item] {%1};
+    };
+    g_impl {$c[last_drink_item]};
+    #send drink $c[last_drink_item];
+    stow_impl {$c[last_drink_item]};
+};
+#alias fill {
+    #if {{%2} != {}} {#return;};
+    #if {{%1} != {}} {
+        #var c[last_drink_item] {%1};
+    };
+    g_impl {$c[last_drink_item]};
+    #send fill $c[last_drink_item];
+    stow_impl {$c[last_drink_item]};
+};
+#alias i {
+    #if {"$c[coin_container]" != "$c[container]"} {
+        #send look in $c[coin_container];
+    };
+    #send look in $c[container];
+    #send inventory;
+};
+#alias k {kill %0;};
+#alias kill {
+    #if {{%0} != {}} {
+        #var {last_kill_target} {%0};
+    };
+    #send {kill $last_kill_target};
+};
+#alias p {
+    #if {{%1} != {}} {#var pull_target_direction {%1};};
+    #if {{%2} != {}} {#var pull_target {%2};};
+    g $c[ranged_weapon];
+    #if {$c[must_hold_arrow_container]} {
+        g $c[arrow_container];
+    };
+    #send remove $c[melee_weapon];
+    #send wear $c[ranged_weapon];
+    #send shoot $pull_target_direction $pull_target;
+    #if {{%3} != {}} {#send %3;};
+    #send remove $c[ranged_weapon];
+    #send wear $c[melee_weapon];
+};
+#alias list {
+    #send list;
+    #send train;
+};
+#alias wealth {#send worth;};
+#alias weal {#send worth;};
+#alias exchange {
+    sto;
+    #5 {g all.coin};
+    #5 {#send get all.coin $c[container]};
+    #var balance_index 1;
+    #list {amounts} create {
+        {copper;5000}{copper;2500}{copper;1000}{copper;500}{copper;100}
+        {silver;500}{silver;250}{silver;100}{silver;50}
+        {electrum;100}{electrum;50}{electrum;20}{electrum;10}
+        {gold;50}{gold;25}{gold;10}};
+    #action {{hajimaru| gives you .+ coin}} {
+        #list amount create $amounts[$balance_index];
+        #send {give $amount[2] $amount[1] banker};
+    };
+    #action {^You haven't got } {
+        #if {$balance_index == &amounts[]} {
+            #unaction {^You haven't got };
+            #unaction {{hajimaru| gives you .+ coin}};
+            #send worth;
+            #send balance;
+            sto;
+        } {
+            #math balance_index $balance_index+1;
+            #showme hajimaru;
+        };
+    };
+    #showme hajimaru;
+};
+
+#nop TODO get $LINES-1 from #screen get rows rows (or #event {SCREEN RESIZE}?) instead of hardcoding 50;
+#action {~%!{\[1H(\w+)\s+Speaking:}} {
+    #unaction {You have chosen to play {\w+}.$};
+    #unaction {~%!{\[1H(\w+)\s+Speaking:}};
+    setup_character %1;
+} {6};
+#action {~%!{50HHealth:\e.+?m([- 0-9]{3})%.+?Magic:\e.+?m([- 0-9]{3})%.+?Stamina:\e.+?m([- 0-9]{3})%.+?Speed:.+?m(\w+).+?Exits:.+?m((?:\?|N|S|E|W|U|D|Nw|Ne|Sw|Se)*)\e}} {
+    refresh_stats {%1} {%2} {%3} {%4} {%5};
+    initialize_map_parser;
+} {6};
+#alias refresh_stats {
+    #math {stats[health]} {%1};
+    #math {stats[magic]} {%2};
+    #math {stats[stamina]} {%3};
+    #var {stats[speed]} {%4};
+    #var {stats[exits]} {%5};
+    #nop #delay 0.1 #line ignore #showme {Stat update: $stats};
+};
+#function stat_field_width {
+    #switch {"%1"} {
+        #case {"exits"} {#return 17};
+        #default {#return 3};
+    };
+};
+#function stat_pad_dir {
+    #switch {"%1"} {
+        #case {"exits"} {#return -};
+        #default {#return +};
+    };
+};
+#alias update_stat {
+    #function stat {#return %1;};
+    #local col_start {(%2)};
+    #local col {(%3)};
+    #local val {%4};
+    #format update_length {%L} {$val};
+    #math prefix_length {$col-$col_start};
+    #math suffix_length {@stat_field_width{@stat{}}-$update_length-$prefix_length};
+    #format {format} {%s%s%s%s%s%s%s} {%%.} {$prefix_length} {s%%.} {$update_length} {s%%.} {$suffix_length} {s};
+    #format {prefix} {%@stat_pad_dir{@stat{}}@stat_field_width{@stat{}}s} {$stats[@stat{}]};
+    #format {suffix} {%@stat_pad_dir{@stat{}}@stat_field_width{@stat{}}s} {$stats[@stat{}]};
+    #replace {suffix} {{.(?=.{$suffix_length})}} {}; #nop TODO replace with substr when available;
+    #format {stats[@stat{}]} {$format} {$prefix} {$val} {$suffix};
+    #format {stats[@stat{}]} {%p} {$stats[@stat{}]};
+    #nop #line ignore #showme {\nupdate_stat ('@stat{}' '$col_start' '$col' '$val') -> $stats[@stat{}]\n};
+};
+#action {~%!{50;(8|9|10)H([- 0-9]{1,3})%?(?:.+50;(32|33|34)H([- 0-9]{1,3})%?)?}} {
+    #if {%1 >= 8} {
+        update_stat {health} {8} {%1} {%2};
+        #nop #delay 0 #line ignore #showme {Health update: $stats[health]};
+    } {
+        #delay 0 #line ignore #showme {Unhandled health case: %1, %2};
+    };
+    #if {%3} {
+        #if {%3 >= 32 && %4} { #nop TODO remove &&.. when %# var persistance bug fixed;
+            update_stat {stamina} {32} {%3} {%4};
+            #nop #delay 0 #line ignore #showme {Stamina w/ Health update: $stats[stamina]};
+        } {
+            #nop TODO Sometimes %3 & %4 are values from other action;
+            #delay 0 #line ignore #showme {Unhandled stamina case a: %3, %4};
+        };
+    };
+} {6};
+#action {~%!{50;(19|20|21)H([- 0-9]{1,3})}} {
+    #if {%1 >= 19} {
+        update_stat {magic} {19} {%1} {%2};
+        #nop #delay 0 #line ignore #showme {Magic update: $stats[magic]};
+    } {
+        #delay 0 #line ignore #showme {Unhandled magic case: %1, %2};
+    };
+} {7};
+#action {~%!{50;(32|33|34)H(([- 0-9]{1,3})%?)(?:\e.*?\[([23]\d)C((?:\?|N|S|E|W|U|D|Nw|Ne|Sw|Se)*.*?)\e8)?}} {
+    #if {%1 >= 32} {
+        update_stat {stamina} {32} {%1} {%3};
+        #nop #delay 0 #line ignore #showme {Stamina update: $stats[stamina]};
+    } {
+        #delay 0 #line ignore #showme {Unhandled stamina case b: %1, %3};
+    };
+    #if {%4} {
+        #if {%4 >= 21 && "%5" == "{\D.*}"} { #nop TODO remove &&.. when %# var persistance bug fixed;
+            #format {stamina_length} {%L} {%2};
+            #line strip update_stat {exits} {57} {%1+%4+$stamina_length} {%5};
+            #nop #delay 0 #line ignore #showme {Exit w/ Stamina update: $stats[exits]};
+        } {
+            #delay 0 #line ignore #showme {Unhandled exits w/ stamina case: %4, %5};
+        };
+    };
+} {7};
+#action {~%!{50;([5-6]\d)H((?:\?|N|S|E|W|U|D|Nw|Ne|Sw|Se)*.*?)\e8}} {
+    #if {%1 >= 57} {
+        #line strip update_stat {exits} {57} {%1} {%2};
+        #nop #delay 0 #line ignore #showme {Exit update: $stats[exits]};
+    } {
+        #delay 0 #line ignore #showme {Unhandled exits case: %1, %2};
+    };
+} {8};
+
+#macro {\e\eOm} {#map undo;};
+#macro {\e\eOj} {toggle_static_map;};
+#alias toggle_static_map {
+    #if {!&{map_is_static}} {
+        #math map_is_static 1;
+    } {
+        #math map_is_static !$map_is_static;
+        #map {get} {ROOMAREA} {map_area};
+        #if {$map_is_static} {
+            #line ignore #showme {<028>Map is static.};
+        };
+        #elseif {"$map_area" == ""} {
+            #line ignore #showme {<118>Editing map, but area is undefined!};
+        };
+        #else {
+            #line ignore #showme {<028>Editing map in area <118>$map_area<028>.};
+        };
+        mapupdate;
+    };
+    #if {$map_is_static} {#map flag static on} {#map flag static off};
+};
+
+#alias go! {
+    #var go_force 1;
+    go %0;
+    #unvar go_force;
+};
+#alias go {
+    #if {{%0} == {{\d+}}} {
+        #var go_saved_start_vnum $roomvnum;
+        #map run {%0} {$map_run_delay};
+    };
+    #elseif {{%0} == {back}} {
+        #local go_back_vnum $go_saved_start_vnum;
+        #var go_saved_start_vnum $roomvnum;
+        #map run {$go_back_vnum} {$map_run_delay};
+    };
+    #elseif {{%0} == {resume}} {
+        #path run {$map_run_delay};
+    };
+    #elseif {{%0} == {}} {
+        #var go_saved_start_vnum $roomvnum;
+        #map run {$go_saved_dest} {$map_run_delay};
+    };
+    #else {
+        #map list {roomarea} {$roomarea} {roomnote} {%i%*%0%*} {variable} {map_list_results_local_note};
+        #map list {roomarea} {$roomarea} {roomname} {%i%*%0%*} {variable} {map_list_results_local_name};
+        #if {&map_list_results_local_note[] > 0} {
+            #if {&map_list_results_local_note[] == 1 || &{go_force}} {
+                #var go_saved_start_vnum $roomvnum;
+                #map run {@closest_map_list_vnum{map_list_results_local_note}} {$map_run_delay};
+            } {
+                #var go_saved_dest {@closest_map_list_vnum{map_list_results_local_note}};
+                #line ignore #showme <129>Room Note matches:<088>;
+                #map list {roomarea} {$roomarea} {roomnote} {%i%*%0%*};
+                #line ignore #showme <129>Run `go` to go to $go_saved_dest<088>;
+            };
+        };
+        #elseif {&map_list_results_local_name[] > 0} {
+            #if {&map_list_results_local_name[] == 1 || &{go_force}} {
+                #var go_saved_start_vnum $roomvnum;
+                #map run {@closest_map_list_vnum{map_list_results_local_name}} {$map_run_delay};
+            } {
+                #var go_saved_dest {@closest_map_list_vnum{map_list_results_local_name}};
+                #line ignore #showme <129>Room Name matches:<088>;
+                #map list {roomarea} {$roomarea} {roomname} {%i%*%0%*};
+                #line ignore #showme <129>Run `go` to go to $go_saved_dest<088>;
+            };
+        };
+        #else {
+            #line ignore #showme <118>No Room Name nor Note matched "%0"<088>;
+        };
+    };
+};
+#function closest_map_list_vnum {
+    #local min_dist {-1};
+    #var result {-1};
+    #foreach {*%1[%*]} {vnum} {
+        #if {$min_dist == -1 || $%1[$vnum][distance] < $min_dist} {
+            #local min_dist {$%1[$vnum][distance]};
+            #var result {$vnum};
+        };
+    };
+};
+#alias mapsearch {
+    #line ignore #showme <129>Name matches:<088>;
+    #map list {roomname} {%i%*%0%*};
+    #line ignore #showme \n;
+    #line ignore #showme <129>Note matches:<088>;
+    #map list {roomnote} {%i%*%0%*};
+};
+#alias findhere {
+    #alias findhere_impl {
+        #map list {roomname} {%%1};
+        #map list {roomname} {%%1} {variable} {findroom};
+        #if {&findroom[] == 1} {
+            #map goto *findroom[1..1];
+        } {
+            #nop TODO check against room exits too;
+            #line ignore #showme {#map goto #};
+        };
+        #unaction {~{^|\[0m|\[\d+H}\e[0;37;40m\e[1;37;40m{.*}};
+        #unaction {~{^|> \e\[0;37;40m}\e[1;37;40m{.*}};
+    };
+    #if {$vt100enabled} {
+        #action {~{^|\[0m|\[\d+H}\e[0;37;40m\e[1;37;40m{.*}} {
+            #line strip #delay 0 findhere_impl {%%2};
+        } {2};
+    } {
+        #action {~{^|> \e\[0;37;40m}\e[1;37;40m{.*}} {
+            #line strip findhere_impl {%%2};
+        } {2};
+    };
+    look;
+};
+#alias lr {
+    #if {"%1" == ""} {
+        #map get;
+    } {
+        #if {%2 || %2 == 0} {
+            #map jump %1 %2 %3;
+            #map get;
+            #map undo;
+        } {
+            #map at {%1} #map get;
+        };
+    };
+};
+#alias lfr {
+    #if {"%1" == ""} {
+        #map info;
+    } {
+        #if {%2 || %2 == 0} {
+            #map jump %1 %2 %3;
+            #map info;
+            #map undo;
+        } {
+            #map at {%1} #map info;
+        };
+    };
+};
+#alias mapflag {
+    #if {{%2} == {{|on|off}}} {
+        #line verbose #map roomflag {%1} {%2};
+    } {
+        #local dir {%0};
+        #replace {dir} {{^%1 }} {};
+        #replace {dir} {{ (on|off)$}} {};
+        #var mapflag_mode {};
+        #regex {%0} {%!{ (on|off)$}} {#var mapflag_mode {&1};};
+        #line verbose #map exitflag {$dir} {%1} {$mapflag_mode};
+    };
+};
+#alias mapexitclosed {
+    #local color <248>;
+    #line verbose #map exit {%1} command {open %1;%1};
+    #line verbose #map exit {%1} color {$color};
+    #if {"%2" == "" || "%2" == "both"} {
+        #local rev_d @reverse_direction{%1};
+        #line verbose #map at {%1} #map exit {$rev_d} command {open $rev_d;$rev_d};
+        #line verbose #map at {%1} #map exit {$rev_d} color {$color};
+    };
+};
+#alias mapexitnotclosed {
+    #line verbose #map exit {%1} command {%1};
+    #line verbose #map exit {%1} color;
+    #if {"%2" == "" || "%2" == "both"} {
+        #local rev_d @reverse_direction{%1};
+        #line verbose #map at {%1} #map exit {$rev_d} command {$rev_d};
+        #line verbose #map at {%1} #map exit {$rev_d} color;
+    };
+};
+#alias mapnewroom {
+    #line verbose #map dig {%0} new;
+    #line verbose #map at {%0} #map set roomcolor <118>;
+};
+#alias maparea {
+    #if {"%0" == ""} {
+        #var map_area {};
+        #line verbose #map set {roomarea};
+        #line verbose #map set roomcolor <118>;
+    } {
+        #var map_area {%0};
+        #line verbose #map set {roomarea} {$map_area};
+        #line verbose #map set roomcolor;
+    };
+    #map {get} {ROOMAREA} {roomarea};
+    #format {roomarea_len} {%L} {$roomarea};
+    #delay 0 mapupdate;
+};
+#alias maptransition {
+    #local color <afc>;
+    #map get {ROOMNOTE} {roomnote};
+    #if {"%0" == ""} {
+        #foreach {*roomexits[%*]} {n} {
+            #map at {$n} #map get {roomarea} {destination_area};
+            #replace {roomnote} {{transition $destination_area ?}} {};
+            mapflag hide $n off;
+            #map exit {$n} color;
+        };
+        #line verbose #map set {roomnote} {$roomnote};
+        #map set roomcolor;
+    } {
+        #map at {%0} #map get {roomarea} {destination_area};
+        #if {"$destination_area" == ""} {
+            #line ignore #showme {<018>Error: roomarea is not set at (<020>%0<018>).<099>};
+            #return;
+        };
+        #var roomnote {transition $destination_area $roomnote};
+        mapflag hide %0 on;
+        #map exit {%0} color {$color};
+        #line verbose #map set {roomnote} {$roomnote};
+        #map set roomcolor {$color};
+    };
+};
+#alias mapnote {
+    #line verbose #map set {roomnote} {%0};
+    #delay 0 mapupdate;
+};
+#alias mapsymbol {
+    #line verbose #map set {roomsymbol} {%1};
+};
+#alias mapvoidlink {
+    #var dir %1;
+    #var dest_num %2;
+    #line verbose #map link {$dir} {$dest_num} both;
+    #line verbose #map insert {$dir} void;
+};
+#alias mapsave {
+    #line verbose #map write {$session[tmpdir]/mapsave-backup-@timestamp{}.map};
+    #line verbose #map write {$session[mapdir]/map.map};
+};
+#alias mapload {
+    #line verbose #map write {$session[tmpdir]/mapload-pre-backup-@timestamp{}.map};
+    #if {"%1" != ""} {
+        #line verbose #map read {%1};
+    } {
+        #line verbose #map read {$session[mapdir]/map.map};
+    };
+    #line verbose #map write {$session[tmpdir]/mapload-post-backup-@timestamp{}.map};
+    #map return;
+};
+
+#action {~^\e8} { #delay 0.2 {
+    mapupdate;
+}} {100};
+#alias mapupdate {
+    #map update;
+    #local color {<119>};
+    #if {$map_is_static} {#local color {<029>};};
+    #draw {tile} 1 100 1 -1 {$color$roomarea <139>$roomname <149>(<039>$roomvnum<149>) (<039>$roomnote<149>)<099>};
+};
+#nop #event {RECEIVED OUTPUT} {#delay 0.1 #map update};
+#nop #event {RECEIVED OUTPUT} {#map map 40 100 append /dev/pts/8};
+#event {MAP ENTER ROOM} {
+    set_room_vars {%0} {%1};
+    #var map_enter_room_timestamp @timestamp_epoch_us{};
+    #if {!&{map_is_static} || $map_is_static} {
+        #var parser_state finished;
+    } {
+        #var parser_state ready;
+    };
+};
+#event {MAP EXIT ROOM} {
+    #nop Delay creating these actions so that stat refresh action isn't shadowed;
+    #if {!&{map_parser_initialized}} {
+        #line ignore #showme ERROR: map parser is not initialized;
+    };
+};
+#nop #event {MAP ENTER MAP} {};
+#event {MAP SHORT-CLICKED MOUSE BUTTON ONE} {
+    lfr {%0};
+    mapupdate;
+};
+#alias reset_mouse_map_state {
+    #var map_row_offset 0;
+    #var map_col_offset 0;
+    #var map_z_offset 0;
+};
+#event {MAP SHORT-CLICKED MOUSE BUTTON TWO} {
+    reset_mouse_map_state;
+    #map center $map_col_offset $map_row_offset $map_z_offset;
+};
+#event {MAP SHORT-CLICKED MOUSE BUTTON THREE} {
+    go %0;
+};
+#event {SCROLLED MOUSE WHEEL DOWN} {
+    #math map_z_offset $map_z_offset+1;
+    #map center $map_col_offset $map_row_offset $map_z_offset;
+};
+#event {SCROLLED MOUSE WHEEL UP} {
+    #math map_z_offset $map_z_offset-1;
+    #map center $map_col_offset $map_row_offset $map_z_offset;
+};
+#event {PRESSED MOUSE BUTTON ONE} {
+    #var mouse_state_dragging_start_row %0;
+    #var mouse_state_dragging_start_col %1;
+};
+#event {MAP PRESSED MOUSE BUTTON ONE} {
+    #var mouse_state_map_dragging 1;
+};
+#event {RELEASED MOUSE BUTTON ONE} {
+    #var mouse_state_map_dragging 0;
+    #math map_row_offset {$map_row_offset_tmp};
+    #math map_col_offset {$map_col_offset_tmp};
+};
+#event {MOVED MOUSE BUTTON ONE} {
+    #if {$mouse_state_map_dragging} {
+        #math row_diff {$mouse_state_dragging_start_row - %0};
+        #math col_diff {%1 - $mouse_state_dragging_start_col};
+        #math map_row_offset_tmp {$map_row_offset + $row_diff};
+        #math map_col_offset_tmp {$map_col_offset + $col_diff};
+        #map center $map_col_offset_tmp $map_row_offset_tmp $map_z_offset;
+    };
+};
+#alias {initialize_map} {
+    #map offset 2 100 -20 -1;
+    #map flag unicode on;
+    #map flag vt on;
+    toggle_static_map;
+};
+#alias {set_room_vars} {
+    #var new_vnum {%1};
+    #var old_vnum {%2};
+    #map {get} {ROOMVNUM} {roomvnum};
+    #map {get} {ROOMAREA} {roomarea};
+    #map {get} {ROOMNAME} {roomname};
+    #map {get} {ROOMNOTE} {roomnote};
+    #map {get} {ROOMDESC} {roomdesc};
+    #map {get} {ROOMEXITS} {roomexits};
+    #format {roomname_len} {%L} {$roomname};
+    #format {roomvnum_len} {%L} {$roomvnum};
+    #format {roomarea_len} {%L} {$roomarea};
+    #format {roomnote_len} {%L} {$roomnote};
+    #format {roomdesc_len} {%L} {$roomdesc};
+};
+#alias initialize_map_parser {
+    #if {!&{map_parser_initialized}} {
+        #math map_parser_initialized 1;
+        #action {~{^|> \e\[0;37;40m}\e[1;37;40m%!{(?:\e\[\d;\d\d;\d\dm)?}{\w.*}$} {
+            #if {!$vt100enabled} {
+                #line strip parse_room_info {%%2};
+            };
+        };
+        #nop prefix can depend on whether user input's newline is echoed;
+        #action {~{^|\[0m|\[\d+H}\e[0;37;40m\e[1;37;40m%!{(?:\e\[\d;\d\d;\d\dm)?}{\w.*}$} {
+            #if {$vt100enabled} {
+                #line strip parse_room_info {%%2};
+            };
+        };
+    };
+};
+#alias parse_room_directions {
+    #nop D is open;
+    #nop {[1;33;40m D[0;37;40m-[1;32;40mThe Cellar of t};
+    #nop N is closed:;
+    #nop {[0;37;40m[0;37;40m[1;33;40m N[0;37;40m-[1;32;40m[0;33;40mSet of bare wood double doors[1;33;40m S[0;37;40m-[1;32;40mInn of the Drip[1;33;40m U[0;37;40m-[1;32;40mThe Roof of the};
+    #nop NW is closed:;
+    #nop {[1;33;40mNW[0;37;40m-[1;32;40m[1;37;40mPristine wooden door with a leaden glass window};
+    #nop N is closed;
+    #nop {[0;37;40m[0;37;40m[1;33;40m N[0;37;40m-[1;32;40m[0;32;40mPaneled door[1;33;40m E[0;37;40m-[1;32;40mStables at the [1;33;40m S[0;37;40m-[1;32;40mHigh Road      [1;33;40m W[0;37;40m-[1;32;40mHigh Road      };
+    #nop W is closed;
+    #nop {[0;37;40m[0;37;40m[1;33;40m E[0;37;40m-[1;32;40mBazaar Street  [1;33;40m S[0;37;40m-[1;32;40mBazaar Street  [1;33;40m W[0;37;40m-[1;32;40m[0;37;40mUnassuming door};
+    #nop E is locked:;
+    #nop {[0;37;40m[0;37;40m[1;33;40m E[0;37;40m-[1;32;40m[0;36;40mReinforced solid steel door[1;33;40m W[0;37;40m-[1;32;40mStrongroom at t[1;33;40m U[0;37;40m-[1;32;40mInn of the Drip};
+    #nop W is locked;
+    #nop {[0;37;40m[0;37;40m[1;33;40m E[0;37;40m-[1;32;40mThe City of the[1;33;40m W[0;37;40m-[1;32;40m[1;30;40mSet of rune-covered gates};
+    #nop N is locked;
+    #nop {[0;37;40m[0;37;40m[1;33;40m N[0;37;40m-[1;32;40m[0;37;40mSet of massive stone gates[1;33;40m S[0;37;40m-[1;32;40mHigh Road      };
+    #nop Other exits:;
+    #nop {[1;33;40m Other exits:[1;32;40m[0;36;40mElectrum };
+};
+#alias parse_room_info {
+    #nop #line ignore #showme {called parse_room_info %1};
+    #var last_potential_roomname {%1};
+    #if {!$map_is_static && "$parser_state" == "ready"} {
+        #if {$roomname_len == 0} {
+            #map set roomname {%1};
+        };
+        #if {$roomarea_len == 0} {
+            #if {&{map_area} && "$map_area" != ""} {
+                #map set roomarea {$map_area};
+                #map set roomcolor;
+            } {
+                #map set roomcolor <118>;
+            };
+        };
+        #if {$roomdesc_len > 0} {
+            #return;
+        };
+        #var parser_state exits_expected;
+        #math last_end_heuristic 0;
+        #unvar map_desc_builder;
+        #nop Could detect desc end as follows, but makes parsing room dirs more difficult;
+        #nop #action {~%%!{^(?!\e8)}%%2} {} {1};
+        #action {%%2} {
+            #nop may be able to detect ^\e8 by changing action to ~%%2 and:;
+            #nop #var unstripped {%%2};
+            #nop #line sub var #line strip #var {stripped} {$unstripped};
+            #regex {%%2} {^$} {
+                #var parser_state finished;
+            } {
+                #nop TODO handles Other exits:?;
+                #regex {%%2} {%!{^(?: (?:N|S|E|W)|(?:NW|NE|SW|SE))-}} {
+                    #if {"$parser_state" != "exits_expected"} {
+                        #var parser_state finished;
+                    } {
+                        #nop TODO using {} around alias args causes SEND OUTPUT;
+                        #nop parse_room_directions {%%2};
+                    };
+                } {
+                    #regex {%%2} {^ } {
+                        #if {"$parser_state" != "exits_expected"} {
+                            #var parser_state finished;
+                        };
+                    } {
+                        #if {"$parser_state" == "exits_expected"} {
+                            #var parser_state desc;
+                        };
+                        #format {desc_line_len} {%L} {%%2};
+                        #math end_heuristic 0;
+                        #if {$desc_line_len < 56} {
+                            #math end_heuristic 1;
+                            #regex {%%2} {%!{[^.?!]}$} {
+                                #math end_heuristic $end_heuristic-1;
+                            };
+                        };
+                        #regex {%%2} { here.$} {#math end_heuristic 2};
+                        #if {$last_end_heuristic > $end_heuristic || (!$end_heuristic && "$parser_state" == "probably_finished")} {
+                            #var parser_state finished;
+                        } {
+                            #if {$end_heuristic} {
+                                #var parser_state probably_finished;
+                            };
+
+                            #nop #line ignore #showme {$end_heuristic $parser_state %%2};
+                            #var map_desc_builder {${map_desc_builder} %%2};
+                        };
+                        #math last_end_heuristic $end_heuristic;
+                    };
+                };
+            };
+            #if {"$parser_state" == "finished"} {
+                #replace map_desc_builder {^ } {};
+                #map set roomdesc {$map_desc_builder};
+                #nop #map get all r; #nop #line ignore #showme $r[desc];
+                #map get ROOMNAME roomname;
+                #line ignore #showme {--- $roomname};
+                #unaction {%%%%2};
+                #unaction {~%%%%!{^(?!\e8)}%%%%2};
+            };
+        } {2};
+    };
+    #return;
+};
+
+#action {^%1 walks %2\.$} {
+    #format {follow_target} {%l} {%1};
+    #local follow_dir %2;
+    #switch {"$follow_dir"} {
+        #case {"north"}     {#var follow_dir n};
+        #case {"northeast"} {#var follow_dir ne};
+        #case {"northwest"} {#var follow_dir nw};
+        #case {"south"}     {#var follow_dir s};
+        #case {"southeast"} {#var follow_dir se};
+        #case {"southwest"} {#var follow_dir sw};
+        #case {"east"}      {#var follow_dir e};
+        #case {"west"}      {#var follow_dir w};
+        #case {"down"}      {#var follow_dir d};
+        #case {"up"}        {#var follow_dir u};
+    };
+    #var {follow_targets[$follow_target]} {$follow_dir};
+}; #nop TODO lower priority or tighter %2 in regex to fix blocked_movement aliases;
+#action {^You follow %1\.$} {
+    #format {tmp} {%l} {%1};
+    #if {&follow_targets[$tmp]} {
+        #map move {$follow_targets[$tmp]};
+    };
+} {4};
+
+#alias notifications {
+    #if {!&{notifications}} {#math notifications 0;};
+    #math notifications !$notifications;
+    #if {$notifications} {
+        #line ignore #showme {Notifications enabled.};
+        #action {{^\w.+'.+'\.?$}} {
+            #local msg {%%1};
+            #replace {msg} {{[^A-Za-z0-9 ,.?!]}} {};
+            #system {notify-send -t 10000 "$msg"};
+        };
+    } {
+        #line ignore #showme {Notifications disabled.};
+        #unaction {{^\w.+'.+'\.?$}};
+    };
+};
+#alias autokill {
+    #if {!&{autokill}} {#math autokill 0;};
+    #math autokill !$autokill;
+    #if {$autokill} {
+        #line ignore #showme {Autokill enabled.};
+        #event {MAP EXIT ROOM} {
+            kill;
+        };
+        #action { is DESTROYED!$} {
+            #delay @rnd{0;1} kill;
+        };
+    } {
+        #line ignore #showme {Autokill disabled.};
+        #unevent {MAP EXIT ROOM};
+        #unaction { is DESTROYED!$};
+    };
+};
+
+#alias hunt {
+    #local target {};
+    #local rooms {};
+    #local initial_room {};
+    #local resting_room {};
+    #local healing_room {};
+    #local spawn_message {};
+    #switch {"%0"} {
+        #case {"straw dummies"} {
+            #local target {dummy};
+            #local rooms {{379}{378} {378}{377} {377}{376} {376}{57} {57}{379}};
+            #local spawn_message {^You hear the chittering of rodents and taste, as much as feel, a stale breeze.$};
+        };
+        #case {"dummies small"} {
+            #local target {dummy};
+            #local rooms {{1224}{1225} {1225}{1226} {1226}{1227} {1227}{1224}};
+            #local initial_room 1224;
+            #local resting_room 1218;
+            #local healing_room 1193;
+            #local spawn_message {^The smell of old books wafts through the halls.$};
+        };
+        #case {"dummies"} {
+            #local target {dummy};
+            #local rooms {{1224}{1225} {1225}{1226} {1226}{1227} {1227}{1228} {1228}{1229} {1229}{1230} {1230}{1231} {1231}{1232} {1232}{1233} {1233}{1234} {1234}{1235} {1235}{1224}};
+            #local initial_room 1224;
+            #local resting_room 1218;
+            #local healing_room 1193;
+            #local spawn_message {^The smell of old books wafts through the halls.$};
+        };
+        #default {
+            #line ignore #showme {Unknown hunt target, '%1'.};
+            #return;
+        };
+    };
+    hunt_impl {%0} {$target} {$rooms} {$spawn_message} {$initial_room} {$resting_room} {$healing_room};
+};
+#alias hunt_impl {
+    #list hunt_args create {%0};
+    #var hunt_area {$hunt_args[1]};
+    #var hunt_target {'$hunt_args[2]'};
+    #var hunt_rooms {$hunt_args[3]};
+    #var hunt_initial_room {$hunt_args[5]};
+    #if {"$hunt_initial_room" == ""} {#var hunt_initial_room {$hunt_rooms[+1]};};
+    #var hunt_resting_room {$hunt_args[6]};
+    #var hunt_healing_room {$hunt_args[7]};
+    #line sub var #function spawn_message {#return $hunt_args[4];};
+    #if {"@spawn_message{}" == ""} {#showme Missing spawn_message;#return;};
+    #var they_werent_there 0;
+    #var spawn_message_unacked 0;
+    #if {!&{hunt_mode_enabled}} {
+        #var gtfo 0;
+        #var hunt_mode_enabled 1;
+        #alias echo_spawn_period {
+            #if {&{spawn_time}} {
+                #math spawn_period {@timestamp_epoch_s{} - $spawn_time};
+                #delay 0 #showme {'$hunt_area' hunt: Spawned at @timestamp{}. Spawn period was $spawn_period.};
+            };
+            #var spawn_time {@timestamp_epoch_s{}};
+        };
+        #line sub function #action {@spawn_message{}} {
+            #var spawn_message_unacked 1;
+            echo_spawn_period;
+        };
+        #action {^They aren't here.$} {
+            #if {$they_werent_there >= 3} {
+                #var they_werent_there 0;
+                #alias resume_hunt {
+                    #delay @rnd{1;3} {#send stand;#send kill $hunt_target;};
+                };
+                #action {WAITING FOR RESPAWN} {
+                    #if {$spawn_message_unacked} {
+                        #unaction {WAITING FOR RESPAWN};
+                        #var spawn_message_unacked 0;
+                        resume_hunt;
+                    } {
+                        #delay 15 #showme WAITING FOR RESPAWN;
+                    };
+                };
+                #if {$hunt_resting_room} {
+                    #nop TODO replace with {END OF PATH} when available;
+                    #event {MAP EXIT ROOM} {
+                        #if {%%%1 == $hunt_resting_room} {
+                            #unevent {MAP EXIT ROOM};
+                            #delay @rnd{0;1} #send rest;
+                            #delay 2 #showme {WAITING FOR RESPAWN};
+                        };
+                    };
+                    #send get all.coin;
+                    #delay 2 go $hunt_resting_room;
+                } {
+                    #send rest;
+                    #delay @rnd{4;6} #showme {WAITING FOR RESPAWN};
+                };
+                #return;
+            } {
+                #delay @rnd{0;1} {
+                    #send get all.coin;
+                    #delay @rnd{1;2} {
+                        #nop { TODO doesn't yet work with #map run
+                        #event {END OF PATH} {
+                            #unevent {END OF PATH};
+                            #if {!$gtfo} {#delay @rnd{1;2} {#send kill $hunt_target;};};
+                        };
+                        };
+                        #if {$spawn_message_unacked && $roomvnum != $hunt_initial_room} {
+                            #var spawn_message_unacked 0;
+                            #local next_room {$hunt_initial_room};
+                        } {
+                            #local next_room {$hunt_rooms[$roomvnum]};
+                        };
+                        #if {"$next_room" == ""} {#local next_room $hunt_initial_room;};
+
+                        #nop TODO hack using MAP EXIT ROOM until END OF PATH works.;
+                        #var global_next_room $next_room;
+                        #event {MAP EXIT ROOM} {
+                            #if {%%%1 == $global_next_room} {
+                                #unevent {MAP EXIT ROOM};
+                                #delay @rnd{2;2} {#if {!$gtfo} {#send kill $hunt_target;};};
+                            };
+                        };
+
+                        go $next_room;
+                    };
+                };
+            };
+            #math they_werent_there {$they_werent_there+1};
+        };
+        #action { is DESTROYED!$} {
+            #var they_werent_there 0;
+            #if {$stats[health] > 60 && $stats[stamina] > 33} {
+                #delay @rnd{0;2} {
+                    #send kill $hunt_target;
+                    #if {$stats[magic] == 100} {
+                        #send cast 'acid splash' $hunt_target;
+                    };
+                };
+            } {
+                #if {$hunt_healing_room} {
+                    #var pre_healing_room {$roomvnum};
+                    #event {MAP EXIT ROOM} {
+                        #if {%%%1 == $hunt_healing_room} {
+                            #delay @rnd{0;2} #send heal stamina;
+                            #delay @rnd{0;2} #send heal stamina;
+                            #delay @rnd{0;2} #send heal stamina;
+                            #delay @rnd{0;2} #send heal wounds;
+                            #delay @rnd{0;2} #send heal wounds;
+                            #delay @rnd{10;12} {
+                                #send speed walk;
+                                go back;
+                            };
+                        };
+                        #if {%%%1 == $pre_healing_room} {
+                            #unevent {MAP EXIT ROOM};
+                            #unvar pre_healing_room;
+                            #send kill $hunt_target;
+                        };
+                    };
+                    #send get all.coin;
+                    go $hunt_healing_room;
+                } {
+                    #delay @rnd{1;2} #send rest;
+                    #delay @rnd{3;4} #send sleep;
+                    #unvar spawn_time;
+                };
+            };
+        };
+        #action { and prepare to engage it in combat!$} {
+        };
+        #action {^Your adrenaline is pumping too hard to sleep now!$} {
+            #action {^Your pulse returns to normal.$} {
+                #unaction {^Your pulse returns to normal.$};
+                #delay @rnd{1;3} {#send sleep;#showme TEST STATS;};
+            };
+            #action {TEST STATS} {
+                #if {$stats[health] < 85 || $stats[stamina] < 80} {
+                    #delay 20 #showme TEST STATS;
+                } {
+                    #unaction {TEST STATS};
+                    #send wake;
+                    #send kill $hunt_target;
+                };
+            };
+        };
+        #action {{^Someone |^\w.+'.+'\.?$|[\w ]+ (male|female) [\w ]+|Whysteria|Satrina|Wendon}} {
+            #if {"$hunt_rooms[$roomvnum]" == ""} {
+                #return;
+            };
+            #local msg {%%1};
+            #replace {msg} {{[^A-Za-z0-9 ,.?!]}} {};
+            #system {notify-send -u critical -t 60000 "Aborting Hunt" "$msg"};
+            hunt $hunt_area;
+            #var gtfo 1;
+            #delay {gtfo} {go! bank;} {3};
+            #action { is DESTROYED!$} {#undelay gtfo;#delay 2 go! armor;};
+        } {6};
+        #send stand;
+        #delay 2 #send kill $hunt_target;
+    } {
+        #unvar they_werent_there;
+        #unvar hunt_mode_enabled;
+        #unvar spawn_message_unacked;
+        #unaction {^They aren't here.$};
+        #unaction { is DESTROYED!$};
+        #unaction { and prepare to engage it in combat!$};
+        #unaction {^Your adrenaline is pumping too hard to sleep now!$};
+        #unaction {^Your pulse returns to normal.$};
+        #unaction {{^Someone |^\w.+'.+'\.?$|[\w ]+ (male|female) [\w ]+|Whysteria|Satrina|Wendon}};
+        #unaction {TEST STATS};
+        #unaction {WAITING FOR RESPAWN};
+        #line sub function #unaction {@spawn_message{}};
+        #unfunction spawn_message;
+        #unevent {MAP EXIT ROOM};
+        #line ignore #showme {$hunt_area hunt ended!};
+    };
+} {10};
+
+#alias handle_blocked_movement_message {
+    #nop A more reliable way is to queue move/looks and dequeue on room title/dirs;
+    #if {"$blocked_movement_message_check" == "move"} {
+        #if {!$map_is_static} {
+            #line verbose #map undo;
+        };
+        #elseif {"$last_potential_roomname" != "$roomname"} {
+            #nop TODO $last_potential_roomname is wrong with darkvision;
+            #nop can be made more reliable by comparing exits too;
+            #line verbose #map undo;
+        };
+    };
+    #elseif {"$blocked_movement_message_check" == "flee"} {
+        #map goto {$old_vnum};
+    };
+    #regex {%1} { is closed.$} {
+        #if {"$roomnote" != "vault"} {
+            #send {open $blocked_movement_message_check_dir};
+            mapexitclosed $blocked_movement_message_check_dir;
+            #if {"$blocked_movement_message_check" == "look"} {
+                #if {@timestamp_epoch_s{} - $last_look > 0} {
+                    #nop Avoid infinite loop on locked doors.;
+                    #send look $blocked_movement_message_check_dir;
+                    #var last_look @timestamp_epoch_s{};
+                };
+            };
+        };
+    };
+    #if {"%2" != ""} {
+        #line verbose #send {%2};
+    };
+    #nop TODO #path stop if run in progress;
+};
+#action {^Perhaps if you were standing.$} {handle_blocked_movement_message {%0} stand};
+#action {^You cannot do that while sleeping.$} {handle_blocked_movement_message {%0} stand};
+#action {^You flee from combat!$} {handle_blocked_movement_message {%0}};
+#action {^You are too exhausted.$} {handle_blocked_movement_message {%0}};
+#action {^No way! You are still fighting!$} {handle_blocked_movement_message {%0}};
+#action {^Alas, you cannot go that way.$} {handle_blocked_movement_message {%0}};
+#action {^You are carrying more weight than you are able to manage - try dropping something!$} {handle_blocked_movement_message {%0}};
+#action {^You have more items in your inventory than you are able to manage - try wearing some objects, putting them in a container or dropping them!$} {handle_blocked_movement_message {%0}};
+#action {^You cannot do that while recovering from physical exertion!$} {handle_blocked_movement_message {%0}};
+#action {^You start to climb... but lose your grip and fall!$} {handle_blocked_movement_message {%0}};
+#action {^You would not want to drown.$} {handle_blocked_movement_message {%0}};
+#action {^You try to swim but dont make much progress.$} {handle_blocked_movement_message {%0}};
+#action {^You aren't allowed to enter the Forgotten Kingdoms yet.$} {handle_blocked_movement_message {%0}};
+#action {^A voice in your mind says, 'You are not ready to go down that path.'.$} {handle_blocked_movement_message {%0}};
+#action { says to you 'You cannot go in there.'$} {handle_blocked_movement_message {%0}};
+#action {^Asiyra Boldwinter closes the lavish curtain.$} {handle_blocked_movement_message {%0}};
+#action { blocks your %!{(?:path|way)}.$} {handle_blocked_movement_message {%0}};
+#action { steps into your way%!{.}$} {handle_blocked_movement_message {%0}};
+#action {^That way is closed to you now.$} {handle_blocked_movement_message {%0}};
+#action {^You'd need to fly to go there.$} {handle_blocked_movement_message {%0}};
+#action {^And you see no clear way down to descend.$} {handle_blocked_movement_message {%0}};
+#action {^That is too small for you to squeeze through!$} {handle_blocked_movement_message {%0}};
+#action {^You are grabbed roughly and thrown out by a hired sword.$} {handle_blocked_movement_message {%0}};
+#action {^Guards prevent you from going down there.$} {handle_blocked_movement_message {%0}};
+#action {^A soldier stops you from going into the market.$} {handle_blocked_movement_message {%0}};
+#action { shows the way to the stairs.$} {handle_blocked_movement_message {%0}};
+#action { shakes his head at you and waves them away.$} {handle_blocked_movement_message {%0}};
+#action { ushers you back down the stairs.$} {handle_blocked_movement_message {%0}};
+#action {^Thomas says to you 'One %!{(?:silver|gold)}.'$} {handle_blocked_movement_message {%0}};
+#action {^A tavern guard holds up his hands and walks you to the stairs.$} {handle_blocked_movement_message {%0}};
+#action {^The A battered old Inn sign is closed.$} {handle_blocked_movement_message {%0}};
+#action {^The A tower shield door is closed.$} {handle_blocked_movement_message {%0}};
+#action {^The A crooked wooden door is closed.$} {handle_blocked_movement_message {%0}};
+#action {^The %!{(?:(?:set of|pair of) )?}%!{(?:(?:plain|dented|sturdy|reinforced|large|small|arched|bare|massive|battered and gouged|iron-studded|iron-bound|iron-reinforced|iron clad|wide|ornate|rune-covered|dung-spattered|nailed-up|dingy|glossy|brightly|pristine|red|scarred|stout|paneled|unassuming|tall|thick|trap|gilded|bronzed|diaphanous|draped|lavish|Tunnel|rusty,) )?}%!{(?:(?:wooden|wood|iron|metal|silver|stone|(?:solid )?oak|(?:solid )?steel|marble-enclosed|ivory|gold|painted) )?}%!{(?:doors?|Door|gates?|double doors|hatch|grating|curtain|slab|boards)} %!{(?:(?:with rope handles|with many latches|with a leaden glass window|with silver ornaments|decorated with wyverns|shaped like? a giant book|made from parchment) )?}is closed.$} {handle_blocked_movement_message {%0}};
+
+#action {^Your hometown is now $} {#delay 7 {findhere}};
+#action {^Camberdan beckons you over and smiles.$} {#delay 0.3 {findhere}};
+#action {^You disappear in a flash!$} {#delay 0.3 {findhere}};
+#action {^You feel yourself leaving your body... rising up into the air, you feel$} {
+    #line ignore #showme {<018>Died in room <028>$roomarea <138>$roomname <148>(<038>$roomvnum<148>)<018>.};
+    #delay 0.3 {findhere};
+};
+
+#action { walks you up the stairs.$} {#map move u};
