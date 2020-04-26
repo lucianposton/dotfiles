@@ -1,0 +1,131 @@
+#event {PROGRAM START} {
+    #script {ttdir} {cd ~/.tintin;pwd};
+    #var ttdir $ttdir[1];
+
+    #config {REPEAT ENTER} {ON};
+
+    #nop #read {{$ttdir}/fk/${session[name]}_Variables.tin};
+    #read {$ttdir/fk/fk.tin};
+};
+
+#alias move_d {
+    #var last_movement_timestamp @timestamp_epoch_us{};
+    #var last_movement_direction d;
+    #send d; #nop TODO This is calling alias, but shouldn't. #line ignore broken.;
+}
+#alias move_u {
+    #var last_movement_timestamp @timestamp_epoch_us{};
+    #var last_movement_direction u;
+    #send u;
+}
+#alias move_n {
+    #var last_movement_timestamp @timestamp_epoch_us{};
+    #var last_movement_direction n;
+    #send n;
+}
+#alias move_s {
+    #var last_movement_timestamp @timestamp_epoch_us{};
+    #var last_movement_direction s;
+    #send s;
+}
+#alias move_e {
+    #var last_movement_timestamp @timestamp_epoch_us{};
+    #var last_movement_direction e;
+    #send e;
+}
+#alias move_w {
+    #var last_movement_timestamp @timestamp_epoch_us{};
+    #var last_movement_direction w;
+    #send w;
+}
+#alias move_ne {
+    #var last_movement_timestamp @timestamp_epoch_us{};
+    #var last_movement_direction ne;
+    #send ne;
+}
+#alias move_nw {
+    #var last_movement_timestamp @timestamp_epoch_us{};
+    #var last_movement_direction nw;
+    #send nw;
+}
+#alias move_se {
+    #var last_movement_timestamp @timestamp_epoch_us{};
+    #var last_movement_direction se;
+    #send se;
+}
+#alias move_sw {
+    #var last_movement_timestamp @timestamp_epoch_us{};
+    #var last_movement_direction sw;
+    #send sw;
+}
+#alias move_o {
+    #var last_movement_timestamp @timestamp_epoch_us{};
+    #var last_movement_direction o;
+    #send o;
+}
+
+#alias {down} {move_d}
+#alias {d} {move_d}
+#alias {up} {move_u}
+#alias {u} {move_u}
+#alias {north} {move_n}
+#alias {n} {move_n}
+#alias {south} {move_s}
+#alias {s} {move_s}
+#alias {east} {move_e}
+#alias {e} {move_e}
+#alias {west} {move_w}
+#alias {w} {move_w}
+#alias {northeast} {move_ne}
+#alias {northe} {move_ne}
+#alias {ne} {move_ne}
+#alias {northwest} {move_nw}
+#alias {northw} {move_nw}
+#alias {nw} {move_nw}
+#alias {southeast} {move_se}
+#alias {southe} {move_se}
+#alias {se} {move_se}
+#alias {southwest} {move_sw}
+#alias {southw} {move_sw}
+#alias {sw} {move_sw}
+#alias {out} {move_o}
+#alias {o} {move_o}
+
+#macro {\eOp} {move_d}
+#macro {\eOn} {move_u}
+#macro {\eOq} {move_sw}
+#macro {\eOr} {move_s}
+#macro {\eOs} {move_se}
+#macro {\eOt} {move_w}
+#macro {\eOu} {move_o}
+#macro {\eOv} {move_e}
+#macro {\eOw} {move_nw}
+#macro {\eOx} {move_n}
+#macro {\eOy} {move_ne}
+#macro {\eOk} {look}
+#macro {\eOo} {practice}
+#macro {\eOj} {worth}
+#macro {\eOm} {score}
+#nop #macro {\eOM} {!} #nop Causes repeating last macro;
+
+#macro {\ek} {#cursor {history prev}}
+#macro {\ej} {#cursor {history next}}
+
+#function timestamp {#format result %t {%FT%T}}
+#function timestamp_epoch_s  {#format result %T}
+#function timestamp_epoch_us {#format result %U}
+#function rnd {#math {result} {1 d (%2 - %1 + 1) + %1 - 1}}
+#function reverse_direction {
+    #switch {"%1"} {
+        #case {"n"}  {#return s};
+        #case {"nw"} {#return se};
+        #case {"ne"} {#return sw};
+        #case {"e"}  {#return w};
+        #case {"s"}  {#return n};
+        #case {"sw"} {#return ne};
+        #case {"se"} {#return nw};
+        #case {"w"}  {#return e};
+        #case {"u"}  {#return d};
+        #case {"d"}  {#return u};
+    };
+};
