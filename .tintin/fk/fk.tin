@@ -81,21 +81,23 @@
 };
 #event {RECEIVED INPUT} {
     #format last_received_input {%p} {%0};
-    #switch {"$last_received_input"} {#case {"recall"} {#delay 1 findhere};};
+    #switch {"$last_received_input"} {#case {"recall"} {#delay 0.5 findhere};};
     #math unafk_attempts 0;
+    #math gtfo 0;
 };
 #action {^Your AFK flag has been set automatically.$} {#delay @rnd{3;29} {
     #if {$unafk_attempts < 5} { #send worth; };
     #math unafk_attempts $unafk_attempts+1;
 };};
 
-#action {You have chosen to play {\w+}.$} {
-    #unaction {You have chosen to play {\w+}.$};
+#action {^You have chosen to play {\w+}.$} {
+    #unaction {^You have chosen to play {\w+}.$};
     #unaction {~%!{\[1H(\w+)\s+Speaking:}};
     setup_character %1;
 } {6};
 #alias setup_character {
     #nop #delay 0.1 #line ignore #showme Loading %1 settings.;
+    #nop TODO use #class. See http://necro.wikidot.com/tintin-saving-variables;
     #switch {"%1"} {
         #case {"Dainn"} {
             #var c[container] rucksack;
@@ -117,6 +119,7 @@
             #var c[last_food_item] stew;
             #var c[last_drink_item] waterskin;
             #var c[melee_weapon] dagger;
+            #var c[signature_spell] burning;
         };
         #default {
             #var c[container] pack;
@@ -126,7 +129,7 @@
             #var c[last_food_item] stew;
             #var c[last_drink_item] skin;
             #var c[melee_weapon] dagger;
-            #line ignore #showme {<118>Unknown character <028>%1<118>. No default items defined.};
+            #delay 1 #line ignore #showme {<118>Unknown character <028>%1<118>. No default items defined.};
         };
     };
 };
@@ -961,13 +964,15 @@
     #local resting_room {};
     #local healing_room {};
     #local spawn_message {};
+    #local area {%0};
     #switch {"%0"} {
         #case {"straw dummies"} {
             #local target {dummy};
-            #local rooms {{379}{378} {378}{377} {377}{376} {376}{57} {57}{379}};
+            #local rooms {{57}{376} {376}{377} {377}{378} {378}{379} {379}{57}};
             #local spawn_message {^You hear the chittering of rodents and taste, as much as feel, a stale breeze.$};
         };
         #case {"dummies small"} {
+            #local area {dummies};
             #local target {dummy};
             #local rooms {{1224}{1225} {1225}{1226} {1226}{1227} {1227}{1224}};
             #local initial_room 1224;
@@ -988,7 +993,7 @@
             #return;
         };
     };
-    hunt_impl {%0} {$target} {$rooms} {$spawn_message} {$initial_room} {$resting_room} {$healing_room};
+    hunt_impl {$area} {$target} {$rooms} {$spawn_message} {$initial_room} {$resting_room} {$healing_room};
 };
 #alias hunt_impl {
     #list hunt_args create {%0};
@@ -1013,6 +1018,20 @@
             };
             #var spawn_time {@timestamp_epoch_s{}};
         };
+        #alias kill_or_gtfo {
+            #if {$gtfo} {
+                hunt $hunt_area;
+                #delay 0.5 {go! bank;};
+                #delay @rnd{60;90} {#if {$gtfo} {#showme {<118>GTFO<088>};#delay 30 {
+                    #if {$gtfo} {#send quit;};
+                };};};
+            } {
+                #send kill $hunt_target;
+                #if {$stats[magic] > 90} {
+                    #send cast $c[signature_spell] $hunt_target;
+                };
+            }
+        };
         #line sub function #action {@spawn_message{}} {
             #var spawn_message_unacked 1;
             echo_spawn_period;
@@ -1021,7 +1040,7 @@
             #if {$they_werent_there >= 3} {
                 #var they_werent_there 0;
                 #alias resume_hunt {
-                    #delay @rnd{1;3} {#send stand;#send kill $hunt_target;};
+                    #delay @rnd{1;3} {#send stand;kill_or_gtfo;};
                 };
                 #action {WAITING FOR RESPAWN} {
                     #if {$spawn_message_unacked} {
@@ -1055,7 +1074,7 @@
                         #nop { TODO doesn't yet work with #map run
                         #event {END OF PATH} {
                             #unevent {END OF PATH};
-                            #if {!$gtfo} {#delay @rnd{1;2} {#send kill $hunt_target;};};
+                            #delay @rnd{2;2} {kill_or_gtfo;};
                         };
                         };
                         #if {$spawn_message_unacked && $roomvnum != $hunt_initial_room} {
@@ -1071,7 +1090,7 @@
                         #event {MAP EXIT ROOM} {
                             #if {%%%1 == $global_next_room} {
                                 #unevent {MAP EXIT ROOM};
-                                #delay @rnd{2;2} {#if {!$gtfo} {#send kill $hunt_target;};};
+                                #delay @rnd{2;2} {kill_or_gtfo;};
                             };
                         };
 
@@ -1085,10 +1104,7 @@
             #var they_werent_there 0;
             #if {$stats[health] > 60 && $stats[stamina] > 33} {
                 #delay @rnd{0;2} {
-                    #send kill $hunt_target;
-                    #if {$stats[magic] == 100} {
-                        #send cast 'acid splash' $hunt_target;
-                    };
+                    kill_or_gtfo;
                 };
             } {
                 #if {$hunt_healing_room} {
@@ -1108,7 +1124,7 @@
                         #if {%%%1 == $pre_healing_room} {
                             #unevent {MAP EXIT ROOM};
                             #unvar pre_healing_room;
-                            #send kill $hunt_target;
+                            kill_or_gtfo;
                         };
                     };
                     #send get all.coin;
@@ -1133,7 +1149,7 @@
                 } {
                     #unaction {TEST STATS};
                     #send wake;
-                    #send kill $hunt_target;
+                    kill_or_gtfo;
                 };
             };
         };
@@ -1144,10 +1160,7 @@
             #local msg {%%1};
             #replace {msg} {{[^A-Za-z0-9 ,.?!]}} {};
             #system {notify-send -u critical -t 60000 "Aborting Hunt" "$msg"};
-            hunt $hunt_area;
             #var gtfo 1;
-            #delay {gtfo} {go! bank;} {3};
-            #action { is DESTROYED!$} {#undelay gtfo;#delay 2 go! armor;};
         } {6};
         #send stand;
         #delay 2 #send kill $hunt_target;
@@ -1238,7 +1251,13 @@
 #action {^The A crooked wooden door is closed.$} {handle_blocked_movement_message {%0}};
 #action {^The %!{(?:(?:set of|pair of) )?}%!{(?:(?:plain|dented|sturdy|reinforced|large|small|arched|bare|massive|battered and gouged|iron-studded|iron-bound|iron-reinforced|iron clad|wide|ornate|rune-covered|dung-spattered|nailed-up|dingy|glossy|brightly|pristine|red|scarred|stout|paneled|unassuming|tall|thick|trap|gilded|bronzed|diaphanous|draped|lavish|Tunnel|rusty,) )?}%!{(?:(?:wooden|wood|iron|metal|silver|stone|(?:solid )?oak|(?:solid )?steel|marble-enclosed|ivory|gold|painted) )?}%!{(?:doors?|Door|gates?|double doors|hatch|grating|curtain|slab|boards)} %!{(?:(?:with rope handles|with many latches|with a leaden glass window|with silver ornaments|decorated with wyverns|shaped like? a giant book|made from parchment) )?}is closed.$} {handle_blocked_movement_message {%0}};
 
-#action {^Your hometown is now $} {#delay 7 {findhere}};
+#action {^You will now go to a training area to learn about the game.$} {
+    #map goto {The art of communication};
+};
+#action {^Danilo utters an incantation and you find yourself elsewhere.$} {
+    #map goto {Please choose your character's hometown:};
+};
+#action {^Your hometown is now %1.$} {#delay 7 {findhere}};
 #action {^Camberdan beckons you over and smiles.$} {#delay 0.3 {findhere}};
 #action {^You disappear in a flash!$} {#delay 0.3 {findhere}};
 #action {^You feel yourself leaving your body... rising up into the air, you feel$} {
