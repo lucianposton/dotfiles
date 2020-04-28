@@ -2,7 +2,7 @@
 
 #nop https://github.com/Inix3K/TinTin/blob/master/3k/mapper.tin ;
 
-#if {!&{ttdir}} {#showme {Error: config.tin not loaded.};#zap;};
+#if {!&{ttdir}} {#showme {<118>Error: config.tin not loaded.};#zap;};
 
 #config {MOUSE TRACKING} {ON};
 
@@ -90,11 +90,6 @@
     #math unafk_attempts $unafk_attempts+1;
 };};
 
-#action {^You have chosen to play {\w+}.$} {
-    #unaction {^You have chosen to play {\w+}.$};
-    #unaction {~%!{\[1H(\w+)\s+Speaking:}};
-    setup_character %1;
-} {6};
 #alias setup_character {
     #nop #delay 0.1 #line ignore #showme Loading %1 settings.;
     #nop TODO use #class. See http://necro.wikidot.com/tintin-saving-variables;
@@ -348,13 +343,25 @@
 };
 
 #nop TODO get $LINES-1 from #screen get rows rows (or #event {SCREEN RESIZE}?) instead of hardcoding 50;
+#nop { These aren't necessary if packets are defragmented;
+#action {^You have chosen to play {\w+}.$} {
+    #unaction {^You have chosen to play {\w+}.$};
+    #unaction {~%!{\[1H(\w+)\s+Speaking:}};
+    setup_character %1;
+} {6};
 #action {~%!{\[1H(\w+)\s+Speaking:}} {
     #unaction {You have chosen to play {\w+}.$};
     #unaction {~%!{\[1H(\w+)\s+Speaking:}};
     setup_character %1;
-} {6};
+} {7};
 #action {~%!{50HHealth:\e.+?m([- 0-9]{3})%.+?Magic:\e.+?m([- 0-9]{3})%.+?Stamina:\e.+?m([- 0-9]{3})%.+?Speed:.+?m(\w+).+?Exits:.+?m((?:\?|N|S|E|W|U|D|Nw|Ne|Sw|Se)*)\e}} {
     refresh_stats {%1} {%2} {%3} {%4} {%5};
+    initialize_map_parser;
+} {7};
+};
+#action {~%!{\[1H(\w+)\s+Speaking:.*50HHealth:\e.+?m([- 0-9]{3})%.+?Magic:\e.+?m([- 0-9]{3})%.+?Stamina:\e.+?m([- 0-9]{3})%.+?Speed:.+?m(\w+).+?Exits:.+?m((?:\?|N|S|E|W|U|D|Nw|Ne|Sw|Se)*)\e}} {
+    setup_character %1;
+    refresh_stats {%2} {%3} {%4} {%5} {%6};
     initialize_map_parser;
 } {6};
 #alias refresh_stats {
@@ -699,6 +706,7 @@
 #nop #event {RECEIVED OUTPUT} {#delay 0.1 #map update};
 #nop #event {RECEIVED OUTPUT} {#map map 40 100 append /dev/pts/8};
 #event {MAP ENTER ROOM} {
+    #if {!&{map_parser_initialized}} {#delay 0 #showme ERROR: map parser is not initialized;};
     set_room_vars {%0} {%1};
     #var map_enter_room_timestamp @timestamp_epoch_us{};
     #if {!&{map_is_static} || $map_is_static} {
@@ -708,10 +716,6 @@
     };
 };
 #event {MAP EXIT ROOM} {
-    #nop Delay creating these actions so that stat refresh action isn't shadowed;
-    #if {!&{map_parser_initialized}} {
-        #line ignore #showme ERROR: map parser is not initialized;
-    };
 };
 #nop #event {MAP ENTER MAP} {};
 #event {MAP SHORT-CLICKED MOUSE BUTTON ONE} {
@@ -930,9 +934,7 @@
     #if {$notifications} {
         #line ignore #showme {Notifications enabled.};
         #action {{^\w.+'.+'\.?$}} {
-            #local msg {%%1};
-            #replace {msg} {{[^A-Za-z0-9 ,.?!]}} {};
-            #system {notify-send -t 10000 "$msg"};
+            notify-send {%%1};
         };
     } {
         #line ignore #showme {Notifications disabled.};
@@ -1011,6 +1013,7 @@
     #if {!&{hunt_mode_enabled}} {
         #var gtfo 0;
         #var hunt_mode_enabled 1;
+        #line ignore #showme {$hunt_area hunt begins!};
         #alias echo_spawn_period {
             #if {&{spawn_time}} {
                 #math spawn_period {@timestamp_epoch_s{} - $spawn_time};
@@ -1030,7 +1033,7 @@
                 #if {$stats[magic] > 90} {
                     #send cast $c[signature_spell] $hunt_target;
                 };
-            }
+            };
         };
         #line sub function #action {@spawn_message{}} {
             #var spawn_message_unacked 1;
@@ -1111,12 +1114,12 @@
                     #var pre_healing_room {$roomvnum};
                     #event {MAP EXIT ROOM} {
                         #if {%%%1 == $hunt_healing_room} {
-                            #delay @rnd{0;2} #send heal stamina;
-                            #delay @rnd{0;2} #send heal stamina;
-                            #delay @rnd{0;2} #send heal stamina;
-                            #delay @rnd{0;2} #send heal wounds;
-                            #delay @rnd{0;2} #send heal wounds;
-                            #delay @rnd{10;12} {
+                            #delay @rnd{0;0} #send heal stamina;
+                            #delay @rnd{1;2} #send heal stamina;
+                            #delay @rnd{1;2} #send heal stamina;
+                            #delay @rnd{0;0} #send heal wounds;
+                            #delay @rnd{1;2} #send heal wounds;
+                            #delay @rnd{12;14} {
                                 #send speed walk;
                                 go back;
                             };
@@ -1157,14 +1160,13 @@
             #if {"$hunt_rooms[$roomvnum]" == ""} {
                 #return;
             };
-            #local msg {%%1};
-            #replace {msg} {{[^A-Za-z0-9 ,.?!]}} {};
-            #system {notify-send -u critical -t 60000 "Aborting Hunt" "$msg"};
+            notify-send {%%1} {Aborting Hunt} {critical} {default};
             #var gtfo 1;
-        } {6};
+        } {3};
         #send stand;
         #delay 2 #send kill $hunt_target;
     } {
+        #line ignore #showme {$hunt_area hunt ended!};
         #unvar they_werent_there;
         #unvar hunt_mode_enabled;
         #unvar spawn_message_unacked;
@@ -1179,7 +1181,6 @@
         #line sub function #unaction {@spawn_message{}};
         #unfunction spawn_message;
         #unevent {MAP EXIT ROOM};
-        #line ignore #showme {$hunt_area hunt ended!};
     };
 } {10};
 
