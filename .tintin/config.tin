@@ -129,37 +129,37 @@
         #case {"d"}  {#return u};
     };
 };
+#function sys_sanitize {
+    #var result {%0};
+    #replace {result} {{[^A-Za-z0-9 ,.?!/_-]}} {};
+};
 
 #alias notify-send {
     #list notify_send_vars create {%0};
-    #local msg {$notify_send_vars[1]};
-    #replace {msg} {{[^A-Za-z0-9 ,.?!-]}} {};
-    #local title {$notify_send_vars[2]};
-    #replace {title} {{[^A-Za-z0-9 ,.?!-]}} {};
+    #local msg {@sys_sanitize{$notify_send_vars[1]}};
+    #local title {@sys_sanitize{$notify_send_vars[2]}};
     #if {"$title" == ""} {#local title {TinTin++};};
-    #local urgency {$notify_send_vars[3]}; #nop low, normal, critical;
-    #replace {urgency} {{[^a-z]}} {};
+    #local urgency {@sys_sanitize{$notify_send_vars[3]}}; #nop low, normal, critical;
     #if {"$urgency" == ""} {#local urgency {normal};};
-    #local sound {$notify_send_vars[4]};
-    #replace {sound} {{[^A-Za-z0-9 ,.?!/_-]}} {};
+    #local sound {@sys_sanitize{$notify_send_vars[4]}};
     #script {os} {uname -s};
     #switch {"$os[1]"} {
         #case {"Linux"} {
-            #system {notify-send -u '$urgency' -t 10000 '$title' '$msg'};
+            #system {notify-send -u '$urgency' -t 10000 '$title' '$msg' &};
             #if {"$sound" != ""} {
                 #switch {"$sound"} {
                     #case {"default"} {
                         #local sound {/usr/share/sounds/freedesktop/stereo/complete.oga};
                     };
                 };
-                #system {paplay '$sound'};
+                #system {paplay '$sound' &};
             };
         };
         #case {"Darwin"} {
             #if {"$sound" == ""} {
-                #system {terminal-notifier -title '$title' -message '$msg'};
+                #system {terminal-notifier -title '$title' -message '$msg' &};
             } {
-                #system {terminal-notifier -title '$title' -message '$msg' -sound '$sound'};
+                #system {terminal-notifier -title '$title' -message '$msg' -sound '$sound' &};
             };
         };
         #case {"CYGWIN_NT%1"} {
