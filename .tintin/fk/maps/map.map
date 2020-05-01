@@ -18,7 +18,7 @@ F 8471
 
 G 0
 
-I 1199
+I 86
 
 L {ASCII NESW LINE} {NO EXITS} {x}
 L {ASCII NESW LINE} {N} {o}
@@ -216,7 +216,7 @@ L {MUDFONT CURVED} {N E} {\u2818}
 L {MUDFONT CURVED} {S E} {\u28A0}
 L {MUDFONT CURVED} {S W} {\u2844}
 L {MUDFONT CURVED} {N W} {\u2803}
-L {UNICODE GRAPHICS} {NO DIAGONAL} { }
+L {UNICODE GRAPHICS} {NO DIAGONAL} {}
 L {UNICODE GRAPHICS} {SE} {\u2E0C}
 L {UNICODE GRAPHICS} {NE} {\u2E1D}
 L {UNICODE GRAPHICS} {SE NE} {>}
@@ -266,18 +266,18 @@ E {    1} {w} {w} {8} {0} {} {1.000} {}
 R {    4} {0} {} {The art of movement and doors} { } {This room looks like a class room.  There are desks and chairs arranged in an orderly fashion.  Chalk boards line the walls and on them are lessons about movement. Leo the elven ranger is here.} {newbie} {} {} {} {1.000} {}
 E {    1} {n} {n} {1} {0} {} {1.000} {}
 E {    5} {w} {w} {8} {0} {} {1.000} {}
-E {    6} {d} {d} {32} {0} {} {1.000} {}
-E {    7} {e} {e} {2} {0} {} {1.000} {}
+E {    6} {d} {open d;d} {32} {0} {} {1.000} {<248>}
+E {    7} {e} {open e;e} {2} {0} {} {1.000} {<248>}
 E {    8} {s} {s} {4} {0} {} {1.000} {}
 
 R {    5} {0} {} {A dining room} { } {Long trestle tables with benches are set up around the room.  A fire burns brightly in a large fire place.  Wenches hurry around to tend to the diners. A bar lines one wall. Rathan of Tymora is here.} {newbie} {} {} {} {1.000} {}
 E {    4} {e} {e} {2} {0} {} {1.000} {}
 
 R {    6} {0} {} {} { } {} {} {} {} {} {1.000} {}
-E {    4} {u} {u} {16} {0} {} {1.000} {}
+E {    4} {u} {open u;u} {16} {0} {} {1.000} {<248>}
 
 R {    7} {0} {} {A restaurant} { } {Long trestle tables with benches are set up around the room.  A fire burns brightly in a large fire place.  Wenches hurry around to tend to the diners. A bar lines one wall. Mirt the Moneylender is here.} {newbie} {} {} {} {1.000} {}
-E {    4} {w} {w} {8} {0} {} {1.000} {}
+E {    4} {w} {open w;w} {8} {0} {} {1.000} {<248>}
 
 R {    8} {0} {} {A forge} { } {It is hot in here.  There are several forges working in the room. Smiths man them and work on armour and weapons.  The floor is hard packed dirt and the walls are made of stone. A dwarven master smith is working a forge here.} {newbie} {} {} {} {1.000} {}
 E {    4} {n} {n} {1} {0} {} {1.000} {}
@@ -604,12 +604,12 @@ E {   81} {e} {e} {2} {0} {} {1.000} {}
 
 R {   81} {0} {} {The City of the Dead} { } {The row of trees that lines the inside of the graveyard wall breaks here to permit a gate's intrusion, and a path back to the noise and life of Waterdeep beyond it. The few sounds of merchants hawking their wares, the banging of smith's anvils and the cries of children playing sound only hollow when put to play off the quiet stone of this cemetary.} {waterdeep} {} {} {} {1.000} {}
 E {   80} {w} {w} {8} {0} {} {1.000} {}
-E {   82} {n} {open n;n} {1} {0} {} {1.000} {<248>}
+E {   82} {n} {n} {1} {0} {} {1.000} {}
 E {   86} {e} {e} {2} {0} {} {1.000} {}
 E {  191} {s} {s} {4} {0} {} {1.000} {}
 
 R {   82} {0} {} {The Hall of Heroes} { } {A narrow border of pure white flagstones here contrasts the deep blue marble of a large mausoleum with faux battlements around its top. Each corner is shaped as a round tower with a crenellated top, but the face of each tower is the figure of some famed warrior of the past, his arms bared in hand. The sky is cloudless and warm and a warm southerly breeze blows. Hall                         City -Hall Mrin 6W} {waterdeep} {} {} {} {1.000} {}
-E {   81} {s} {open s;s} {4} {0} {} {1.000} {<248>}
+E {   81} {s} {s} {4} {0} {} {1.000} {}
 E {   83} {n} {n} {1} {0} {} {1.000} {}
 E {   79} {w} {w} {8} {0} {} {1.000} {}
 E {   85} {e} {e} {2} {0} {} {1.000} {}
@@ -3971,18 +3971,18 @@ E {  831} {e} {e} {2} {0} {} {1.000} {}
 E {  758} {n} {n} {1} {0} {} {1.000} {}
 
 R {  833} {0} {} {A Storeroom} { } {An intermittently functional glowlight affixed above a thick doorframe bathes this room in light that is sometimes bright and sometimes thin.  Stale air settles heavily over the room like a thick, mouldy blanket and the only respite flows from a keyhole on the rough-hewn wooden door. A pile of grain has gathered beside a torn old sack and it grows slowly like the sands of an hourglass.} {waterdeep} {} {} {} {1.000} {}
-E {  834} {n} {n} {1} {0} {} {1.000} {}
+E {  834} {n} {open n;n} {1} {0} {} {1.000} {<248>}
 
 R {  834} {0} {} {A Hallway} { } {The floorboards of this sparse hallway creak and groan as if they were designed as a security measure. The warped wood is firm under you but the sound of it is nearly evidence enough to convince you otherwise.} {waterdeep} {} {} {} {1.000} {}
-E {  833} {s} {s} {4} {0} {} {1.000} {}
-E {  835} {n} {n} {1} {0} {} {1.000} {}
+E {  833} {s} {open s;s} {4} {0} {} {1.000} {<248>}
+E {  835} {n} {open n;n} {1} {0} {} {1.000} {<248>}
 
 R {  835} {0} {} {A Storage Cellar} { } {Cool stone sweats cooler water that trickles down to pool on a floor of unvarnished wooden planks. This room is a pantry, a larder, a wine cellar, a warehouse for furniture (new bits ready to serve and pieces that have served to be broken over another patron's back alike), and a storeroom for some steel weapons maintained casually in a rack along the far wall.} {waterdeep} {} {} {} {1.000} {}
-E {  834} {s} {s} {4} {0} {} {1.000} {}
-E {  836} {n} {n} {1} {0} {} {1.000} {}
+E {  834} {s} {open s;s} {4} {0} {} {1.000} {<248>}
+E {  836} {n} {open n;n} {1} {0} {} {1.000} {<248>}
 
 R {  836} {0} {} {A Hallway} { } {Light is a distant promise at the end of this narrow hallway and you begin to hear distant, muffled sounds filter through the ceiling above (along with little motes of dust and earth forced between the wood). Pugran growls out a challenge...} {waterdeep} {} {} {} {1.000} {}
-E {  835} {s} {s} {4} {0} {} {1.000} {}
+E {  835} {s} {open s;s} {4} {0} {} {1.000} {<248>}
 
 R {  837} {0} {} {Jonathon's Armoury.} { } {Hanging from the walls are all types of armour.  Everything the fighting man or woman could need.} {waterdeep} {shop armory} {} {} {1.000} {}
 E {  239} {w} {open w;w} {8} {0} {} {1.000} {<248>}
@@ -5627,3 +5627,8 @@ E { 1231} {e} {e} {2} {0} {} {1.000} {}
 
 R { 1236} {0} {} {An Alcove} {v} {This little alcove is clammy and claustrophobic.  There is a small sign on the wall and a stoop cut into the stone on the wall opposite the curtain, but it is otherwise bare.} {waterdeep} {vault} {} {} {1.000} {}
 E {   42} {e} {pull cord;e} {2} {0} {} {1.000} {}
+
+R { 1237} {0} {} {Please choose your character's hometown:} { } {} {newbie} {} {} {} {1.000} {}
+
+R { 1238} {0} {} {In a dark tunnel...} { } {The cold stone walls here sweat cool condensation that pools on the floor in burgeoning puddles fed constantly by regular drips, drops, and rivulets.} {waterdeep} {} {} {} {1.000} {}
+E {   40} {n} {n} {1} {0} {} {1.000} {}
