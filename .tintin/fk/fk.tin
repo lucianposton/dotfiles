@@ -12,6 +12,14 @@
 #highlight { approaches you and prepares to engage you in combat!$} {<118>};
 #highlight {^You cough and choke as you tire and gulp water!$} {<118>};
 #highlight {^Your armor hinders your attempt at swim.$} {<018>};
+#highlight {^Your skin feels soft again.$} {<018>};
+#highlight {^You learn from your success and %1$} {<118>};
+
+#action {^{.*} %!{(?:tells|replies to)} you%!{(?:, OOC)?} {.*}$} {notify-send {%2} {%1}};
+#action {^Your skin feels soft again.$} {notify-send {%0}};
+#action {^You learn from your success and %1$} {notify-send {%1} {Skillup}};
+#action {^You finish %1.$} {notify-send {%1} {Crafting finished}};
+#action {^%1 DISARMS you!$} {notify-send {%1} {Disarm}};
 
 #var room_title_prefix_vt_off {\e[1;37;40m};
 #var room_title_prefix_vt_on  {\e[%+1..dH\e[0;37;40m\e[1;37;40m};
