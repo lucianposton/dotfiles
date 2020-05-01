@@ -1250,20 +1250,18 @@
 #action {^The A battered old Inn sign is closed.$} {handle_blocked_movement_message {%0}};
 #action {^The A tower shield door is closed.$} {handle_blocked_movement_message {%0}};
 #action {^The A crooked wooden door is closed.$} {handle_blocked_movement_message {%0}};
-#action {^The %!{(?:(?:set of|pair of) )?}%!{(?:(?:plain|dented|sturdy|reinforced|large|small|arched|bare|massive|battered and gouged|iron-studded|iron-bound|iron-reinforced|iron clad|wide|ornate|rune-covered|dung-spattered|nailed-up|dingy|glossy|brightly|pristine|red|scarred|stout|paneled|unassuming|tall|thick|trap|gilded|bronzed|diaphanous|draped|lavish|Tunnel|rusty,) )?}%!{(?:(?:wooden|wood|iron|metal|silver|stone|(?:solid )?oak|(?:solid )?steel|marble-enclosed|ivory|gold|painted) )?}%!{(?:doors?|Door|gates?|double doors|hatch|grating|curtain|slab|boards)} %!{(?:(?:with rope handles|with many latches|with a leaden glass window|with silver ornaments|decorated with wyverns|shaped like? a giant book|made from parchment) )?}is closed.$} {handle_blocked_movement_message {%0}};
+#action {^The %!{(?:(?:set of|pair of) )?}%!{(?:(?:plain|dented|sturdy|reinforced|large|small|arched|bare|massive|battered and gouged|iron-studded|iron-bound|iron-reinforced|iron clad|wide|ornate|rune-covered|dung-spattered|nailed-up|dingy|glossy|brightly|pristine|red|scarred|stout|paneled|unassuming|tall|thick|trap|gilded|bronzed|diaphanous|draped|lavish|Tunnel|rusty,) )?}%!{(?:(?:wooden|wood|iron|metal|silver|stone|(?:solid )?oak|(?:solid )?steel|marble-enclosed|ivory|gold|painted) )?}%!{(?:doors?|Door|gates?|double doors|hatch|trapdoor|grating|curtain|slab|boards)} %!{(?:(?:with rope handles|with many latches|with a leaden glass window|with silver ornaments|decorated with wyverns|shaped like? a giant book|made from parchment) )?}is closed.$} {handle_blocked_movement_message {%0}};
 
-#action {^You will now go to a training area to learn about the game.$} {
-    #map goto {The art of communication};
-};
-#action {^Danilo utters an incantation and you find yourself elsewhere.$} {
-    #map goto {Please choose your character's hometown:};
-};
-#action {^Your hometown is now %1.$} {#delay 7 {findhere}};
-#action {^Camberdan beckons you over and smiles.$} {#delay 0.3 {findhere}};
-#action {^You disappear in a flash!$} {#delay 0.3 {findhere}};
+#action {^Dirk says to you 'You are here in our new player'$} {#map goto {The art of communication}};
+#action {^Danilo utters an incantation and you find yourself elsewhere.$} {#map goto {Please choose your character's hometown:}};
+#action {^Your hometown is now %1.$} {#delay 0 {findhere}};
+#action {^.Pugran falls back and you're able to make your way along the$} {#map goto {In a dark tunnel...}};
+#action {^Camberdan beckons you over and smiles.$} {#delay 0 {findhere}};
+#action {^Camberdan says to you 'Hold on now.'$} {handle_blocked_movement_message {%0}};
+#action {^You disappear in a flash!$} {#delay 0 {findhere}};
 #action {^You feel yourself leaving your body... rising up into the air, you feel$} {
     #line ignore #showme {<018>Died in room <028>$roomarea <138>$roomname <148>(<038>$roomvnum<148>)<018>.};
-    #delay 0.3 {findhere};
+    #delay 0 {findhere};
 };
 
 #action { walks you up the stairs.$} {#map move u};
